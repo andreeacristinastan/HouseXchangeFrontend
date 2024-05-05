@@ -1,0 +1,185 @@
+/* LoginForm.css */
+@import url(https://fonts.googleapis.com/css2?family=Roboto:wght@900&family=Spicy+Rice&display=swap);
+@import url(https://fonts.googleapis.com/css2?family=Radio+Canada+Big:ital,wght@0,400..700;1,400..700&display=swap);
+
+form {
+
+    background: #fff;
+    color: #000;
+    border-radius: 30px;
+    box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.4);
+    margin-bottom: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 48px;
+    width: 600px;
+    height: 800px;
+    margin-top: 0;
+    margin-left: 90px;
+  }
+
+  h2 {
+    font-family: 'Spicy Rice', cursive;
+    color: #4e473e;
+    font-size: 5em;
+  }
+
+  .username-component {
+    width: 80%;
+    display: flex;
+    height: 70px;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 24px;
+  }
+
+  .username-component input::placeholder {
+    font-size: 20px;
+  }
+
+  .user-icon {
+    margin-left: 10px;
+  }
+  
+  input[type="username"] {
+    width: 80%;
+    flex-grow: 1;
+    padding: 10px;
+    border-radius: 24px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    outline: none;
+    border: hidden;
+  }
+
+
+  .password-component input {
+    width: 100%;
+    height: 70px;
+    padding: 10px;
+    border-radius: 24px;
+    box-sizing: border-box;
+    border: hidden;
+    outline: none;
+
+  }
+
+  .password-component [type="button"] {
+    outline: none;
+    border: hidden;
+    width: 20px;
+    padding: 0%;
+    margin-left: 10px;
+
+  }
+
+  .password-component {
+    width: 80%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 24px;
+
+  }
+
+  .password-component input::placeholder {
+    font-size: 20px;
+
+  }
+  
+  input[type="submit"] {
+    width: 20%;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    background-color: #6b6155;
+    color: white;
+    cursor: pointer;
+    font-size: 20px;
+    
+  }
+  
+  input[type="submit"]:hover {
+    background-color: #4e473e;
+    transform: scale(1.1);
+    transition: transform 0.3s ease-in-out;
+  }
+
+  
+  div[typeof="links"] {
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+  }
+
+  .keep-logged-in {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 80%;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-decoration: none;
+    font-family: 'Radio Canada Big', sans-serif;
+  }
+
+  .login-component {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 80%;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-decoration: none;
+    font-family: 'Radio Canada Big', sans-serif;
+    
+  }
+
+  .login-component button:hover{
+    transition: transform 0.3s ease-in-out;
+    transform: scale(1.1);
+
+  }
+  
+  .login-btn {
+    font-family: 'Radio Canada Big', sans-serif;
+    box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.4);
+  }
+
+  .create-account-btn {
+    color: #007BFF; 
+    text-decoration: none;
+    font-size: 20px; 
+    
+  }
+  
+  .create-account-btn:hover {
+    color: #0056b3; 
+    text-decoration: underline;
+  }
+
+  .forgot-password-link {
+    color: #007BFF; 
+    text-decoration: none;
+    font-size: 20px; 
+    
+  }
+  
+  .forgot-password-link:hover {
+    color: #0056b3; 
+    text-decoration: underline;
+  }
+
+  .keep-logged-in-label {
+    font-size: 20px; 
+  }
+
+  .form-input {
+    font-size: 20px; 
+  }
