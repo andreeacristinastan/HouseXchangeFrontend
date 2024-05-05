@@ -1,8 +1,8 @@
 
 import './LoginPage.css'
 
-import { LoginTabs } from './Tabs/LoginTabs';
-import LoginForm from './Form/LoginForm';
+import { LoginTabs } from './tabs/LoginTabs';
+import LoginForm from './form/LoginForm';
 
 const LoginPage = () => {
   return (    
