@@ -1,0 +1,70 @@
+
+@import url(https://fonts.googleapis.com/css2?family=Roboto:wght@900&family=Spicy+Rice&display=swap);
+@import url(https://fonts.googleapis.com/css2?family=Radio+Canada+Big:ital,wght@0,400..700;1,400..700&display=swap);
+
+.textField input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  /* margin: 0; */
+}
+
+.register-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3)), url('../utils/images/login-page-background.jpg');
+    background-size:cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.register-fields  {
+    font-family: 'Radio Canada Big', sans-serif;
+    transform: translateY(-10%);
+}
+
+.already-have-account-btn {
+    color: #007BFF; 
+    text-decoration: none;
+    font-size: 20px; 
+    
+  }
+  
+  .already-have-account-btn:hover {
+    color: #0056b3; 
+    text-decoration: underline;
+  }
+
+  .already-have-account-component {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    width: 80%;
+    margin-left: 60px;
+    /* margin-bottom: 20px; */
+    text-decoration: none;
+    font-family: 'Radio Canada Big', sans-serif;
+    
+  }
+
+
+.form-register {
+    
+    animation: 1.5s ease-out 0s 1 slideInFromTop;
+    
+}
+
+@keyframes slideInFromTop {
+    0% {
+      transform: translateY(-100%);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+

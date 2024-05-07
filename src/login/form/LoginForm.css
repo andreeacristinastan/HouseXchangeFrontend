@@ -23,12 +23,6 @@ form {
     margin-left: 90px;
   }
 
-  h2 {
-    font-family: 'Spicy Rice', cursive;
-    color: #4e473e;
-    font-size: 5em;
-  }
-
   .username-component {
     width: 80%;
     display: flex;
@@ -102,6 +96,13 @@ form {
     color: white;
     cursor: pointer;
     font-size: 20px;
+    font-family: 'Radio Canada Big', sans-serif;
+  }
+
+  h2 {
+    font-family: 'Spicy Rice', cursive;
+    color: #5e5a5a;
+    font-size: 5em;
     
   }
   

@@ -6,10 +6,16 @@ import {eye} from 'react-icons-kit/feather/eye'
 import {user} from 'react-icons-kit/feather/user'
 import './LoginForm.css'
 
-const LoginForm = () => {
+interface LoginFormProps {
+  activeTab: string;
+  setActiveTab: (value: string) => void;
+}
+
+const LoginForm = ({activeTab} : LoginFormProps) => {
 const { register, handleSubmit, formState: { errors } } = useForm();
   const onSubmit = (data: FieldValues) => console.log(data);
   const [showPassword, setShowPassword] = useState(false);
+  
 
   console.log(errors);
   
@@ -17,8 +23,10 @@ const { register, handleSubmit, formState: { errors } } = useForm();
     <div>
       
       <form onSubmit={handleSubmit(onSubmit)}>
-          
-          <h2>Sign In</h2>
+          <div className='title-container'>
+            {activeTab === 'guest' && <h2>Guest Sign In</h2> } 
+            {activeTab === 'host' && <h2>Host Sign In</h2> } 
+          </div>
           
           <div className='username-component'>
             <div className='user-icon'><Icon icon={user} size={20}/></div>
@@ -32,7 +40,7 @@ const { register, handleSubmit, formState: { errors } } = useForm();
               setShowPassword(!showPassword);
               console.log(showPassword);
             }}>
-              {showPassword ? <Icon icon={eye} size={20} /> : <Icon icon={eyeOff} size={20} />} 
+              {showPassword ? <Icon icon={eyeOff} size={20} /> : <Icon icon={eye} size={20} />} 
             </button>
 
             <input className="form-input" type={showPassword ? "text" : "password"} placeholder="Password" {...register("Password", {required: true, min: 8})} />
