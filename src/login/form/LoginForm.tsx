@@ -22,10 +22,10 @@ const { register, handleSubmit, formState: { errors } } = useForm();
   return (
     <div>
       
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)} className='signin-form'>
           <div className='title-container'>
-            {activeTab === 'guest' && <h2>Guest Sign In</h2> } 
-            {activeTab === 'host' && <h2>Host Sign In</h2> } 
+            {activeTab === 'guest' && <h2>Guest<br /> Sign In</h2> } 
+            {activeTab === 'host' && <h2>Host <br /> Sign In</h2> } 
           </div>
           
           <div className='username-component'>

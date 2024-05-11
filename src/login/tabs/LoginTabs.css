@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css2?family=Radio+Canada+Big:ital,wght@0,400..700;1,400..700&display=swap);
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&family=Radio+Canada+Big:ital,wght@0,400..700;1,400..700&display=swap');
 
 
 button {
@@ -7,13 +7,14 @@ button {
 }
 
 .button-group {
-  position: absolute;
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  font-family: 'Radio Canada Big', sans-serif;
-  font-size: 20px;
-  
+  gap: 20px;
+  font-family: "Oswald", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  height: 50px;
 }
 
 
@@ -25,26 +26,28 @@ button:disabled {
 
 
 #signin-button {
-  background-color: #6b6155;
+  background-color: #7fc7d9;
   color: white;
   padding: 10px;
   box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.4);
   border-radius: 5px;
   cursor: pointer;
+  position: relative;
+  left: 30px;
 }
 
 #signin-button:active, #signin-button:focus {
   box-shadow: none !important;
   outline: none !important;
   border: none !important;
-  background-color: #4e473e;
+  background-color: #66c3da;
 }
 
 #signin-button:hover {
   box-shadow: none !important;
   outline: none !important;
   border: none !important;
-  background-color: #4e473e;
+  background-color: #66c3da;
   transform: scale(1.1);
   transition: transform 0.3s ease-in-out;
 }

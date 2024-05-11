@@ -1,5 +1,4 @@
 import { useForm } from 'react-hook-form';
-import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import * as React from 'react';
 import IconButton from '@mui/material/IconButton';
@@ -12,34 +11,66 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import MenuItem from '@mui/material/MenuItem';
 import { prefixes } from '../utils/constants/Prefixes';
 import { languages } from '../utils/constants/Languages';
+import FormLabel from '@mui/material/FormLabel';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Radio from '@mui/material/Radio';
 import './RegisterPage.css'
+import Box from '@mui/material/Box';
 
 
 const RegisterPage = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const onSubmit = (data: unknown) => console.log(data);
   const [showPassword, setShowPassword] = React.useState(false);
+  const [typeOfAcc, setTypeOfAcc] = React.useState('');
+
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
   };
+
+  const handleTypeOfAcc = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTypeOfAcc(event.target.value);
+  };
+
   console.log(errors);
   return (
     <div className='register-container'>
       <div className='form-register'>
-      <Box  component="form" onSubmit={handleSubmit(onSubmit)}>
+      <Box  component="form" onSubmit={handleSubmit(onSubmit)} >
       <h2 className='register-label'>Register</h2>
 
         <div className='register-fields'>
+        <FormLabel id="row-radio-buttons-group-label" 
+          sx={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            alignItems: 'center',
+            marginTop: '-40px',
+          }}
+          >Choose your type of account</FormLabel>
+          <RadioGroup 
+            sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}
+            row
+            aria-labelledby="row-radio-buttons-group-label"
+            name="row-radio-buttons-group"
+            value={typeOfAcc}
+            onChange={handleTypeOfAcc}
+          >
+            <FormControlLabel value="Guest" control={<Radio />} label="Guest" />
+            <FormControlLabel value="Host" control={<Radio />} label="Host" />
+          </RadioGroup>
+
         <div>
           <TextField 
             {...register("FirstName")}
             sx={{ 
               m: 1, 
-              width: '80%', // set width to 80%
-              height: '70px', 
+              width: '100%',
+              height: '30px', 
               '& .MuiOutlinedInput-root': {
                 borderRadius: '24px',
                 '&:hover': {
@@ -70,8 +101,9 @@ const RegisterPage = () => {
             {...register("LastName")}
             sx={{ 
               m: 1, 
-              width: '80%', // set width to 80%
-              height: '70px', 
+              width: '100%',
+              height: '30px', 
+              marginTop: '30px',
               '& .MuiOutlinedInput-root': {
                 borderRadius: '24px',
                 '&:hover': {
@@ -101,8 +133,9 @@ const RegisterPage = () => {
             {...register("Email")}
             sx={{ 
               m: 1, 
-              width: '80%', // set width to 80%
-              height: '70px', 
+              width: '100%',
+              height: '30px', 
+              marginTop: '30px',
               '& .MuiOutlinedInput-root': {
                 borderRadius: '24px',
                 '&:hover': {
@@ -132,8 +165,9 @@ const RegisterPage = () => {
             {...register("Username")}
             sx={{ 
               m: 1, 
-              width: '80%', // set width to 80%
-              height: '70px', 
+              width: '100%',
+              height: '30px', 
+              marginTop: '30px',
               '& .MuiOutlinedInput-root': {
                 borderRadius: '24px',
                 '&:hover': {
@@ -158,10 +192,14 @@ const RegisterPage = () => {
           />
           
         </div>
-
+        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <TextField 
             {...register("Prefix")}
-            sx={{ m: 1, width: '26ch',
+            sx={{ 
+              m: 1, 
+              width: '70%', 
+              height: '30px', 
+              marginTop: '30px',
             '& .MuiOutlinedInput-root': {
               borderRadius: '24px',
               '&:hover': {
@@ -195,7 +233,11 @@ const RegisterPage = () => {
           <TextField 
             {...register("PhoneNumber")}
             className='textField' 
-            sx={{ m: 1, width: '26ch',
+            sx={{ 
+              m: 1, 
+              width: '100%', 
+              height: '30px', 
+              marginTop: '30px',
             '& .MuiOutlinedInput-root': {
               borderRadius: '24px',
               '&:hover': {
@@ -222,6 +264,7 @@ const RegisterPage = () => {
               shrink: true,
             }}
           />
+          </Box>
 
           <FormControl
           {...register("Password")}
@@ -229,8 +272,9 @@ const RegisterPage = () => {
             variant="outlined" 
             sx={{ 
               m: 1, 
-              width: '80%',
-              height: '70px', 
+              width: '100%',
+              height: '30px', 
+              marginTop: '30px',
               '& .MuiOutlinedInput-root': {
                 borderRadius: '24px',
                 '&:hover': {
@@ -246,12 +290,13 @@ const RegisterPage = () => {
               },
               '& .MuiFormLabel-root.Mui-focused': { 
                 color: '#7c7878', 
-              },
+              }
              }}>
             <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
             <OutlinedInput
               id="outlined-adornment-password"
               type={showPassword ? 'text' : 'password'}
+              placeholder="Password"
               startAdornment={
                 <InputAdornment position="start">
                   <IconButton
@@ -264,7 +309,7 @@ const RegisterPage = () => {
                   </IconButton>
                 </InputAdornment>
               }
-              placeholder="Password"
+              label="Password"
             />
           </FormControl>
           
@@ -273,8 +318,9 @@ const RegisterPage = () => {
             {...register("Language")}
             sx={{ 
               m: 1, 
-              width: '80%', // set width to 80%
-              height: '70px', 
+              width: '100%', 
+              height: '30px', 
+              marginTop: '30px',
               '& .MuiOutlinedInput-root': {
                 borderRadius: '24px',
                 '&:hover': {
@@ -308,7 +354,7 @@ const RegisterPage = () => {
           
           <div className="already-have-account-component">
               <a href='#' className='already-have-account-btn'>Already have an account?</a>
-              <input type="submit" />
+              <input type="submit" className='submit-btn' disabled={!typeOfAcc} />
 
           </div>
         </div>

@@ -2,26 +2,30 @@
 @import url(https://fonts.googleapis.com/css2?family=Roboto:wght@900&family=Spicy+Rice&display=swap);
 @import url(https://fonts.googleapis.com/css2?family=Radio+Canada+Big:ital,wght@0,400..700;1,400..700&display=swap);
 
-form {
+.signin-form {
 
     background: #fff;
     color: #000;
     border-radius: 30px;
     box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.4);
-    margin-bottom: 50px;
+    margin-bottom: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 10px;
-    padding: 20px;
+    padding: 50px;
     border: 1px solid #ccc;
     border-radius: 48px;
-    width: 600px;
-    height: 800px;
+    width: 450px;
+    max-width: 600px;
+    height: 500px;
     margin-top: 0;
-    margin-left: 90px;
+    margin-left: auto;
+    margin-right: auto;
   }
+
+
 
   .username-component {
     width: 80%;
@@ -30,6 +34,7 @@ form {
     align-items: center;
     border: 1px solid #ccc;
     border-radius: 24px;
+    transform: translateY(-70%);
   }
 
   .username-component input::placeholder {
@@ -42,7 +47,8 @@ form {
   
   input[type="username"] {
     width: 80%;
-    flex-grow: 1;
+    /* flex-grow: 1; */
+    height: 70px;
     padding: 10px;
     border-radius: 24px;
     border: 1px solid #ccc;
@@ -60,6 +66,7 @@ form {
     box-sizing: border-box;
     border: hidden;
     outline: none;
+    
 
   }
 
@@ -79,6 +86,8 @@ form {
     align-items: center;
     border: 1px solid #ccc;
     border-radius: 24px;
+    transform: translateY(-70%);
+
 
   }
 
@@ -92,22 +101,22 @@ form {
     padding: 10px;
     border-radius: 5px;
     border: none;
-    background-color: #6b6155;
+    background-color: #7fc7d9;
     color: white;
     cursor: pointer;
     font-size: 20px;
     font-family: 'Radio Canada Big', sans-serif;
   }
 
-  h2 {
+  .title-container {
     font-family: 'Spicy Rice', cursive;
-    color: #5e5a5a;
-    font-size: 5em;
+    color: #7fc7d9;
+    font-size: 50px;
     
   }
   
   input[type="submit"]:hover {
-    background-color: #4e473e;
+    background-color:#66c3da;
     transform: scale(1.1);
     transition: transform 0.3s ease-in-out;
   }
@@ -128,6 +137,8 @@ form {
     margin-bottom: 20px;
     text-decoration: none;
     font-family: 'Radio Canada Big', sans-serif;
+    transform: translateY(-200%);
+
   }
 
   .login-component {
@@ -139,6 +150,8 @@ form {
     margin-bottom: 20px;
     text-decoration: none;
     font-family: 'Radio Canada Big', sans-serif;
+    transform: translateY(-150%);
+
     
   }
 
