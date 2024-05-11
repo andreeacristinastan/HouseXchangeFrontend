@@ -1,7 +1,7 @@
 import Typography from './CategoriesTypography';
 import ProductHeroLayout from './components//GettingStartedLay';
 import backgroundImage from '../utils/images/img33.jpg';
-import './GettingStarted.css';
+// import './GettingStarted.css';
 import Link from '@mui/material/Link';
 
 const rightLink = {
