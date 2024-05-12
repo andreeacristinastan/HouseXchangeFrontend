@@ -1,0 +1,16 @@
+.home-page-container {
+    
+    padding: 0 !important;
+    margin: 0 !important;
+    align-items: center;
+    justify-content: center;
+    /* background-color: '#7fc7d9'; */
+
+    /* flex-direction: column; */
+}
+
+.color-label {
+    margin-top: -70px;
+    background-color: #7fc7d9;
+
+}

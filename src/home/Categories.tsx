@@ -1,11 +1,9 @@
-import Container from '@mui/material/Container';
-import Typography from './CategoriesTypography';
-import ButtonBase from '@mui/material/ButtonBase';
 import { styled } from '@mui/material/styles';
-import { images } from '../utils/constants/Typografy.tsx'
 import Box from '@mui/material/Box';
-
-// import Typografy from '../utils/constants/Typografy';
+import ButtonBase from '@mui/material/ButtonBase';
+import Container from '@mui/material/Container';
+import Typography from '../utils/Typography';
+import './Categories.css'
 
 const ImageBackdrop = styled('div')(({ theme }) => ({
   position: 'absolute',
@@ -21,11 +19,14 @@ const ImageBackdrop = styled('div')(({ theme }) => ({
 const ImageIconButton = styled(ButtonBase)(({ theme }) => ({
   position: 'relative',
   display: 'block',
-  padding: 0,
+  marginTop:'20px',
   borderRadius: 0,
   height: '40vh',
+  width: '200vh !important',
+  flex: '25%',
+  boxSizing:'border-box',
   [theme.breakpoints.down('md')]: {
-    width: '80% !important',
+    width: '100% !important',
     height: 100,
   },
   '&:hover': {
@@ -55,31 +56,47 @@ const ImageIconButton = styled(ButtonBase)(({ theme }) => ({
   },
 }));
 
-const Line = styled('div')(({ theme }) => ({
-  height: 3,
-  width: 50,
-  background: theme.palette.common.black,
-  position: 'relative',
-  bottom: -2,
-  left: 'calc(50% - 9px)',
-  transition: theme.transitions.create('opacity'),
-}));
+const images = [
+  {
+    url: 'https://images.unsplash.com/photo-1534081333815-ae5019106622?auto=format&fit=crop&w=400',
+    title: 'Sea',
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1506941433945-99a2aa4bd50a?auto=format&fit=crop&w=400',
+    title: 'Country Side',
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?auto=format&fit=crop&w=400',
+    title: 'Mountain',
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1453747063559-36695c8771bd?auto=format&fit=crop&w=400',
+    title: 'City',
+  }
+];
 
-const BoxImg = () => {
+const Categories = () => {
   return (
-    <Container component="section" sx={{ mt: 0, mb: 9 }}>
-      <Typography variant="h4" marked="center" align="center" component="h2" >
+    <div className='categories-container'>
+      
+      <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet"></link>
+  
+    <Container component="section" sx={{mb: 4, padding: '0px !important' }}>
+      <Typography variant="h4" marked="center" align="center" component="h2" 
+      sx = {{
+        marginTop:'10px',
+        color:'#fff',
+        fontFamily: '"Oswald", sans-serif'
+      }}>
         For all tastes and all desires
       </Typography>
-
-      <Line />
-     
-      <Box sx={{ mt: 8, display: 'flex', flexWrap: 'wrap' }}>
+      <Box sx={{ mt: 8, display: 'flex', flexWrap: 'wrap', padding: '0px',
+  margin: 0, }}>
         {images.map((image) => (
           <ImageIconButton
             key={image.title}
             style={{
-              width: image.width,
+              // width: image.width,
             }}
           >
             <Box
@@ -122,7 +139,7 @@ const BoxImg = () => {
         ))}
       </Box>
     </Container>
-  )
+    </div>
+  );
 }
-
-export default BoxImg
+export default Categories

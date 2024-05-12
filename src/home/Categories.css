@@ -1,0 +1,9 @@
+.categories-container {
+    width: 100% !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* <span class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"></span> */

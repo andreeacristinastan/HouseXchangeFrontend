@@ -1,7 +1,7 @@
-import Typography from './CategoriesTypography';
+import Typography from '../utils/Typography';
+
 import ProductHeroLayout from './components//GettingStartedLay';
 import backgroundImage from '../utils/images/img33.jpg';
-// import './GettingStarted.css';
 import Link from '@mui/material/Link';
 
 const rightLink = {
@@ -21,7 +21,8 @@ const GettingStarted = () => {
     >
       <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet"></link>
       <Typography color="inherit" align="center" variant="h2" marked="center"
-      sx = {{fontFamily: '"Oswald", sans-serif'}}>
+      sx = {{fontFamily: '"Oswald", sans-serif',
+      }}>
       Embrace the warmth of hospitality in every destination
       </Typography>
       <Typography
@@ -53,9 +54,9 @@ const GettingStarted = () => {
         >
               {'Create an account'}
         </Link>
-      <Typography variant="body2" align="center" color="inherit" sx={{ mt: 3, fontFamily: '"Oswald", sans-serif'}}>
-        &discover the experience
-      </Typography>
+      {/* <Typography variant="body2" align="center" color="inherit" sx={{ mt: 6, fontSize:'20px', fontFamily: '"Oswald", sans-serif'}}>
+        &try the experience
+      </Typography> */}
     </ProductHeroLayout>
   )
 }
