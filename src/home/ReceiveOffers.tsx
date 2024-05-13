@@ -13,6 +13,9 @@ import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
+import FormLabel from "@mui/material/FormLabel";
+import FormGroup from "@mui/material/FormGroup";
+import Checkbox from "@mui/material/Checkbox";
 
 type CountryApi = {
   name: {
@@ -51,6 +54,22 @@ const ReceiveOffers = () => {
   const handleChange = (event: SelectChangeEvent) => {
     setSelectedCountry(event.target.value);
   };
+
+  const [state, setState] = React.useState({
+    app: true,
+    property: false,
+    other: false,
+  });
+
+  const handleChange2 = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setState({
+      ...state,
+      [event.target.name]: event.target.checked,
+    });
+  };
+
+  const { app, property, other } = state;
+  const error = [app, property, other].filter((v) => v).length !== 1;
 
   return (
     <Container component="section" sx={{ mt: 20, display: "flex" }}>
@@ -160,7 +179,7 @@ const ReceiveOffers = () => {
           >
             <div
               className="feedback-container"
-              style={{ marginBottom: "100px" }}
+              style={{ marginBottom: "50px" }}
             >
               <Typography
                 variant="h2"
@@ -182,7 +201,7 @@ const ReceiveOffers = () => {
                   justifyContent: "center",
                   alignItems: "center",
                   "&, &.Mui-checked": {
-                    color: "magenta",
+                    color: "white",
                   },
                 }}
                 row
@@ -303,15 +322,89 @@ const ReceiveOffers = () => {
                 }}
               />
 
+              <Box sx={{ display: "flex", justifyContent: "center" }}>
+                <FormControl
+                  error={error}
+                  required
+                  // sx={{ m: 0 }}
+                  component="fieldset"
+                  variant="standard"
+                >
+                  <FormLabel
+                    component="legend"
+                    sx={{
+                      color: "white",
+                      "&, &.Mui-checked": {
+                        color: "white",
+                      },
+                      "&, &.Mui-focused": {
+                        color: "white",
+                      },
+                    }}
+                  >
+                    Choose one
+                  </FormLabel>
+                  <FormGroup
+                    aria-label="position"
+                    row
+                    sx={{
+                      "&, &.Mui-checked": {
+                        color: "white",
+                      },
+                    }}
+                  >
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          style={{
+                            color: "white",
+                          }}
+                          checked={app}
+                          onChange={handleChange2}
+                          name="app"
+                        />
+                      }
+                      label="to the aplication"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          style={{
+                            color: "white",
+                          }}
+                          checked={property}
+                          onChange={handleChange2}
+                          name="property"
+                        />
+                      }
+                      label="to the property"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          style={{
+                            color: "white",
+                          }}
+                          checked={other}
+                          onChange={handleChange2}
+                          name="other"
+                        />
+                      }
+                      label="other"
+                    />
+                  </FormGroup>
+                </FormControl>
+              </Box>
+
               <Button
                 type="submit"
                 color="primary"
                 variant="contained"
                 // disabled={!typeOfAcc}
                 sx={{
-                  width: "80%",
+                  width: "420px",
                   backgroundColor: "#74c0d3",
-                  borderRadius: "20px",
+                  borderRadius: "48px",
                   // marginLeft: "10px",
                   color: "#fff",
                   "&:hover": {
