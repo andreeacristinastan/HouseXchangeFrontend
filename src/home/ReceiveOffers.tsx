@@ -25,10 +25,27 @@ type CountryApi = {
 
 const ReceiveOffers = () => {
   const [open, setOpen] = React.useState(false);
+  const [email, setEmail] = React.useState("");
+  const [snackbarMessage, setSnackbarMessage] = React.useState("");
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (validateEmail(email)) {
+      setSnackbarMessage("Success! You will be kept updated.");
+    } else {
+      setSnackbarMessage("Error: Please enter a valid email address.");
+    }
     setOpen(true);
+  };
+
+  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(event.target.value);
+  };
+
+  const validateEmail = (email: string) => {
+    const re =
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
   };
 
   const handleClose = () => {
@@ -108,12 +125,14 @@ const ReceiveOffers = () => {
                 variant="h5"
                 sx={{ fontFamily: '"Oswald", sans-serif' }}
               >
-                Taste the holidays of the everyday close to home.
+                Taste the holidays of the everyday.
               </Typography>
               <TextField
                 noBorder
                 placeholder=" Your email"
                 variant="standard"
+                value={email}
+                onChange={handleEmailChange}
                 sx={{
                   width: "100%",
                   padding: "10px",
@@ -148,7 +167,7 @@ const ReceiveOffers = () => {
             </Box>
           </Box>
         </Grid>
-
+        <SnackBar open={open} onClose={handleClose} message={snackbarMessage} />
         <Grid
           item
           xs={6}
@@ -264,12 +283,12 @@ const ReceiveOffers = () => {
 
               <FormControl sx={{ m: 1, minWidth: 120 }}>
                 <InputLabel
-                  required
                   sx={{ color: "white", "&.Mui-focused": { color: "white" } }}
                 >
                   Country
                 </InputLabel>
                 <Select
+                  required
                   value={selectedCountry}
                   label="Countries"
                   onChange={handleChange}
