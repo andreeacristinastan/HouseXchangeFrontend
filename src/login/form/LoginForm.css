@@ -179,3 +179,7 @@ div[typeof="links"] {
 .form-input {
   font-size: 20px;
 }
+
+.snackbarError {
+  color: red;
+}

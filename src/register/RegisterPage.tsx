@@ -17,6 +17,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Radio from "@mui/material/Radio";
 import "./RegisterPage.css";
 import Box from "@mui/material/Box";
+import { Link } from "react-router-dom";
 
 const RegisterPage = () => {
   const {
@@ -370,9 +371,9 @@ const RegisterPage = () => {
             </div>
 
             <div className="already-have-account-component">
-              <a href="#" className="already-have-account-btn">
+              <Link to="/login" className="already-have-account-btn">
                 Already have an account?
-              </a>
+              </Link>
               <input
                 type="submit"
                 className="submit-btn"

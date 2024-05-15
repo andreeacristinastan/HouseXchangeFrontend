@@ -5,7 +5,7 @@ import LoginForm from "./form/LoginForm";
 import { useState } from "react";
 
 const LoginPage = () => {
-  const [activeTab, setActiveTab] = useState("guest");
+  const [activeTab, setActiveTab] = useState("GUEST");
 
   return (
     <div className="login-wrapper">
