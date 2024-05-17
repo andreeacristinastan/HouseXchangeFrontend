@@ -1,11 +1,17 @@
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
-
+import { useState } from "react";
+import setUser from "../App";
 const API_URL = "http://localhost:8080/api";
+import { useUserStore } from "../App";
 
 type loginCredentials = {
   username: string;
   password: string;
+};
+
+type userId = {
+  id: number;
 };
 
 type registerCredentials = {
@@ -70,23 +76,10 @@ const AuthService = () => {
       .catch((err) => {
         console.log("err:");
 
-        console.log(JSON.parse(err.message));
+        console.log(JSON.parse(err.message).message);
         errorMessage = JSON.parse(err.message).message;
         // errorMessage = JSON.parse(err.message);
       });
-
-    // return axios
-    //   .post(API_URL + "login", {
-    //     username,
-    //     password,
-    //   })
-    //   .then((response) => {
-    //     if (response.data.accessToken) {
-    //       localStorage.setItem("user", JSON.stringify(response.data));
-    //     }
-
-    //     return response.data;
-    //   });
     return {
       fuckingToken: token,
       error: errorMessage,
@@ -95,31 +88,82 @@ const AuthService = () => {
     };
   };
 
+  const fetchUser = async () => {
+    const token = localStorage.getItem("user");
+    let user = null;
+    let errorMessage = "";
+
+    if (token) {
+      const decodedToken: userInfos = jwtDecode(token);
+      console.log(decodedToken);
+      const currentTime = Date.now() / 1000;
+      // console.log(userId);
+      if (decodedToken.exp > currentTime) {
+        const userId = decodedToken.id;
+        await fetch(`${API_URL}/users/${userId}`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token.replace(/"/g, "")}`,
+          },
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            user = data;
+          })
+          .catch((err) => {
+            console.log("err:");
+            console.log(err);
+            errorMessage = JSON.parse(err.message).message;
+          });
+      } else {
+        localStorage.removeItem("user");
+        errorMessage = "Session expired. Please log in again";
+        // setUser(null);
+      }
+    }
+    return {
+      userDetails: user,
+      error: errorMessage,
+    };
+  };
+
   const logout = () => {
     localStorage.removeItem("user");
   };
 
-  const register = (regCredentials: registerCredentials) => {
-    const {
-      role,
-      email,
-      username,
-      password,
-      firstName,
-      lastName,
-      language,
-      phoneNumber,
-    } = regCredentials;
-    return axios.post(API_URL + "register", {
-      role,
-      email,
-      username,
-      password,
-      firstName,
-      lastName,
-      language,
-      phoneNumber,
-    });
+  const register = async (regCredentials: registerCredentials) => {
+    console.log(JSON.stringify(regCredentials));
+    // let token = "";
+    // let userRole = "";
+    // let userEmail = "";
+    let errorMessage = "";
+
+    await fetch(`${API_URL}/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(regCredentials),
+    })
+      .then(async (res) => {
+        console.log(res);
+
+        if (!res.ok) {
+          const apiError = await res.json();
+          console.log(apiError);
+          throw new Error(JSON.stringify(apiError));
+        }
+        return res.json();
+      })
+      .catch((err) => {
+        console.log("err:");
+
+        console.log(JSON.parse(err.message).message);
+        errorMessage = JSON.parse(err.message).message;
+        // errorMessage = JSON.parse(err.message);
+      });
+
+    return { error: errorMessage };
   };
 
   const getCurrentUser = () => {
@@ -129,7 +173,7 @@ const AuthService = () => {
     return null;
   };
 
-  return { login, logout, register, getCurrentUser };
+  return { login, logout, register, getCurrentUser, fetchUser };
 };
 
 export default AuthService;

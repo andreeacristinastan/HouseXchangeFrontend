@@ -6,17 +6,41 @@ import { user } from "react-icons-kit/feather/user";
 import { Formik, Field, Form } from "formik";
 import AuthService from "../../services/AuthService";
 import "./LoginForm.css";
-import { Password } from "@mui/icons-material";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import HomePage from "../../home/HomePage";
 import Snackbar from "@mui/material/Snackbar";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import Userfront from "@userfront/core";
-import IconButton from "@mui/material/IconButton";
-import CloseIcon from "@mui/icons-material/Close";
-import { Button } from "react-bootstrap";
+import { useUserStore } from "../../App";
+
+type PropertyInfo = {
+  id: number;
+  name: string;
+};
+
+type TripInfo = {
+  id: number;
+  numberOfPersons: number;
+  destination: string;
+  minRange: number;
+  maxRange: number;
+  checkInDate: Date;
+  checkOutDate: Date;
+  userId: number;
+  propertyId: number;
+};
+
+type userInfo = {
+  id: number;
+  role: string;
+  email: string;
+  username: string;
+  firstName: string;
+  lastName: string;
+  language: string;
+  phoneNumber: string;
+  properties: PropertyInfo[];
+  trips: TripInfo[];
+};
 
 interface LoginFormProps {
   activeTab: string;
@@ -28,7 +52,9 @@ const LoginForm = ({ activeTab }: LoginFormProps) => {
   const [err, setErr] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [openSnackbar, setOpenSnackbar] = React.useState(false);
-  const [email, setEmail] = useState("");
+  // const [setUser] = useUserStore();
+
+  // const [email, setEmail] = useState("");
 
   const handleCloseSnackbar = (
     event: React.SyntheticEvent | Event,
@@ -42,7 +68,7 @@ const LoginForm = ({ activeTab }: LoginFormProps) => {
   };
 
   const navigate = useNavigate();
-
+  const { setUser } = useUserStore();
   return (
     <div>
       <Formik
@@ -51,11 +77,11 @@ const LoginForm = ({ activeTab }: LoginFormProps) => {
           password: "",
         }}
         onSubmit={async (values) => {
-          console.log(values);
+          // console.log(values);
 
           const response = await AuthService().login(values);
 
-          setEmail(response.email);
+          // setEmail(response.email);
 
           if (response.fuckingToken.length === 0) {
             values.password = "";
@@ -74,7 +100,12 @@ const LoginForm = ({ activeTab }: LoginFormProps) => {
             setOpenSnackbar(true);
           } else {
             localStorage.setItem("user", JSON.stringify(response.fuckingToken));
-            navigate("/profile");
+            const res = await AuthService().fetchUser();
+
+            if (res.userDetails) {
+              setUser(res.userDetails);
+            }
+            navigate("/");
           }
         }}
       >

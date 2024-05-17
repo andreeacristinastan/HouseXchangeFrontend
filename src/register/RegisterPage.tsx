@@ -1,4 +1,3 @@
-import { useForm } from "react-hook-form";
 import TextField from "@mui/material/TextField";
 import * as React from "react";
 import IconButton from "@mui/material/IconButton";
@@ -18,16 +17,21 @@ import Radio from "@mui/material/Radio";
 import "./RegisterPage.css";
 import Box from "@mui/material/Box";
 import { Link } from "react-router-dom";
+import { Formik, Field, Form } from "formik";
+import AuthService from "../services/AuthService";
+import { useState } from "react";
+import Snackbar from "@mui/material/Snackbar";
+import { Alert } from "@mui/material";
 
 const RegisterPage = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
-  const onSubmit = (data: unknown) => console.log(data);
+  // const onSubmit = (data: unknown) => console.log(data);
   const [showPassword, setShowPassword] = React.useState(false);
   const [typeOfAcc, setTypeOfAcc] = React.useState("");
+  const [err, setErr] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [success, setSuccess] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [openSnackbar, setOpenSnackbar] = React.useState(false);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -38,21 +42,70 @@ const RegisterPage = () => {
   };
 
   const handleTypeOfAcc = (event: React.ChangeEvent<HTMLInputElement>) => {
+    // console.log("HERE", event.target.value);
+
     setTypeOfAcc(event.target.value);
   };
 
-  console.log(errors);
+  const handleCloseSnackbar = (
+    event: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpenSnackbar(false);
+  };
 
   // const [selectedLanguage, setSelectedLanguage] = useState("Select a country");
 
   return (
     <div className="register-container">
-      <div className="form-register">
-        <Box component="form" onSubmit={handleSubmit(onSubmit)}>
+      <Formik
+        initialValues={{
+          role: "",
+          email: "",
+          username: "",
+          password: "",
+          firstName: "",
+          lastName: "",
+          language: "",
+          prefix: "",
+          phoneNumber: "",
+        }}
+        onSubmit={async (values) => {
+          values.phoneNumber = values.phoneNumber.toString();
+          // console.log("my valueeees", values);
+
+          const response = await AuthService().register(values);
+          // console.log(response);
+          values.email = "";
+          values.firstName = "";
+          values.language = "";
+          values.language = "";
+          values.lastName = "";
+          values.password = "";
+          values.phoneNumber = "";
+          values.prefix = "";
+          values.role = "";
+          values.username = "";
+          if (response.error.length !== 0) {
+            setErr(true);
+            setErrorMessage(response.error);
+            setOpenSnackbar(true);
+          } else {
+            setSuccess(true);
+            setSuccessMessage("User created successfully!");
+          }
+        }}
+      >
+        <Form className="form-register">
           <h2 className="register-label">Register</h2>
 
           <div className="register-fields">
-            <FormLabel
+            <Field
+              as={FormLabel}
               id="row-radio-buttons-group-label"
               sx={{
                 display: "flex",
@@ -62,8 +115,9 @@ const RegisterPage = () => {
               }}
             >
               Choose your type of account
-            </FormLabel>
-            <RadioGroup
+            </Field>
+            <Field
+              as={RadioGroup}
               sx={{
                 display: "flex",
                 justifyContent: "center",
@@ -71,27 +125,28 @@ const RegisterPage = () => {
               }}
               row
               aria-labelledby="row-radio-buttons-group-label"
-              name="row-radio-buttons-group"
+              name="role"
               value={typeOfAcc}
               onChange={handleTypeOfAcc}
             >
               <FormControlLabel
-                value="Guest"
-                control={<Radio />}
+                value="GUEST"
+                control={<Field as={Radio} />}
                 label="Guest"
                 sx={{ "& .MuiTypography-root": { color: "#666666" } }}
               />
               <FormControlLabel
-                value="Host"
-                control={<Radio />}
+                value="HOST"
+                control={<Field as={Radio} />}
                 label="Host"
                 sx={{ "& .MuiTypography-root": { color: "#666666" } }}
               />
-            </RadioGroup>
+            </Field>
 
             <div>
-              <TextField
-                {...register("FirstName")}
+              <Field
+                as={TextField}
+                name="firstName"
                 sx={{
                   m: 1,
                   width: "100%",
@@ -119,8 +174,9 @@ const RegisterPage = () => {
               />
             </div>
             <div>
-              <TextField
-                {...register("LastName")}
+              <Field
+                as={TextField}
+                name="lastName"
                 sx={{
                   m: 1,
                   width: "100%",
@@ -149,8 +205,9 @@ const RegisterPage = () => {
               />
             </div>
             <div>
-              <TextField
-                {...register("Email")}
+              <Field
+                as={TextField}
+                name="email"
                 sx={{
                   m: 1,
                   width: "100%",
@@ -179,8 +236,9 @@ const RegisterPage = () => {
               />
             </div>
             <div>
-              <TextField
-                {...register("Username")}
+              <Field
+                as={TextField}
+                name="username"
                 sx={{
                   m: 1,
                   width: "100%",
@@ -209,8 +267,9 @@ const RegisterPage = () => {
               />
             </div>
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-              <TextField
-                {...register("Prefix")}
+              <Field
+                as={TextField}
+                name="prefix"
                 sx={{
                   m: 1,
                   width: "70%",
@@ -239,14 +298,15 @@ const RegisterPage = () => {
                 label="Prefix"
               >
                 {prefixes.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
+                  <MenuItem key={option.value} value={option.label}>
                     {option.label}
                   </MenuItem>
                 ))}
-              </TextField>
+              </Field>
 
-              <TextField
-                {...register("PhoneNumber")}
+              <Field
+                as={TextField}
+                name="phoneNumber"
                 className="textField"
                 sx={{
                   m: 1,
@@ -280,8 +340,9 @@ const RegisterPage = () => {
               />
             </Box>
 
-            <FormControl
-              {...register("Password")}
+            <Field
+              as={FormControl}
+              name="password"
               required
               variant="outlined"
               sx={{
@@ -310,7 +371,9 @@ const RegisterPage = () => {
               <InputLabel htmlFor="outlined-adornment-password">
                 Password
               </InputLabel>
-              <OutlinedInput
+              <Field
+                as={OutlinedInput}
+                name="password"
                 id="outlined-adornment-password"
                 type={showPassword ? "text" : "password"}
                 placeholder="Password"
@@ -328,11 +391,12 @@ const RegisterPage = () => {
                 }
                 label="Password"
               />
-            </FormControl>
+            </Field>
 
             <div>
-              <TextField
-                {...register("Language")}
+              <Field
+                as={TextField}
+                name="language"
                 sx={{
                   m: 1,
                   width: "100%",
@@ -359,15 +423,13 @@ const RegisterPage = () => {
                 id="outlined-select-prefix"
                 select
                 label="Language"
-                // value={selectedLanguage}
-                // onChange={(e) => setSelectedLanguage(e.target.value)}
               >
                 {languages.map((language) => (
                   <MenuItem key={language} value={language}>
                     {language}
                   </MenuItem>
                 ))}
-              </TextField>
+              </Field>
             </div>
 
             <div className="already-have-account-component">
@@ -381,8 +443,38 @@ const RegisterPage = () => {
               />
             </div>
           </div>
-        </Box>
-      </div>
+        </Form>
+      </Formik>
+      {err && (
+        <Snackbar
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "center",
+          }}
+          open={openSnackbar}
+          className="snackbarError"
+          autoHideDuration={5000}
+          onClose={handleCloseSnackbar}
+          message={errorMessage}
+        />
+      )}
+
+      {success && (
+        <Snackbar
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "center",
+          }}
+          open={success}
+          className="snackbarSuccess"
+          autoHideDuration={5000}
+          onClose={() => setSuccess(false)}
+        >
+          <Alert severity="success" variant="filled" sx={{ width: "100%" }}>
+            {successMessage}
+          </Alert>
+        </Snackbar>
+      )}
     </div>
   );
 };
