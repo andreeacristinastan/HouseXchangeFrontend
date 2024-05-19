@@ -91,7 +91,7 @@ input[type="submit"] {
   padding: 10px;
   border-radius: 5px;
   border: none;
-  background-color: #7fc7d9;
+  background-color: #588b97;
   color: white;
   cursor: pointer;
   font-size: 20px;
@@ -100,12 +100,12 @@ input[type="submit"] {
 
 .title-container {
   font-family: "Spicy Rice", cursive;
-  color: #7fc7d9;
+  color: #588b97;
   font-size: 50px;
 }
 
 input[type="submit"]:hover {
-  background-color: #66c3da;
+  background-color: #456e77;
   transform: scale(1.1);
   transition: transform 0.3s ease-in-out;
 }

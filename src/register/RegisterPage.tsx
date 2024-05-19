@@ -22,6 +22,7 @@ import AuthService from "../services/AuthService";
 import { useState } from "react";
 import Snackbar from "@mui/material/Snackbar";
 import { Alert } from "@mui/material";
+import CheckIcon from "@mui/icons-material/Check";
 
 const RegisterPage = () => {
   // const onSubmit = (data: unknown) => console.log(data);
@@ -455,8 +456,9 @@ const RegisterPage = () => {
           className="snackbarError"
           autoHideDuration={5000}
           onClose={handleCloseSnackbar}
-          message={errorMessage}
-        />
+        >
+          <Alert severity="error">{errorMessage}</Alert>
+        </Snackbar>
       )}
 
       {success && (
@@ -469,8 +471,9 @@ const RegisterPage = () => {
           className="snackbarSuccess"
           autoHideDuration={5000}
           onClose={() => setSuccess(false)}
+          sx={{ width: "100%" }}
         >
-          <Alert severity="success" variant="filled" sx={{ width: "100%" }}>
+          <Alert severity="success" icon={<CheckIcon fontSize="inherit" />}>
             {successMessage}
           </Alert>
         </Snackbar>

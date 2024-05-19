@@ -11,6 +11,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useUserStore } from "../../App";
+import Alert from "@mui/material/Alert";
 
 type PropertyInfo = {
   id: number;
@@ -194,8 +195,9 @@ const LoginForm = ({ activeTab }: LoginFormProps) => {
           className="snackbarError"
           autoHideDuration={5000}
           onClose={handleCloseSnackbar}
-          message={errorMessage}
-        />
+        >
+          <Alert severity="error">{errorMessage}</Alert>
+        </Snackbar>
       )}
     </div>
   );

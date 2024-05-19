@@ -100,7 +100,7 @@ const ReceiveOffers = () => {
             sx={{
               display: "flex",
               justifyContent: "center",
-              bgcolor: "#468899",
+              bgcolor: "#3d6169",
               py: 8,
               px: 3,
             }}
@@ -154,11 +154,11 @@ const ReceiveOffers = () => {
                 variant="contained"
                 sx={{
                   width: "420px",
-                  backgroundColor: "#74c0d3",
+                  backgroundColor: "#588b97",
                   borderRadius: "48px",
                   color: "#fff",
                   "&:hover": {
-                    backgroundColor: "#74c0d3",
+                    backgroundColor: "#588b97",
                   },
                 }}
               >
@@ -193,7 +193,7 @@ const ReceiveOffers = () => {
               //   width: "100%",
               height: "500px",
               maxWidth: 600,
-              bgcolor: "#519fb3",
+              bgcolor: "#2a4349",
             }}
           >
             <div
@@ -422,12 +422,12 @@ const ReceiveOffers = () => {
                 // disabled={!typeOfAcc}
                 sx={{
                   width: "420px",
-                  backgroundColor: "#74c0d3",
+                  backgroundColor: "#588b97",
                   borderRadius: "48px",
                   // marginLeft: "10px",
                   color: "#fff",
                   "&:hover": {
-                    backgroundColor: "#74c0d3",
+                    backgroundColor: "#588b97",
                   },
                 }}
               >

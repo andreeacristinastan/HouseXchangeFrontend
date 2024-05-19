@@ -14,6 +14,18 @@ import GuestHome from "./guest/GuestHome.tsx";
 import HostHome from "./host/HostHome.tsx";
 import GuestAppBar from "./guest/GuestAppBar.tsx";
 import HostAppBar from "./host/HostAppBar.tsx";
+import Box from "@mui/material/Box";
+import LinearProgress from "@mui/material/LinearProgress";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { lime, purple } from "@mui/material/colors";
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#7fc7d9",
+    },
+  },
+});
 
 type PropertyInfo = {
   id: number;
@@ -64,6 +76,14 @@ function App() {
   const [err, setErr] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [openSnackbar, setOpenSnackbar] = React.useState(false);
+  const [showContent, setShowContent] = useState(false);
+
+  useEffect(() => {
+    // Simulate fetching data or any other async operation
+    setTimeout(() => {
+      setShowContent(true); // Display the actual content
+    }, 1000); // Wait for 2 seconds (adjust as needed)
+  }, []);
 
   const handleCloseSnackbar = (
     event: React.SyntheticEvent | Event,
@@ -104,58 +124,54 @@ function App() {
     })();
   }, [setUser]);
 
-  let AppBarComponent = AppBar;
+  const AppBarComponent =
+    user?.role === "GUEST"
+      ? GuestAppBar
+      : user?.role === "HOST"
+      ? HostAppBar
+      : AppBar;
 
-  if (user) {
-    switch (user.role) {
-      case "GUEST":
-        AppBarComponent = GuestAppBar;
-        break;
-      case "HOST":
-        AppBarComponent = HostAppBar;
-        break;
-      default:
-        AppBarComponent = AppBar;
-    }
-  }
+  const PageComponent =
+    user?.role === "GUEST"
+      ? GuestHome
+      : user?.role === "HOST"
+      ? HostHome
+      : HomePage;
 
   return (
     <div>
-      <AppBarComponent />
-      <Router>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              user ? (
-                user.role === "GUEST" ? (
-                  <GuestHome />
-                ) : (
-                  <HostHome />
-                )
-              ) : (
-                <HomePage />
-              )
-            }
-          />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/profile" element={<Profile />} />
-        </Routes>
-      </Router>
+      {showContent ? (
+        <>
+          <AppBarComponent />
+          <Router>
+            <Routes>
+              <Route path="/" element={<PageComponent />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route path="/profile" element={<Profile />} />
+            </Routes>
+          </Router>
 
-      {err && (
-        <Snackbar
-          anchorOrigin={{
-            vertical: "top",
-            horizontal: "center",
-          }}
-          open={openSnackbar}
-          className="snackbarError"
-          autoHideDuration={5000}
-          onClose={handleCloseSnackbar}
-          message={errorMessage}
-        />
+          {err && (
+            <Snackbar
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "center",
+              }}
+              open={openSnackbar}
+              className="snackbarError"
+              autoHideDuration={5000}
+              onClose={handleCloseSnackbar}
+              message={errorMessage}
+            />
+          )}
+        </>
+      ) : (
+        <ThemeProvider theme={theme}>
+          <Box sx={{ width: "100%" }}>
+            <LinearProgress color="primary" />
+          </Box>
+        </ThemeProvider>
       )}
     </div>
   );
