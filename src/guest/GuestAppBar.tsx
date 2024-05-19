@@ -18,6 +18,7 @@ import appIcon from "../utils/images/favicon.ico";
 import AdbIcon from "@mui/icons-material/Adb";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import "./GuestAppBar.css";
+import { Router, useNavigate } from "react-router-dom";
 
 const pages = ["Products", "Pricing", "Blog"];
 const settings = ["My Trips", "My Account", "Logout"];
@@ -28,6 +29,7 @@ const rightLink = {
   ml: 3,
 };
 const GuestAppBar = () => {
+  const navigate = useNavigate();
   const { removeUser } = useUserStore();
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
@@ -43,7 +45,7 @@ const GuestAppBar = () => {
     // Call the removeUser() function (if it exists)
     removeUser();
 
-    window.location.href = "/";
+    navigate("/");
   };
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {

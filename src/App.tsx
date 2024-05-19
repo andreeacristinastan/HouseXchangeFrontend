@@ -142,8 +142,8 @@ function App() {
     <div>
       {showContent ? (
         <>
-          <AppBarComponent />
           <Router>
+            <AppBarComponent />
             <Routes>
               <Route path="/" element={<PageComponent />} />
               <Route path="/login" element={<LoginPage />} />

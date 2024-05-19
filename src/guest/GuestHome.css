@@ -1,0 +1,38 @@
+.css-1eurbeq-MuiPickersToolbar-root-MuiDatePickerToolbar-root {
+  background-color: #588b97;
+  color: #fff;
+}
+
+.css-1eurbeq-MuiPickersToolbar-root-MuiDatePickerToolbar-root span {
+  /* background-color: #588b97; */
+  color: #fff;
+}
+
+.css-1aqny2q-MuiPickersCalendarHeader-root {
+  color: #588b97;
+}
+
+/* .css-1wy8uaa-MuiButtonBase-root-MuiPickersDay-root {
+  border-color: #588b97;
+} */
+
+.css-flbe84-MuiDayCalendar-weekContainer button {
+  color: #588b97;
+  /* background-color: #588b97; */
+}
+
+.MuiButtonBase-root.MuiPickersDay-root.MuiPickersDay-dayWithMargin[aria-selected="true"] {
+  /* Your custom styles for the button when clicked */
+  /* For example, change the background color */
+  background-color: #588b97;
+  color: white; /* Optional: Change text color */
+}
+
+.css-1e6y48t-MuiButtonBase-root-MuiButton-root {
+  color: #588b97 !important;
+}
+
+.css-innj4t-MuiPickersYear-yearButton[aria-checked="true"] {
+  background-color: #588b97 !important;
+  color: white; /* Optional: Change text color */
+}
