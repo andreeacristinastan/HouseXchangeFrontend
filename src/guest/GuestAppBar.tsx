@@ -1,7 +1,6 @@
 import React from "react";
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
-import Bar from "../home/components/Bar";
 import Toolbar from "../home/components/Toolbar";
 import { useUserStore } from "../App";
 import AppBar from "@mui/material/AppBar";
@@ -10,24 +9,20 @@ import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
-import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import appIcon from "../utils/images/favicon.ico";
 import AdbIcon from "@mui/icons-material/Adb";
 import AccountCircle from "@mui/icons-material/AccountCircle";
+import profilePicture from "../utils/images/Foto ritratto corporate_ Headshots Portrait_.jpg";
+
 import "./GuestAppBar.css";
-import { Router, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import CardMedia from "@mui/material/CardMedia";
 
 const pages = ["Products", "Pricing", "Blog"];
 const settings = ["My Trips", "My Account", "Logout"];
 
-const rightLink = {
-  fontSize: 16,
-  color: "common.white",
-  ml: 3,
-};
 const GuestAppBar = () => {
   const navigate = useNavigate();
   const { removeUser } = useUserStore();
@@ -39,13 +34,15 @@ const GuestAppBar = () => {
   );
 
   const handleLogout = () => {
-    // Remove user data from local storage
     localStorage.removeItem("user");
 
-    // Call the removeUser() function (if it exists)
     removeUser();
 
     navigate("/");
+  };
+
+  const handleAccount = () => {
+    navigate("/profile");
   };
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -108,12 +105,8 @@ const GuestAppBar = () => {
             </Box>
             <Link
               variant="h6"
-              // noWrap
-              // component="a"
               href="/"
-              // textAlign="center"
               sx={{
-                // mr: 90,
                 display: { xs: "none", md: "flex" },
                 fontFamily: "monospace",
                 marginLeft: "-150px",
@@ -122,8 +115,6 @@ const GuestAppBar = () => {
                 letterSpacing: ".3rem",
                 color: "inherit",
                 textDecoration: "none",
-
-                // textAlign: "center",
               }}
             >
               HousExchange
@@ -172,7 +163,6 @@ const GuestAppBar = () => {
                 ))}
               </Menu>
             </Box>
-            <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
             <Typography
               variant="h5"
               noWrap
@@ -204,7 +194,22 @@ const GuestAppBar = () => {
                   color="inherit"
                   sx={{ p: 0 }}
                 >
-                  <AccountCircle sx={{ scale: "1.8" }} />
+                  {/* <AccountCircle sx={{ scale: "1.8" }} /> */}
+                  <CardMedia
+                    component="img"
+                    height="200"
+                    image={profilePicture}
+                    alt="profile picture"
+                    sx={{
+                      mr: 2,
+                      scale: "2",
+                      objectFit: "cover",
+                      objectPosition: "top",
+                      width: "25px",
+                      height: "25px",
+                      borderRadius: "100%",
+                    }}
+                  />
                 </IconButton>
               </Tooltip>
               <Menu
@@ -226,9 +231,18 @@ const GuestAppBar = () => {
                 {settings.map((setting) => (
                   <MenuItem
                     key={setting}
-                    onClick={
-                      setting === "Logout" ? handleLogout : handleCloseUserMenu
-                    }
+                    onClick={() => {
+                      switch (setting) {
+                        case "Logout":
+                          handleLogout();
+                          break;
+                        case "My Account":
+                          handleAccount();
+                          break;
+                        default:
+                          handleCloseUserMenu();
+                      }
+                    }}
                     sx={{
                       fontFamily: "monospace",
                       color: "#588b97",

@@ -12,7 +12,7 @@ type userInfos = {
   iat: number;
 };
 
-const Profile = () => {
+const Profile = ({ user }) => {
   // const { fetchUser } = AuthService();
 
   // useEffect(() => {

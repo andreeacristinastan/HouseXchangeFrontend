@@ -97,9 +97,7 @@ const StyledButton = styled("button", { shouldForwardProp: () => true })(
   background: ${theme.palette.mode === "dark" ? grey[900] : "#fff"};
   border: 1px solid ${theme.palette.mode === "dark" ? grey[700] : grey[200]};
   color: #588b97;
-  box-shadow: 0px 2px 6px ${
-    theme.palette.mode === "dark" ? "rgba(0,0,0, 0.50)" : "rgba(0,0,0, 0.05)"
-  };
+  
 
   transition-property: all;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -108,9 +106,7 @@ const StyledButton = styled("button", { shouldForwardProp: () => true })(
   &.${selectClasses.focusVisible} {
     outline: 0;
     border-color: ${blue[400]};
-    box-shadow: 0 0 0 3px ${
-      theme.palette.mode === "dark" ? blue[600] : blue[200]
-    };
+    
   }
 
   & > svg {
@@ -138,9 +134,7 @@ const Listbox = styled("ul")(
   background: ${theme.palette.mode === "dark" ? grey[900] : "#fff"};
   border: 1px solid ${theme.palette.mode === "dark" ? grey[700] : grey[200]};
   color: #588b97;
-  box-shadow: 0px 2px 6px ${
-    theme.palette.mode === "dark" ? "rgba(0,0,0, 0.50)" : "rgba(0,0,0, 0.05)"
-  };
+  
   `
 );
 

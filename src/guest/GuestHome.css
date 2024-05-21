@@ -36,3 +36,7 @@
   background-color: #588b97 !important;
   color: white; /* Optional: Change text color */
 }
+
+::placeholder {
+  color: #b9ced3;
+}

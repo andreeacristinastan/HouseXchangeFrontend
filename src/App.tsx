@@ -12,7 +12,9 @@ import React from "react";
 import Snackbar from "@mui/material/Snackbar";
 import GuestHome from "./guest/GuestHome.tsx";
 import HostHome from "./host/HostHome.tsx";
+import HostProfile from "./host/HostProfile.tsx";
 import GuestAppBar from "./guest/GuestAppBar.tsx";
+import GuestProfile from "./guest/GuestProfile.tsx";
 import HostAppBar from "./host/HostAppBar.tsx";
 import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
@@ -63,7 +65,6 @@ interface UserStore {
   removeUser: () => void;
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const useUserStore = create<UserStore>((set) => ({
   user: null,
   setUser: (user: userInfo) => set({ user }),
@@ -71,7 +72,6 @@ export const useUserStore = create<UserStore>((set) => ({
 }));
 
 function App() {
-  // const { fetchUser } = AuthService();
   const { user, setUser } = useUserStore();
   const [err, setErr] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -79,10 +79,9 @@ function App() {
   const [showContent, setShowContent] = useState(false);
 
   useEffect(() => {
-    // Simulate fetching data or any other async operation
     setTimeout(() => {
-      setShowContent(true); // Display the actual content
-    }, 1000); // Wait for 2 seconds (adjust as needed)
+      setShowContent(true);
+    }, 1000);
   }, []);
 
   const handleCloseSnackbar = (
@@ -138,6 +137,15 @@ function App() {
       ? HostHome
       : HomePage;
 
+  const ProfileCompoent =
+    user?.role === "GUEST" ? (
+      <GuestProfile user={user} />
+    ) : user?.role === "HOST" ? (
+      <HostProfile user={user} />
+    ) : (
+      <Profile user={user} />
+    );
+
   return (
     <div>
       {showContent ? (
@@ -148,7 +156,7 @@ function App() {
               <Route path="/" element={<PageComponent />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
-              <Route path="/profile" element={<Profile />} />
+              <Route path="/profile" element={ProfileCompoent} />
             </Routes>
           </Router>
 

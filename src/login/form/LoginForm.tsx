@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useUserStore } from "../../App";
 import Alert from "@mui/material/Alert";
+import { log } from "console";
 
 type PropertyInfo = {
   id: number;
@@ -105,6 +106,7 @@ const LoginForm = ({ activeTab }: LoginFormProps) => {
 
             if (res.userDetails) {
               setUser(res.userDetails);
+              console.log(res.userDetails);
             }
             navigate("/");
           }

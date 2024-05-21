@@ -3,41 +3,23 @@ import Typography from "../utils/Typography";
 import ProductHeroLayout from "../home/components/GettingStartedLay";
 import backgroundImage from "../utils/images/img33.jpg";
 import Paper from "@mui/material/Paper";
-import InputBase from "@mui/material/InputBase";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { useUserStore } from "../App";
-import { useEffect, useState } from "react";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
-import { Box, TextField } from "@mui/material";
+import { Box } from "@mui/material";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
 import "./GuestHome.css";
-import GoogleMapsAutocomplete from "./utils/GoogleMapsAutocomplete";
 import Autocomplete from "react-google-autocomplete";
-import { Field } from "formik";
 import NumberOfPersons from "./utils/NumberOfPersons";
-
-const rightLink = {
-  fontSize: 16,
-  color: "common.white",
-  ml: 3,
-};
 
 const GuestHome = () => {
   const { user, setUser } = useUserStore();
-  const [isCalendarExpanded, setCalendarExpanded] = useState(false);
 
-  const handleCalendarToggle = () => {
-    setCalendarExpanded(!isCalendarExpanded);
-  };
   const API_KEY = import.meta.env.VITE_MAPS_API_KEY;
-
-  // useEffect(() => {
-  //   console.log(API_KEY);
-  // }, []);
 
   return (
     <ProductHeroLayout
@@ -80,7 +62,7 @@ const GuestHome = () => {
           justifyContent: "center",
           alignItems: "center",
           background:
-            "linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.3))",
+            "linear-gradient(rgba(185, 206, 211, 0.3), rgba(185, 206, 211, 0.3))",
         }}
       >
         <div
@@ -107,13 +89,41 @@ const GuestHome = () => {
             <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
               <SearchIcon />
             </IconButton>
-            <InputBase
+            {/* <InputBase
               sx={{
                 ml: 1,
                 flex: 1,
                 color: "#588b97",
               }}
               placeholder="Where do you wanna go?"
+              inputProps={{ "aria-label": "where do you wanna go" }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                }
+              }}
+            /> */}
+
+            <Autocomplete
+              apiKey={API_KEY}
+              className="location-search"
+              style={{
+                ml: 1,
+                flex: 1,
+                color: "#588b97",
+                height: "70px",
+                border: "none",
+                fontSize: "20px",
+                outline: "none",
+                fontFamily: '"Oswald", sans-serif',
+              }}
+              placeholder="Where do you wanna go?"
+              onPlaceSelected={(place) => {
+                console.log(place);
+              }}
+              options={{
+                types: ["(regions)"],
+              }}
               inputProps={{ "aria-label": "where do you wanna go" }}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
@@ -255,10 +265,6 @@ const GuestHome = () => {
           />
         </div>
       </Box>
-      <Autocomplete
-        apiKey={API_KEY}
-        onPlaceSelected={(place) => console.log(place)}
-      />
     </ProductHeroLayout>
   );
 };

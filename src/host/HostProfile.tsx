@@ -1,6 +1,6 @@
 import React from "react";
 
-const HostProfile = () => {
+const HostProfile = ({ user }) => {
   return <div>HostProfile</div>;
 };
 
