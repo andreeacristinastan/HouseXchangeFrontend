@@ -22,7 +22,16 @@ type registerCredentials = {
   firstName: string;
   lastName: string;
   language: string;
-  phoneNumber: string;
+  phoneNumber: number;
+  prefixNumber: string;
+};
+
+type updateUserValues = {
+  email: string;
+  username: string;
+  firstName: string;
+  lastName: string;
+  language: string;
 };
 
 type loginResp = {
@@ -132,7 +141,8 @@ const AuthService = () => {
   };
 
   const register = async (regCredentials: registerCredentials) => {
-    console.log(JSON.stringify(regCredentials));
+    console.log("mycredentials= " + JSON.stringify(regCredentials));
+    // registerCredentials.phoneNumber = regCredentials.prefix;
     // let token = "";
     // let userRole = "";
     // let userEmail = "";
@@ -164,6 +174,35 @@ const AuthService = () => {
       });
 
     return { error: errorMessage };
+  };
+
+  const updateUser = async (updateUserVal: updateUserValues) => {
+    await fetch(`${API_URL}/register`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updateUserVal),
+    })
+      .then(async (res) => {
+        console.log(res);
+
+        if (!res.ok) {
+          const apiError = await res.json();
+          console.log(apiError);
+          throw new Error(JSON.stringify(apiError));
+        }
+        return res.json();
+      })
+      .catch((err) => {
+        console.log("err:");
+
+        console.log(JSON.parse(err.message).message);
+        // errorMessage = JSON.parse(err.message).message;
+        // errorMessage = JSON.parse(err.message);
+      });
+
+    // return { error: errorMessage };s
   };
 
   const getCurrentUser = () => {

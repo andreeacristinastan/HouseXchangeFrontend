@@ -40,3 +40,7 @@
 ::placeholder {
   color: #b9ced3;
 }
+
+.login-btn:focus {
+  outline: none;
+}

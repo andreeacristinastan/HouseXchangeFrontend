@@ -23,6 +23,7 @@ import { useState } from "react";
 import Snackbar from "@mui/material/Snackbar";
 import { Alert } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
+import { promiseHooks } from "v8";
 
 const RegisterPage = () => {
   // const onSubmit = (data: unknown) => console.log(data);
@@ -72,13 +73,10 @@ const RegisterPage = () => {
           firstName: "",
           lastName: "",
           language: "",
-          prefix: "",
-          phoneNumber: "",
+          prefixNumber: "",
+          phoneNumber: 0,
         }}
         onSubmit={async (values) => {
-          values.phoneNumber = values.phoneNumber.toString();
-          // console.log("my valueeees", values);
-
           const response = await AuthService().register(values);
           // console.log(response);
           values.email = "";
@@ -87,8 +85,8 @@ const RegisterPage = () => {
           values.language = "";
           values.lastName = "";
           values.password = "";
-          values.phoneNumber = "";
-          values.prefix = "";
+          values.prefixNumber = "";
+          values.phoneNumber = 0;
           values.role = "";
           values.username = "";
           if (response.error.length !== 0) {
@@ -113,6 +111,7 @@ const RegisterPage = () => {
                 justifyContent: "center",
                 alignItems: "center",
                 marginTop: "-40px",
+                color: "#588b97",
               }}
             >
               Choose your type of account
@@ -152,8 +151,10 @@ const RegisterPage = () => {
                   m: 1,
                   width: "100%",
                   height: "30px",
+                  color: "#588b97",
                   "& .MuiOutlinedInput-root": {
                     borderRadius: "24px",
+                    color: "#588b97",
                     "&:hover": {
                       "& .MuiOutlinedInput-notchedOutline": {
                         border: "1px solid #ccc",
@@ -183,8 +184,10 @@ const RegisterPage = () => {
                   width: "100%",
                   height: "30px",
                   marginTop: "30px",
+                  color: "#588b97",
                   "& .MuiOutlinedInput-root": {
                     borderRadius: "24px",
+                    color: "#588b97",
                     "&:hover": {
                       "& .MuiOutlinedInput-notchedOutline": {
                         border: "1px solid #ccc",
@@ -216,6 +219,7 @@ const RegisterPage = () => {
                   marginTop: "30px",
                   "& .MuiOutlinedInput-root": {
                     borderRadius: "24px",
+                    color: "#588b97",
                     "&:hover": {
                       "& .MuiOutlinedInput-notchedOutline": {
                         border: "1px solid #ccc",
@@ -247,6 +251,7 @@ const RegisterPage = () => {
                   marginTop: "30px",
                   "& .MuiOutlinedInput-root": {
                     borderRadius: "24px",
+                    color: "#588b97",
                     "&:hover": {
                       "& .MuiOutlinedInput-notchedOutline": {
                         border: "1px solid #ccc",
@@ -270,7 +275,7 @@ const RegisterPage = () => {
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
               <Field
                 as={TextField}
-                name="prefix"
+                name="prefixNumber"
                 sx={{
                   m: 1,
                   width: "70%",
@@ -278,6 +283,7 @@ const RegisterPage = () => {
                   marginTop: "30px",
                   "& .MuiOutlinedInput-root": {
                     borderRadius: "24px",
+                    color: "#588b97",
                     "&:hover": {
                       "& .MuiOutlinedInput-notchedOutline": {
                         border: "1px solid #ccc",
@@ -316,6 +322,7 @@ const RegisterPage = () => {
                   marginTop: "30px",
                   "& .MuiOutlinedInput-root": {
                     borderRadius: "24px",
+                    color: "#588b97",
                     "&:hover": {
                       "& .MuiOutlinedInput-notchedOutline": {
                         border: "1px solid #ccc",
@@ -351,6 +358,8 @@ const RegisterPage = () => {
                 width: "100%",
                 height: "30px",
                 marginTop: "30px",
+                color: "#588b97",
+
                 "& .MuiOutlinedInput-root": {
                   borderRadius: "24px",
                   "&:hover": {
@@ -405,6 +414,7 @@ const RegisterPage = () => {
                   marginTop: "30px",
                   "& .MuiOutlinedInput-root": {
                     borderRadius: "24px",
+                    color: "#588b97",
                     "&:hover": {
                       "& .MuiOutlinedInput-notchedOutline": {
                         border: "1px solid #ccc",

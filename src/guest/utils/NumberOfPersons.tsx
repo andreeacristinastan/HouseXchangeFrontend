@@ -88,7 +88,7 @@ const StyledButton = styled("button", { shouldForwardProp: () => true })(
   font-family: 'Oswald', sans-serif;
   font-size: 0.875rem;
   box-sizing: border-box;
-  min-width: 150px;
+  min-width: 70px;
   padding: 6px 6px;
   border-radius: 8px;
   text-align: left;

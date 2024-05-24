@@ -1,16 +1,11 @@
 import React, { useEffect, useState } from "react";
 import backgroundImage from "../utils/images/layered.png";
-import ProductHeroLayout from "../home/components/GettingStartedLay";
-import { Theme, styled } from "@mui/material/styles";
-import InsertEmoticonOutlinedIcon from "@mui/icons-material/InsertEmoticonOutlined";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
+import { styled } from "@mui/material/styles";
 import CardMedia from "@mui/material/CardMedia";
-import Typography from "@mui/material/Typography";
-import { CardActionArea, TextField } from "@mui/material";
 import profilePicture from "../utils/images/Foto ritratto corporate_ Headshots Portrait_.jpg";
 import "./GuestProfile.css";
-import { log } from "console";
+import Language from "./utils/Language";
+import MenuItem from "@mui/material/MenuItem";
 
 const BackgroundStyle = styled("section")(({ theme }) => ({
   color: theme.palette.common.white,
@@ -53,11 +48,51 @@ type userInfo = {
 
 interface MyComponentProps {
   user: userInfo | null;
+  setUser: (user: userInfo) => void;
+  selectedLanguage: string | "";
 }
 
-const GuestProfile: React.FC<MyComponentProps> = ({ user }) => {
+const GuestProfile: React.FC<MyComponentProps> = ({
+  user,
+  setUser,
+  selectedLanguage,
+}) => {
   const [showDetails, setShowDetails] = useState(false);
+  const [profileButton, setProfileButton] = useState("Show Details");
   const numOfTrips = user?.tripInfoDto?.length || 0;
+  const [editMode, setEditMode] = useState(false);
+  const [newUserInfos, setNewUserInfos] = useState({
+    email: "",
+    firstName: "",
+    lastName: "",
+  });
+
+  const handleToggleClick = () => {
+    setEditMode(!editMode);
+  };
+
+  const handleInfosChange = (event: {
+    target: { value: string; name?: any };
+  }) => {
+    const { name, value } = event.target;
+    setNewUserInfos({ ...newUserInfos, [name]: value });
+  };
+
+  const handleButtonClick = () => {
+    if (profileButton === "Show Details") {
+      setShowDetails(true);
+      setProfileButton("Edit Details");
+    } else if (profileButton === "Edit Details") {
+      setEditMode(true);
+      setShowDetails(false);
+      setProfileButton("Save Changes");
+    } else if (profileButton === "Save Changes") {
+      setProfileButton("Edit Details");
+      setEditMode(false);
+      setShowDetails(true);
+    }
+  };
+
   useEffect(() => {
     console.log({ user });
   }, [user]);
@@ -84,6 +119,7 @@ const GuestProfile: React.FC<MyComponentProps> = ({ user }) => {
         <div
           style={{
             width: "80%",
+            minWidth: "280px",
             transition: "transform 3s ease",
             display: "flex",
             flexDirection: "column",
@@ -121,12 +157,22 @@ const GuestProfile: React.FC<MyComponentProps> = ({ user }) => {
               width: "200px",
             }}
           />
-          <button onClick={() => setShowDetails(true)} className="show-details">
-            Show Details
+          <button onClick={handleButtonClick} className="show-details">
+            {profileButton}
           </button>
         </div>
         {showDetails && (
-          <div>
+          <div className="profile-details-component">
+            <div
+              className="profile-details"
+              style={{
+                marginTop: "-30px",
+                fontFamily: "Spicy Rice, cursive",
+                fontSize: "60px",
+              }}
+            >
+              Details
+            </div>
             <div className="email-component">
               <div className="title-display">Email:</div>
               <div className="info-display"> {user?.email} </div>
@@ -146,6 +192,60 @@ const GuestProfile: React.FC<MyComponentProps> = ({ user }) => {
               <div className="title-display">Your total trips:</div>
               <div className="info-display">{numOfTrips}</div>
             </div>
+          </div>
+        )}
+
+        {editMode && (
+          <div className="profile-edit-component">
+            <div
+              className="profile-edit-details"
+              style={{
+                marginTop: "-30px",
+                fontFamily: "Spicy Rice, cursive",
+                fontSize: "60px",
+              }}
+            >
+              Edit Details
+            </div>
+            <div className="email-component">
+              <div className="title-display">Email:</div>
+              <input
+                className="info-display"
+                name="email"
+                value={newUserInfos.email}
+                onChange={handleInfosChange}
+              />
+            </div>
+
+            <div className="first-name-component">
+              <div className="title-display">First Name:</div>
+              <input
+                className="info-display"
+                name="firstName"
+                value={newUserInfos.firstName}
+                onChange={handleInfosChange}
+              />
+            </div>
+
+            <div className="last-name-component">
+              <div className="title-display">Last name:</div>
+              <input
+                className="info-display"
+                name="lastName"
+                value={newUserInfos.lastName}
+                onChange={handleInfosChange}
+              />
+            </div>
+
+            <div className="language-component">
+              <div className="title-display">Language:</div>
+              <div className="info-display">
+                <Language />
+                {/* {console.log(response)} */}
+              </div>
+            </div>
+
+            {/* <button>Save</button> */}
           </div>
         )}
       </div>

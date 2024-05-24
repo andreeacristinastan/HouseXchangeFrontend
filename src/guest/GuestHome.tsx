@@ -1,5 +1,4 @@
 import Typography from "../utils/Typography";
-
 import ProductHeroLayout from "../home/components/GettingStartedLay";
 import backgroundImage from "../utils/images/img33.jpg";
 import Paper from "@mui/material/Paper";
@@ -12,9 +11,9 @@ import { useUserStore } from "../App";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import { Box } from "@mui/material";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
-import "./GuestHome.css";
 import Autocomplete from "react-google-autocomplete";
 import NumberOfPersons from "./utils/NumberOfPersons";
+import "./GuestHome.css";
 
 const GuestHome = () => {
   const { user, setUser } = useUserStore();
@@ -83,26 +82,9 @@ const GuestHome = () => {
               height: 70,
             }}
           >
-            {/* <IconButton sx={{ p: "10px" }} aria-label="menu">
-          <MenuIcon />
-        </IconButton> */}
             <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
               <SearchIcon />
             </IconButton>
-            {/* <InputBase
-              sx={{
-                ml: 1,
-                flex: 1,
-                color: "#588b97",
-              }}
-              placeholder="Where do you wanna go?"
-              inputProps={{ "aria-label": "where do you wanna go" }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                }
-              }}
-            /> */}
 
             <Autocomplete
               apiKey={API_KEY}
@@ -135,8 +117,6 @@ const GuestHome = () => {
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Paper
               sx={{
-                // p: "2px 4px",
-
                 display: "flex",
                 alignItems: "center",
               }}
@@ -146,13 +126,11 @@ const GuestHome = () => {
               </IconButton>
 
               <MobileDatePicker
-                // label="Check In"
                 sx={{
                   "& .MuiInputLabel-root": {
-                    color: "#588b97", // Set label color to white
+                    color: "#588b97",
                   },
                   "& .MuiInputBase-root": {
-                    // border: "none",
                     padding: 0,
                     backgroundColor: "white",
                     height: 74,
@@ -191,8 +169,6 @@ const GuestHome = () => {
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Paper
               sx={{
-                // p: "2px 4px",
-
                 display: "flex",
                 alignItems: "center",
               }}
@@ -202,13 +178,11 @@ const GuestHome = () => {
               </IconButton>
 
               <MobileDatePicker
-                // label="Check In"
                 sx={{
                   "& .MuiInputLabel-root": {
-                    color: "#588b97", // Set label color to white
+                    color: "#588b97",
                   },
                   "& .MuiInputBase-root": {
-                    // border: "none",
                     padding: 0,
                     backgroundColor: "white",
                     height: 74,
@@ -246,8 +220,6 @@ const GuestHome = () => {
           </LocalizationProvider>
           <Paper
             sx={{
-              // p: "2px 4px",
-
               display: "flex",
               alignItems: "center",
             }}

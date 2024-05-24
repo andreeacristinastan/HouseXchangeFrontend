@@ -56,7 +56,7 @@ type userInfo = {
   language: string;
   phoneNumber: string;
   properties: PropertyInfo[];
-  trips: TripInfo[];
+  tripInfoDto: TripInfo[];
 };
 
 interface UserStore {
@@ -139,7 +139,7 @@ function App() {
 
   const ProfileCompoent =
     user?.role === "GUEST" ? (
-      <GuestProfile user={user} />
+      <GuestProfile user={user} setUser={setUser} selectedLanguage="" />
     ) : user?.role === "HOST" ? (
       <HostProfile user={user} />
     ) : (

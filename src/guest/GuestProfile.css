@@ -15,9 +15,68 @@
   box-shadow: 0 0 50px;
 }
 
+.edit-details {
+  margin-top: 20px;
+  width: 200px;
+  height: 40px;
+  /* padding: 10px; */
+  border-radius: 5px;
+  border: none;
+  background-color: #fff;
+  color: #588b97;
+  cursor: pointer;
+  font-size: 20px;
+  font-family: "Spicy Rice", cursive;
+  box-shadow: 0 0 50px;
+  /* animation: slideDown 3s ease-out forwards; */
+}
+
+.edit-details:hover {
+  background-color: #f7f7f7;
+  color: #588b97;
+}
+
+.edit-details:focus {
+  outline: none;
+}
+
+.profile-details-component {
+  width: 60%;
+  animation: slideDown 3s ease-out forwards;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: transparent;
+  backdrop-filter: blur(60px);
+  height: 500px;
+  border: 1px solid white;
+  border-radius: 8px;
+  margin-left: 300px;
+}
+
+.profile-edit-component {
+  width: 60%;
+  animation: slideDown 3s ease-out forwards;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: transparent;
+  backdrop-filter: blur(60px);
+  height: 500px;
+  border: 1px solid white;
+  border-radius: 8px;
+  margin-left: 300px;
+}
+
 .show-details:hover {
   background-color: #f7f7f7;
   color: #588b97;
+}
+
+.show-details:focus {
+  outline: none;
 }
 
 .email-component {
@@ -25,14 +84,16 @@
   flex-direction: column;
   align-items: flex-start;
   animation: slideDown 2s ease-out forwards;
-  margin-left: 300px;
+}
+
+.info-display:focus {
+  outline: none;
 }
 .total-trips-component {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   animation: slideDown 2s ease-out forwards;
-  margin-left: 300px;
   margin-top: 20px;
 }
 .first-name-component {
@@ -40,7 +101,7 @@
   flex-direction: column;
   align-items: flex-start;
   animation: slideDown 2s ease-out forwards;
-  margin-left: 300px;
+
   margin-top: 20px;
 }
 .last-name-component {
@@ -48,7 +109,7 @@
   flex-direction: column;
   align-items: flex-start;
   animation: slideDown 2s ease-out forwards;
-  margin-left: 300px;
+  /* margin-left: 300px; */
   margin-top: 20px;
 }
 
@@ -59,12 +120,26 @@
 }
 
 .info-display {
+  outline: none;
+  border-color: white;
+  text-align: center;
   min-width: 290px;
+  min-height: 40px;
   border-radius: 8px;
   font-family: "Spicy Rice", cursive;
-  font-size: 30px;
+  font-size: 20px;
   color: #588b97;
   background-color: #ffffff;
+  box-shadow: 0 0 10px;
+}
+
+.language-component {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  animation: slideDown 2s ease-out forwards;
+  /* margin-left: 300px; */
+  margin-top: 20px;
 }
 
 @keyframes slideDown {

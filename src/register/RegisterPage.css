@@ -25,6 +25,9 @@ input[type="submit"]:disabled {
   background-color: #588b97;
   cursor: not-allowed;
 }
+input[type="submit"]:focus {
+  outline: none;
+}
 
 .register-label {
   font-family: "Spicy Rice", cursive;
@@ -35,6 +38,7 @@ input[type="submit"]:disabled {
 
 .register-fields {
   font-family: "Radio Canada Big", sans-serif;
+  color: #588b97;
   /* margin-bottom: 30px; */
   /* transform: translateY(-7%); */
 }

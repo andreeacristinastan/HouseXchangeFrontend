@@ -12,15 +12,13 @@ import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import AdbIcon from "@mui/icons-material/Adb";
-import AccountCircle from "@mui/icons-material/AccountCircle";
 import profilePicture from "../utils/images/Foto ritratto corporate_ Headshots Portrait_.jpg";
 
 import "./GuestAppBar.css";
 import { useNavigate } from "react-router-dom";
 import CardMedia from "@mui/material/CardMedia";
 
-const pages = ["Products", "Pricing", "Blog"];
+const pages = ["Properties", "Help"];
 const settings = ["My Trips", "My Account", "Logout"];
 
 const GuestAppBar = () => {
@@ -43,6 +41,10 @@ const GuestAppBar = () => {
 
   const handleAccount = () => {
     navigate("/profile");
+  };
+
+  const handleProperties = () => {
+    navigate("/properties");
   };
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -72,14 +74,11 @@ const GuestAppBar = () => {
         sx={{
           backgroundColor: "#588b97",
           boxShadow: "0px 2px 5px 2px rgba(255, 255, 255, .3)",
-          // fontFamily: '"Spicy Rice", cursive',
           color: "",
         }}
       >
         <Container maxWidth={false}>
           <Toolbar disableGutters sx={{ justifyContent: "space-between" }}>
-            {/* <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} /> */}
-            {/* <Box sx={{ flex: 1 }} /> */}
             <Box
               sx={{
                 display: { xs: "none", md: "flex" },
@@ -89,13 +88,19 @@ const GuestAppBar = () => {
               {pages.map((page) => (
                 <Button
                   key={page}
-                  onClick={handleCloseNavMenu}
+                  onClick={() => {
+                    switch (page) {
+                      case "Properties":
+                        handleProperties();
+                        break;
+                      default:
+                        handleCloseNavMenu();
+                    }
+                  }}
                   sx={{
-                    // my: 2,
                     color: "white",
                     display: "block",
                     fontFamily: "monospace",
-                    fontWeight: "bold",
                     fontSize: 16,
                   }}
                 >
@@ -119,7 +124,7 @@ const GuestAppBar = () => {
             >
               HousExchange
             </Link>
-            {/* for xs mode */}
+
             <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
               <IconButton
                 size="large"
@@ -182,7 +187,6 @@ const GuestAppBar = () => {
               HousExchange
             </Typography>
 
-            {/* user Bar */}
             <Box>
               <Tooltip title="Open settings">
                 <IconButton
@@ -194,7 +198,6 @@ const GuestAppBar = () => {
                   color="inherit"
                   sx={{ p: 0 }}
                 >
-                  {/* <AccountCircle sx={{ scale: "1.8" }} /> */}
                   <CardMedia
                     component="img"
                     height="200"
@@ -256,53 +259,6 @@ const GuestAppBar = () => {
           </Toolbar>
         </Container>
       </AppBar>
-
-      {/* <Bar position="fixed">
-        <Toolbar sx={{ justifyContent: "space-between" }}>
-          <Box sx={{ flex: 1 }} />
-          <Link
-            variant="h6"
-            underline="none"
-            color="inherit"
-            href="/"
-            sx={{ fontSize: 40, fontFamily: '"Oswald", sans-serif' }}
-          >
-            {"HousExchange"}
-          </Link>
-          <Box sx={{ flex: 1, display: "flex", justifyContent: "flex-end" }}>
-            <Link
-              color="inherit"
-              variant="h6"
-              underline="none"
-              href="/"
-              sx={{
-                rightLink,
-                fontSize: 25,
-                fontFamily: '"Oswald", sans-serif',
-              }}
-              onClick={() => {
-                localStorage.removeItem("user");
-                removeUser();
-              }}
-            >
-              {"Log Out"}
-            </Link>
-            <Link
-              variant="h6"
-              underline="none"
-              href="/register"
-              sx={{
-                ...rightLink,
-                fontSize: 25,
-                fontFamily: '"Oswald", sans-serif',
-              }}
-            >
-              {"Create an account"}
-            </Link>
-          </Box>
-        </Toolbar>
-      </Bar>
-      <Toolbar /> */}
     </div>
   );
 };
