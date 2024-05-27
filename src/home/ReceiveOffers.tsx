@@ -95,12 +95,15 @@ const ReceiveOffers = () => {
         rel="stylesheet"
       ></link>
       <Grid container>
-        <Grid item xs={12} md={6} sx={{ zIndex: 1 }}>
+        <Grid item xs={12} md={6} mb={10} sx={{ zIndex: 1 }}>
           <Box
             sx={{
               display: "flex",
               justifyContent: "center",
-              bgcolor: "#3d6169",
+              bgcolor: "#779fa9",
+              boxShadow: "20px 12px 15px 2px rgba(0, 0, 0, 0.4)",
+
+              // boxShadow: "#fff",
               py: 8,
               px: 3,
             }}
@@ -123,7 +126,7 @@ const ReceiveOffers = () => {
               </Typography>
               <Typography
                 variant="h5"
-                sx={{ fontFamily: '"Oswald", sans-serif' }}
+                sx={{ fontFamily: '"Oswald", sans-serif', marginTop: "-40px" }}
               >
                 Taste the holidays of the everyday.
               </Typography>
@@ -193,7 +196,8 @@ const ReceiveOffers = () => {
               //   width: "100%",
               height: "500px",
               maxWidth: 600,
-              bgcolor: "#2a4349",
+              bgcolor: "#8ab8c4",
+              boxShadow: "30px 12px 15px 2px rgba(0, 0, 0, 0.4)",
             }}
           >
             <div

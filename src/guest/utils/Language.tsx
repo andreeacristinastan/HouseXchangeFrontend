@@ -12,15 +12,21 @@ import UnfoldMoreRoundedIcon from "@mui/icons-material/UnfoldMoreRounded";
 import { CssTransition } from "@mui/base/Transitions";
 import { PopupContext } from "@mui/base/Unstable_Popup";
 import { languages } from "../../utils/constants/Languages";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export default function Language() {
+export default function Language(props) {
+  const { handleChangeLanguage } = props;
   const [language, setLanguage] = useState("");
 
   const handleSelectChange = (event) => {
-    console.log(event.target.textContent);
+    // parentFunc(language);
+    // console.log(event.target.textContent);
     setLanguage(event.target.textContent);
   };
+
+  useEffect(() => {
+    handleChangeLanguage(language);
+  }, [language]);
 
   return (
     <Select onChange={handleSelectChange}>

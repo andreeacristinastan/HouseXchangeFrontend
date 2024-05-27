@@ -5,7 +5,10 @@ import CardMedia from "@mui/material/CardMedia";
 import profilePicture from "../utils/images/Foto ritratto corporate_ Headshots Portrait_.jpg";
 import "./GuestProfile.css";
 import Language from "./utils/Language";
-import MenuItem from "@mui/material/MenuItem";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
+import AuthService from "../services/AuthService";
+import { useUserStore } from "../utils/useUserStore";
 
 const BackgroundStyle = styled("section")(({ theme }) => ({
   color: theme.palette.common.white,
@@ -33,42 +36,82 @@ type TripInfo = {
   propertyId: number;
 };
 
-type userInfo = {
-  id: number;
-  role: string;
+type editUser = {
   email: string;
-  username: string;
   firstName: string;
   lastName: string;
   language: string;
-  phoneNumber: string;
-  properties: PropertyInfo[];
-  tripInfoDto: TripInfo[];
 };
 
-interface MyComponentProps {
-  user: userInfo | null;
-  setUser: (user: userInfo) => void;
-  selectedLanguage: string | "";
-}
+// interface MyComponentProps {
+//   user: userInfo | null;
+//   setUser: (user: userInfo) => void;
+// }
 
-const GuestProfile: React.FC<MyComponentProps> = ({
-  user,
-  setUser,
-  selectedLanguage,
-}) => {
+const GuestProfile = () => {
+  const { user, setUser } = useUserStore();
   const [showDetails, setShowDetails] = useState(false);
   const [profileButton, setProfileButton] = useState("Show Details");
   const numOfTrips = user?.tripInfoDto?.length || 0;
   const [editMode, setEditMode] = useState(false);
+  const [err, setErr] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = React.useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [newLanguage, setNewLanguage] = React.useState("");
+
+  const handleChangeLanguage = (selectedLanguage: string) => {
+    // console.log(selectedLanguage);
+    setNewLanguage(selectedLanguage);
+  };
+
+  const handleCloseSnackbar = (
+    event: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpenSnackbar(false);
+  };
+
   const [newUserInfos, setNewUserInfos] = useState({
     email: "",
     firstName: "",
     lastName: "",
+    language: "",
   });
 
-  const handleToggleClick = () => {
-    setEditMode(!editMode);
+  const editUserDetails = async (values: editUser) => {
+    // console.log(JSON.stringify(values));
+    // AuthService().updateUser(values);
+    // setEditMode(!editMode);
+    try {
+      const response = await AuthService().updateUser(values);
+
+      if (response.userDetails) {
+        // useUserStore.setState(response.userDetails);
+        // console.log(currUser);
+
+        setUser(response.userDetails);
+      } else if (response.error) {
+        console.log("error:", response.error.length);
+
+        setErr(true);
+        setErrorMessage(response.error);
+        setOpenSnackbar(true);
+      }
+
+      // console.log("my responseeee:");
+      // console.log(response);
+    } catch (error) {
+      if (error instanceof Error) {
+        // console.log("Error message:", JSON.parse(error.message).message);
+        setErr(true);
+        setErrorMessage(JSON.parse(error.message).message);
+        setOpenSnackbar(true);
+      }
+    }
   };
 
   const handleInfosChange = (event: {
@@ -87,15 +130,35 @@ const GuestProfile: React.FC<MyComponentProps> = ({
       setShowDetails(false);
       setProfileButton("Save Changes");
     } else if (profileButton === "Save Changes") {
-      setProfileButton("Edit Details");
-      setEditMode(false);
-      setShowDetails(true);
+      const updatedUser: editUser = {
+        email: newUserInfos.email,
+        firstName: newUserInfos.firstName,
+        lastName: newUserInfos.lastName,
+        language: newLanguage,
+      };
+      if (
+        updatedUser.email.length === 0 &&
+        updatedUser.firstName.length === 0 &&
+        updatedUser.lastName.length === 0 &&
+        updatedUser.language.length === 0
+      ) {
+        setErr(true);
+        setErrorMessage("You should fill at least one field");
+        setOpenSnackbar(true);
+      } else {
+        setProfileButton("Edit Details");
+        setEditMode(false);
+        setShowDetails(true);
+
+        editUserDetails(updatedUser);
+      }
     }
   };
 
   useEffect(() => {
     console.log({ user });
   }, [user]);
+
   return (
     <BackgroundStyle
       style={{
@@ -240,7 +303,7 @@ const GuestProfile: React.FC<MyComponentProps> = ({
             <div className="language-component">
               <div className="title-display">Language:</div>
               <div className="info-display">
-                <Language />
+                <Language handleChangeLanguage={handleChangeLanguage} />
                 {/* {console.log(response)} */}
               </div>
             </div>
@@ -249,6 +312,21 @@ const GuestProfile: React.FC<MyComponentProps> = ({
           </div>
         )}
       </div>
+
+      {err && (
+        <Snackbar
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "center",
+          }}
+          open={openSnackbar}
+          className="snackbarError"
+          autoHideDuration={5000}
+          onClose={handleCloseSnackbar}
+        >
+          <Alert severity="error">{errorMessage}</Alert>
+        </Snackbar>
+      )}
     </BackgroundStyle>
   );
 };

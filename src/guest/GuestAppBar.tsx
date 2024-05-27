@@ -2,7 +2,7 @@ import React from "react";
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
 import Toolbar from "../home/components/Toolbar";
-import { useUserStore } from "../App";
+
 import AppBar from "@mui/material/AppBar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
@@ -17,13 +17,14 @@ import profilePicture from "../utils/images/Foto ritratto corporate_ Headshots P
 import "./GuestAppBar.css";
 import { useNavigate } from "react-router-dom";
 import CardMedia from "@mui/material/CardMedia";
+import { useUserStore } from "../utils/useUserStore";
 
 const pages = ["Properties", "Help"];
 const settings = ["My Trips", "My Account", "Logout"];
 
 const GuestAppBar = () => {
   const navigate = useNavigate();
-  const { removeUser } = useUserStore();
+  const { user, removeUser } = useUserStore();
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
@@ -31,10 +32,11 @@ const GuestAppBar = () => {
     null
   );
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     localStorage.removeItem("user");
 
     removeUser();
+    console.log(user?.id);
 
     navigate("/");
   };

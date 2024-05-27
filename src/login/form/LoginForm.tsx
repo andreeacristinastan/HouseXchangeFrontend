@@ -10,9 +10,8 @@ import Snackbar from "@mui/material/Snackbar";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { useUserStore } from "../../App";
+import { useUserStore } from "../../utils/useUserStore";
 import Alert from "@mui/material/Alert";
-import { log } from "console";
 
 type PropertyInfo = {
   id: number;
@@ -54,6 +53,8 @@ const LoginForm = ({ activeTab }: LoginFormProps) => {
   const [err, setErr] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [openSnackbar, setOpenSnackbar] = React.useState(false);
+  const navigate = useNavigate();
+  const { setUser } = useUserStore();
   // const [setUser] = useUserStore();
 
   // const [email, setEmail] = useState("");
@@ -69,8 +70,6 @@ const LoginForm = ({ activeTab }: LoginFormProps) => {
     setOpenSnackbar(false);
   };
 
-  const navigate = useNavigate();
-  const { setUser } = useUserStore();
   return (
     <div>
       <Formik

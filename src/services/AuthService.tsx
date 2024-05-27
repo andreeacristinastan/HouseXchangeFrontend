@@ -1,17 +1,13 @@
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { useState } from "react";
-import setUser from "../App";
+import { useUserStore } from "../utils/useUserStore";
+// import setUser from "../App";
 const API_URL = "http://localhost:8080/api";
-import { useUserStore } from "../App";
 
 type loginCredentials = {
   username: string;
   password: string;
-};
-
-type userId = {
-  id: number;
 };
 
 type registerCredentials = {
@@ -28,7 +24,7 @@ type registerCredentials = {
 
 type updateUserValues = {
   email: string;
-  username: string;
+  // username: string;
   firstName: string;
   lastName: string;
   language: string;
@@ -104,7 +100,7 @@ const AuthService = () => {
 
     if (token) {
       const decodedToken: userInfos = jwtDecode(token);
-      console.log(decodedToken);
+      // console.log(decodedToken);
       const currentTime = Date.now() / 1000;
       // console.log(userId);
       if (decodedToken.exp > currentTime) {
@@ -177,32 +173,50 @@ const AuthService = () => {
   };
 
   const updateUser = async (updateUserVal: updateUserValues) => {
-    await fetch(`${API_URL}/register`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(updateUserVal),
-    })
-      .then(async (res) => {
-        console.log(res);
+    const token = localStorage.getItem("user");
+    let errorMessage = "";
+    let user = null;
 
-        if (!res.ok) {
-          const apiError = await res.json();
-          console.log(apiError);
-          throw new Error(JSON.stringify(apiError));
-        }
-        return res.json();
-      })
-      .catch((err) => {
-        console.log("err:");
+    if (token) {
+      const decodedToken: userInfos = jwtDecode(token);
+      const currentTime = Date.now() / 1000;
+      if (decodedToken.exp > currentTime) {
+        const userId = decodedToken.id;
+        // console.log("infos = " + JSON.stringify(updateUserVal));
+        // console.log(user?.id);
 
-        console.log(JSON.parse(err.message).message);
-        // errorMessage = JSON.parse(err.message).message;
-        // errorMessage = JSON.parse(err.message);
-      });
+        await fetch(`${API_URL}/users/${userId}`, {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${token.replace(/"/g, "")}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updateUserVal),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            console.log(JSON.stringify(data));
 
-    // return { error: errorMessage };s
+            user = data;
+          })
+          .catch((err) => {
+            console.log("err:");
+
+            console.log(JSON.parse(err.message).message);
+            //   // errorMessage = JSON.parse(err.message).message;
+            //   // errorMessage = JSON.parse(err.message);
+          });
+      } else {
+        localStorage.removeItem("user");
+        errorMessage = "Session expired. Please log in again";
+        // setUser(null);
+      }
+    }
+
+    return {
+      userDetails: user,
+      error: errorMessage,
+    };
   };
 
   const getCurrentUser = () => {
@@ -212,7 +226,7 @@ const AuthService = () => {
     return null;
   };
 
-  return { login, logout, register, getCurrentUser, fetchUser };
+  return { login, logout, register, getCurrentUser, fetchUser, updateUser };
 };
 
 export default AuthService;

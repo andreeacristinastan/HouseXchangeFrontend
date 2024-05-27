@@ -1,13 +1,13 @@
 import Typography from "../utils/Typography";
 import ProductHeroLayout from "../home/components/GettingStartedLay";
-import backgroundImage from "../utils/images/img33.jpg";
+import backgroundImage from "../utils/images/pexels-curtis-adams-1694007-5071140.jpg";
 import Paper from "@mui/material/Paper";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { useUserStore } from "../App";
+import { useUserStore } from "../utils/useUserStore";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import { Box } from "@mui/material";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";

@@ -2,7 +2,7 @@ import React from "react";
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
 import Toolbar from "../home/components/Toolbar";
-import { useUserStore } from "../App";
+import { useUserStore } from "../utils/useUserStore";
 import AppBar from "@mui/material/AppBar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";

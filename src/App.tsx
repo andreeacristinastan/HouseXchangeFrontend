@@ -5,7 +5,7 @@ import HomePage from "./home/HomePage.tsx";
 import RegisterPage from "./register/RegisterPage.tsx";
 import AppBar from "./home/AppBar.tsx";
 import Profile from "./profile/Profile.tsx";
-import { create } from "zustand";
+
 import { useEffect, useState } from "react";
 import AuthService from "./services/AuthService.tsx";
 import React from "react";
@@ -20,6 +20,8 @@ import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { lime, purple } from "@mui/material/colors";
+import { log } from "console";
+import { useUserStore } from "./utils/useUserStore";
 
 const theme = createTheme({
   palette: {
@@ -28,48 +30,6 @@ const theme = createTheme({
     },
   },
 });
-
-type PropertyInfo = {
-  id: number;
-  name: string;
-};
-
-type TripInfo = {
-  id: number;
-  numberOfPersons: number;
-  destination: string;
-  minRange: number;
-  maxRange: number;
-  checkInDate: Date;
-  checkOutDate: Date;
-  userId: number;
-  propertyId: number;
-};
-
-type userInfo = {
-  id: number;
-  role: string;
-  email: string;
-  username: string;
-  firstName: string;
-  lastName: string;
-  language: string;
-  phoneNumber: string;
-  properties: PropertyInfo[];
-  tripInfoDto: TripInfo[];
-};
-
-interface UserStore {
-  user: userInfo | null;
-  setUser: (user: userInfo) => void;
-  removeUser: () => void;
-}
-
-export const useUserStore = create<UserStore>((set) => ({
-  user: null,
-  setUser: (user: userInfo) => set({ user }),
-  removeUser: () => set({ user: null }),
-}));
 
 function App() {
   const { user, setUser } = useUserStore();
@@ -83,6 +43,34 @@ function App() {
       setShowContent(true);
     }, 1000);
   }, []);
+
+  const AppBarComponent =
+    user?.role === "GUEST"
+      ? GuestAppBar
+      : user?.role === "HOST"
+      ? HostAppBar
+      : AppBar;
+  // useUserStore.getState().user?.role === "GUEST"
+  //   ? GuestAppBar
+  //   : useUserStore.getState().user?.role === "HOST"
+  //   ? HostAppBar
+  //   : AppBar;
+
+  const ProfileComponent =
+    user?.role === "GUEST" ? (
+      <GuestProfile />
+    ) : user?.role === "HOST" ? (
+      <HostProfile />
+    ) : (
+      <Profile />
+    );
+
+  const PageComponent =
+    user?.role === "GUEST"
+      ? GuestHome
+      : user?.role === "HOST"
+      ? HostHome
+      : HomePage;
 
   const handleCloseSnackbar = (
     event: React.SyntheticEvent | Event,
@@ -101,6 +89,9 @@ function App() {
         const response = await AuthService().fetchUser();
 
         if (response.userDetails) {
+          // useUserStore.setState(response.userDetails);
+          // console.log(currUser);
+
           setUser(response.userDetails);
         } else if (response.error) {
           console.log("error:", response.error.length);
@@ -121,30 +112,31 @@ function App() {
         }
       }
     })();
-  }, [setUser]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const AppBarComponent =
-    user?.role === "GUEST"
-      ? GuestAppBar
-      : user?.role === "HOST"
-      ? HostAppBar
-      : AppBar;
+  // useUserStore.getState().user?.role === "GUEST"
+  //   ? GuestHome
+  //   : useUserStore.getState().user?.role === "HOST"
+  //   ? HostHome
+  //   : HomePage;
 
-  const PageComponent =
-    user?.role === "GUEST"
-      ? GuestHome
-      : user?.role === "HOST"
-      ? HostHome
-      : HomePage;
+  // let ProfileComponent =
+  //   user?.role === "GUEST" ? (
+  //     <GuestProfile />
+  //   ) : user?.role === "HOST" ? (
+  //     <HostProfile />
+  //   ) : (
+  //     <Profile />
+  //   );
 
-  const ProfileCompoent =
-    user?.role === "GUEST" ? (
-      <GuestProfile user={user} setUser={setUser} selectedLanguage="" />
-    ) : user?.role === "HOST" ? (
-      <HostProfile user={user} />
-    ) : (
-      <Profile user={user} />
-    );
+  //   useUserStore.getState().user?.role === "GUEST" ? (
+  //     <GuestProfile />
+  //   ) : useUserStore.getState().user?.role === "HOST" ? (
+  //     <HostProfile />
+  //   ) : (
+  //     <Profile />
+  //   );
 
   return (
     <div>
@@ -156,7 +148,7 @@ function App() {
               <Route path="/" element={<PageComponent />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
-              <Route path="/profile" element={ProfileCompoent} />
+              <Route path="/profile" element={ProfileComponent} />
             </Routes>
           </Router>
 

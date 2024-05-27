@@ -4,6 +4,7 @@ import { styled } from "@mui/material/styles";
 import CardMedia from "@mui/material/CardMedia";
 import profilePicture from "../utils/images/Foto ritratto corporate_ Headshots Portrait_.jpg";
 import "./HostProfile.css";
+import { useUserStore } from "../utils/useUserStore";
 
 const BackgroundStyle = styled("section")(({ theme }) => ({
   color: theme.palette.common.white,
@@ -44,12 +45,13 @@ type userInfo = {
   tripInfoDto: TripInfo[];
 };
 
-interface MyComponentProps {
-  user: userInfo | null;
-}
+// interface MyComponentProps {
+//   user: userInfo | null;
+// }
 
-const HostProfile: React.FC<MyComponentProps> = ({ user }) => {
+const HostProfile = () => {
   const [showDetails, setShowDetails] = useState(false);
+  const { user, setUser } = useUserStore();
   // const numOfTrips = user?.tripInfoDto?.length || 0;
   const numOProperties = user?.properties?.length || 0;
   useEffect(() => {
