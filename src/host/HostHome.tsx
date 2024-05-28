@@ -1,6 +1,6 @@
 import React from "react";
 import ProductHeroLayout from "../home/components/GettingStartedLay";
-import backgroundImage from "../utils/images/img33.jpg";
+import backgroundImage from "../utils/images/pexels-curtis-adams-1694007-5071140.jpg";
 import Paper from "@mui/material/Paper";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
@@ -56,12 +56,12 @@ const HostHome = () => {
           fontFamily: '"Oswald", sans-serif',
         }}
       >
-        Start booking your properties with us
+        Start adding your properties
       </Typography>
       <Link
         variant="h6"
         underline="none"
-        href="/add_property"
+        href="/property/create"
         className="create-acc-btn"
         sx={{
           ...rightLink,

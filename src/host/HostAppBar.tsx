@@ -46,6 +46,10 @@ const HostAppBar = () => {
     navigate("/properties");
   };
 
+  const handleAddProperty = () => {
+    navigate("/property/create");
+  };
+
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -90,6 +94,9 @@ const HostAppBar = () => {
                     switch (page) {
                       case "Properties":
                         handleProperties();
+                        break;
+                      case "Add property":
+                        handleAddProperty();
                         break;
                       default:
                         handleCloseNavMenu();

@@ -19,34 +19,12 @@ const BackgroundStyle = styled("section")(({ theme }) => ({
   },
 }));
 
-type PropertyInfo = {
-  id: number;
-  name: string;
-};
-
-type TripInfo = {
-  id: number;
-  numberOfPersons: number;
-  destination: string;
-  minRange: number;
-  maxRange: number;
-  checkInDate: Date;
-  checkOutDate: Date;
-  userId: number;
-  propertyId: number;
-};
-
 type editUser = {
   email: string;
   firstName: string;
   lastName: string;
   language: string;
 };
-
-// interface MyComponentProps {
-//   user: userInfo | null;
-//   setUser: (user: userInfo) => void;
-// }
 
 const GuestProfile = () => {
   const { user, setUser } = useUserStore();
@@ -60,7 +38,6 @@ const GuestProfile = () => {
   const [newLanguage, setNewLanguage] = React.useState("");
 
   const handleChangeLanguage = (selectedLanguage: string) => {
-    // console.log(selectedLanguage);
     setNewLanguage(selectedLanguage);
   };
 
@@ -83,16 +60,10 @@ const GuestProfile = () => {
   });
 
   const editUserDetails = async (values: editUser) => {
-    // console.log(JSON.stringify(values));
-    // AuthService().updateUser(values);
-    // setEditMode(!editMode);
     try {
       const response = await AuthService().updateUser(values);
 
       if (response.userDetails) {
-        // useUserStore.setState(response.userDetails);
-        // console.log(currUser);
-
         setUser(response.userDetails);
       } else if (response.error) {
         console.log("error:", response.error.length);
@@ -101,12 +72,8 @@ const GuestProfile = () => {
         setErrorMessage(response.error);
         setOpenSnackbar(true);
       }
-
-      // console.log("my responseeee:");
-      // console.log(response);
     } catch (error) {
       if (error instanceof Error) {
-        // console.log("Error message:", JSON.parse(error.message).message);
         setErr(true);
         setErrorMessage(JSON.parse(error.message).message);
         setOpenSnackbar(true);
@@ -304,11 +271,8 @@ const GuestProfile = () => {
               <div className="title-display">Language:</div>
               <div className="info-display">
                 <Language handleChangeLanguage={handleChangeLanguage} />
-                {/* {console.log(response)} */}
               </div>
             </div>
-
-            {/* <button>Save</button> */}
           </div>
         )}
       </div>

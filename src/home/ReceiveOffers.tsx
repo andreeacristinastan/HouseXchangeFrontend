@@ -298,6 +298,7 @@ const ReceiveOffers = () => {
                   onChange={handleChange}
                   sx={{
                     width: "420px",
+                    // maxHeight: "20px",
                     color: "white",
                     ".MuiOutlinedInput-notchedOutline": {
                       borderColor: "rgba(228, 219, 233, 0.25)",
@@ -316,6 +317,44 @@ const ReceiveOffers = () => {
                     },
                     ".MuiSvgIcon-root ": {
                       fill: "white !important",
+                    },
+                  }}
+                  MenuProps={{
+                    PaperProps: {
+                      sx: {
+                        fontFamily: "'IBM Plex Sans', sans-serif",
+                        fontSize: "0.875rem",
+                        boxSizing: "border-box",
+                        padding: "6px",
+                        margin: "12px 0",
+                        minWidth: "290px",
+                        maxHeight: "150px",
+                        borderRadius: "12px",
+                        overflow: "auto",
+                        outline: "0px",
+                        color: "#588b97",
+                        background: "#fff",
+                        border: "1px solid  #DAE2ED",
+
+                        "&.closed": {
+                          opacity: 0,
+                          transform: "scale(0.95, 0.8)",
+                          transition:
+                            "opacity 200ms ease-in, transform 200ms ease-in",
+                        },
+                        "&.open": {
+                          opacity: 1,
+                          transform: "scale(1, 1)",
+                          transition:
+                            "opacity 100ms ease-out, transform 100ms cubic-bezier(0.43, 0.29, 0.37, 1.48)",
+                        },
+                        "&.placement-top": {
+                          transformOrigin: "bottom",
+                        },
+                        "&.placement-bottom": {
+                          transformOrigin: "top",
+                        },
+                      },
                     },
                   }}
                 >
