@@ -19,7 +19,7 @@ import { useNavigate } from "react-router-dom";
 import CardMedia from "@mui/material/CardMedia";
 import { useUserStore } from "../utils/useUserStore";
 
-const pages = ["Properties", "Help"];
+const pages = ["Properties", "Trips"];
 const settings = ["My Trips", "My Account", "Logout"];
 
 const GuestAppBar = () => {
@@ -45,8 +45,12 @@ const GuestAppBar = () => {
     navigate("/profile");
   };
 
+  const handleTrip = () => {
+    navigate("/trips");
+  };
+
   const handleProperties = () => {
-    navigate("/properties");
+    navigate("/properties/all");
   };
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -94,6 +98,9 @@ const GuestAppBar = () => {
                     switch (page) {
                       case "Properties":
                         handleProperties();
+                        break;
+                      case "Trips":
+                        handleTrip();
                         break;
                       default:
                         handleCloseNavMenu();
@@ -243,6 +250,9 @@ const GuestAppBar = () => {
                           break;
                         case "My Account":
                           handleAccount();
+                          break;
+                        case "My Trips":
+                          handleTrip();
                           break;
                         default:
                           handleCloseUserMenu();

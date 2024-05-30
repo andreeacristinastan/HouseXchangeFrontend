@@ -1,8 +1,8 @@
 // import { useNavigate } from 'react-router-dom';
-import Categories from './Categories';
-import GettingStarted from './GettingStarted';
-import ReceiveOffers from './ReceiveOffers';
-import './HomePage.css';
+import Categories from "./Categories";
+import GettingStarted from "./GettingStarted";
+import ReceiveOffers from "./ReceiveOffers";
+import "./HomePage.css";
 
 export default function HomePage() {
   // const navigate = useNavigate();
@@ -11,20 +11,14 @@ export default function HomePage() {
   //   navigate(path);
   // };
   return (
-    <div className='home-page-container'>
-      
+    <div className="home-page-container">
       {/* <h1>Welcome to the Home Page!</h1>
       <button onClick={() => goToPage('/login')}>Log In</button>
       <button onClick={() => goToPage('/register')}>Sign Up</button> */}
-      <GettingStarted/>
-      
-      <div className='color-label'>
-        <Categories/>
-        <ReceiveOffers />
+      <GettingStarted />
 
-      </div>
-    
+      <Categories />
+      <ReceiveOffers />
     </div>
-
   );
 }

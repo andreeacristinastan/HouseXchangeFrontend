@@ -23,6 +23,9 @@ import { lime, purple } from "@mui/material/colors";
 import { log } from "console";
 import { useUserStore } from "./utils/useUserStore";
 import AddProperty from "./host/property/AddProperty.tsx";
+import HostProperties from "./host/property/HostProperties.tsx";
+import GuestProperties from "./guest/GuestProperties.tsx";
+import GuestTrips from "./guest/GuestTrips.tsx";
 
 const theme = createTheme({
   palette: {
@@ -151,6 +154,9 @@ function App() {
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/profile" element={ProfileComponent} />
               <Route path="/property/create" element={<AddProperty />} />
+              <Route path="/properties" element={<HostProperties />} />
+              <Route path="/properties/all" element={<GuestProperties />} />
+              <Route path="/trips" element={<GuestTrips />} />
             </Routes>
           </Router>
 

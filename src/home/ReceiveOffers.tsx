@@ -16,6 +16,12 @@ import MenuItem from "@mui/material/MenuItem";
 import FormLabel from "@mui/material/FormLabel";
 import FormGroup from "@mui/material/FormGroup";
 import Checkbox from "@mui/material/Checkbox";
+import AuthService from "../services/AuthService";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
+import CheckIcon from "@mui/icons-material/Check";
+import { log } from "console";
+import { useUserStore } from "../utils/useUserStore";
 
 type CountryApi = {
   name: {
@@ -23,42 +29,54 @@ type CountryApi = {
   };
 };
 
-const ReceiveOffers = () => {
-  const [open, setOpen] = React.useState(false);
-  const [email, setEmail] = React.useState("");
-  const [snackbarMessage, setSnackbarMessage] = React.useState("");
+type feedbackCreation = {
+  feedback: string;
+  toTheProperty: boolean;
+  toTheApp: boolean;
+  other: boolean;
+  userId: number;
+};
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (validateEmail(email)) {
-      setSnackbarMessage("Success! You will be kept updated.");
-    } else {
-      setSnackbarMessage("Error: Please enter a valid email address.");
+const ReceiveOffers = () => {
+  const [email, setEmail] = React.useState("");
+  const [err, setErr] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [success, setSuccess] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [typeOfAcc, setTypeOfAcc] = useState("");
+  const [countries, setCountries] = useState<string[]>([]);
+  const [selectedCountry, setSelectedCountry] = useState("");
+  const { user, setUser } = useUserStore();
+
+  const [feedbackInput, setFeedbackInput] = useState({
+    username: "",
+    feedback: "",
+  });
+  const [typeOfFeedback, setTypeOfFeedback] = useState({
+    app: true,
+    property: false,
+    other: false,
+  });
+  const handleCloseSnackbar = (
+    event: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
     }
-    setOpen(true);
+
+    setOpenSnackbar(false);
   };
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
   };
 
-  const validateEmail = (email: string) => {
-    const re =
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(String(email).toLowerCase());
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-  const [typeOfAcc, setTypeOfAcc] = React.useState("");
-
   const handleTypeOfAcc = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTypeOfAcc(event.target.value);
   };
 
-  const [countries, setCountries] = useState<string[]>([]); // replace any with your data type
-  const [selectedCountry, setSelectedCountry] = useState("");
   useEffect(() => {
     fetch("https://restcountries.com/v3.1/all")
       .then((response) => response.json())
@@ -72,28 +90,81 @@ const ReceiveOffers = () => {
     setSelectedCountry(event.target.value);
   };
 
-  const [state, setState] = React.useState({
-    app: true,
-    property: false,
-    other: false,
-  });
-
-  const handleChange2 = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setState({
-      ...state,
+  const handleChangeTypeOfFeedback = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setTypeOfFeedback({
+      ...typeOfFeedback,
       [event.target.name]: event.target.checked,
     });
   };
 
-  const { app, property, other } = state;
+  const { app, property, other } = typeOfFeedback;
   const error = [app, property, other].filter((v) => v).length !== 1;
 
+  const handleFeedbackChange = (event: {
+    target: { value: string; name?: any };
+  }) => {
+    const { name, value } = event.target;
+    setFeedbackInput({ ...feedbackInput, [name]: value });
+  };
+
+  const handleSendFeedback = async (event) => {
+    event.preventDefault();
+    if (user?.role !== typeOfAcc) {
+      setErr(true);
+      setErrorMessage("Choose your correct type of account!");
+      setOpenSnackbar(true);
+    } else if (
+      typeOfAcc.length === 0 ||
+      feedbackInput.username.length === 0 ||
+      feedbackInput.feedback.length === 0 ||
+      selectedCountry.length === 0 ||
+      (typeOfFeedback.app === false &&
+        typeOfFeedback.other === false &&
+        typeOfFeedback.property === false)
+    ) {
+      setErr(true);
+      setErrorMessage("You have to fill all the fields!");
+      setOpenSnackbar(true);
+    } else if (user.username !== feedbackInput.username) {
+      setErr(true);
+      setErrorMessage("Fill out your correct username");
+      setOpenSnackbar(true);
+    } else {
+      const addFeedback: feedbackCreation = {
+        feedback: feedbackInput.feedback,
+        toTheProperty: typeOfFeedback.property,
+        toTheApp: typeOfFeedback.app,
+        other: typeOfFeedback.other,
+        userId: user.id,
+      };
+
+      const response = await AuthService().createFeedback(addFeedback);
+      feedbackInput.feedback = "";
+      typeOfFeedback.property = false;
+      typeOfFeedback.app = false;
+      typeOfFeedback.other = false;
+      setTypeOfAcc("");
+      feedbackInput.username = "";
+      setSelectedCountry("");
+
+      if (response.error.length !== 0) {
+        setErr(true);
+        setErrorMessage(response.error);
+        setOpenSnackbar(true);
+      } else {
+        setSuccess(true);
+        setSuccessMessage("Feedback sent successfully!");
+      }
+    }
+  };
   return (
     <Container component="section" sx={{ mt: 20, display: "flex" }}>
       <link
         href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap"
         rel="stylesheet"
-      ></link>
+      />
       <Grid container>
         <Grid item xs={12} md={6} mb={10} sx={{ zIndex: 1 }}>
           <Box
@@ -103,16 +174,11 @@ const ReceiveOffers = () => {
               bgcolor: "#779fa9",
               boxShadow: "20px 12px 15px 2px rgba(0, 0, 0, 0.4)",
 
-              // boxShadow: "#fff",
               py: 8,
               px: 3,
             }}
           >
-            <Box
-              component="form"
-              onSubmit={handleSubmit}
-              sx={{ maxWidth: 400, color: "#fff" }}
-            >
+            <Box component="form" sx={{ maxWidth: 400, color: "#fff" }}>
               <Typography
                 variant="h2"
                 component="h2"
@@ -170,7 +236,7 @@ const ReceiveOffers = () => {
             </Box>
           </Box>
         </Grid>
-        <SnackBar open={open} onClose={handleClose} message={snackbarMessage} />
+        {/* <SnackBar open={open} onClose={handleClose} message={snackbarMessage} /> */}
         <Grid
           item
           xs={6}
@@ -182,7 +248,7 @@ const ReceiveOffers = () => {
         >
           <Box
             component="form"
-            onSubmit={handleSubmit}
+            // onSubmit={handleSubmit}
             sx={{
               position: "absolute",
               display: "flex",
@@ -234,7 +300,7 @@ const ReceiveOffers = () => {
                 onChange={handleTypeOfAcc}
               >
                 <FormControlLabel
-                  value="Guest"
+                  value="GUEST"
                   control={
                     <Radio
                       required={true}
@@ -249,7 +315,7 @@ const ReceiveOffers = () => {
                   sx={{ "& .MuiTypography-root": { color: "#FFF" } }}
                 />
                 <FormControlLabel
-                  value="Host"
+                  value="HOST"
                   control={
                     <Radio
                       required={true}
@@ -270,6 +336,9 @@ const ReceiveOffers = () => {
                 required
                 placeholder=" Username"
                 variant="standard"
+                name="username"
+                value={feedbackInput.username}
+                onChange={handleFeedbackChange}
                 sx={{
                   width: "390px",
                   padding: "10px",
@@ -369,6 +438,9 @@ const ReceiveOffers = () => {
                 required
                 placeholder=" Your feedback"
                 variant="standard"
+                name="feedback"
+                value={feedbackInput.feedback}
+                onChange={handleFeedbackChange}
                 sx={{
                   width: "390px",
                   padding: "10px",
@@ -386,7 +458,7 @@ const ReceiveOffers = () => {
 
               <Box sx={{ display: "flex", justifyContent: "center" }}>
                 <FormControl
-                  error={error}
+                  // error={error}
                   required
                   // sx={{ m: 0 }}
                   component="fieldset"
@@ -404,7 +476,7 @@ const ReceiveOffers = () => {
                       },
                     }}
                   >
-                    Choose one
+                    Choose
                   </FormLabel>
                   <FormGroup
                     aria-label="position"
@@ -422,7 +494,7 @@ const ReceiveOffers = () => {
                             color: "white",
                           }}
                           checked={app}
-                          onChange={handleChange2}
+                          onChange={handleChangeTypeOfFeedback}
                           name="app"
                         />
                       }
@@ -435,7 +507,7 @@ const ReceiveOffers = () => {
                             color: "white",
                           }}
                           checked={property}
-                          onChange={handleChange2}
+                          onChange={handleChangeTypeOfFeedback}
                           name="property"
                         />
                       }
@@ -448,7 +520,7 @@ const ReceiveOffers = () => {
                             color: "white",
                           }}
                           checked={other}
-                          onChange={handleChange2}
+                          onChange={handleChangeTypeOfFeedback}
                           name="other"
                         />
                       }
@@ -462,6 +534,7 @@ const ReceiveOffers = () => {
                 type="submit"
                 color="primary"
                 variant="contained"
+                onClick={handleSendFeedback}
                 // disabled={!typeOfAcc}
                 sx={{
                   width: "420px",
@@ -480,12 +553,38 @@ const ReceiveOffers = () => {
           </Box>
         </Grid>
       </Grid>
-      <SnackBar
-        open={open}
-        closeFunc={handleClose}
-        // disabled={!typeOfAcc}
-        message="We will send you our response as soon as possible."
-      />
+      {err && (
+        <Snackbar
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "center",
+          }}
+          open={openSnackbar}
+          className="snackbarError"
+          autoHideDuration={5000}
+          onClose={handleCloseSnackbar}
+        >
+          <Alert severity="error">{errorMessage}</Alert>
+        </Snackbar>
+      )}
+
+      {success && (
+        <Snackbar
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "center",
+          }}
+          open={success}
+          className="snackbarSuccess"
+          autoHideDuration={5000}
+          onClose={() => setSuccess(false)}
+          sx={{ width: "100%" }}
+        >
+          <Alert severity="success" icon={<CheckIcon fontSize="inherit" />}>
+            {successMessage}
+          </Alert>
+        </Snackbar>
+      )}
     </Container>
   );
 };

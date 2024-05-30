@@ -42,6 +42,10 @@ const HostAppBar = () => {
     navigate("/profile");
   };
 
+  // const handleProperties = () => {
+  //   navigate("/properties");
+  // };
+
   const handleProperties = () => {
     navigate("/properties");
   };
@@ -246,6 +250,9 @@ const HostAppBar = () => {
                           break;
                         case "My Account":
                           handleAccount();
+                          break;
+                        case "My Properties":
+                          handleProperties();
                           break;
                         default:
                           handleCloseUserMenu();

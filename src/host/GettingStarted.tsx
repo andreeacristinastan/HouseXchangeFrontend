@@ -1,16 +1,18 @@
-import Typography from "../utils/Typography";
-
-import ProductHeroLayout from "./components//GettingStartedLay";
+import React from "react";
+import ProductHeroLayout from "../home/components/GettingStartedLay";
 import backgroundImage from "../utils/images/pexels-curtis-adams-1694007-5071140.jpg";
-import Link from "@mui/material/Link";
+import { useUserStore } from "../utils/useUserStore";
+import { Link } from "@mui/material";
+import Typography from "../utils/Typography";
 
 const rightLink = {
   fontSize: 16,
   color: "common.white",
   ml: 3,
 };
-
 const GettingStarted = () => {
+  const { user } = useUserStore();
+
   return (
     <div
       style={{
@@ -31,6 +33,7 @@ const GettingStarted = () => {
           href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap"
           rel="stylesheet"
         ></link>
+
         <Typography
           color="inherit"
           align="center"
@@ -38,7 +41,7 @@ const GettingStarted = () => {
           marked="center"
           sx={{ fontFamily: '"Oswald", sans-serif' }}
         >
-          Embrace the warmth of hospitality in every destination
+          Welcome back, {user?.username}!
         </Typography>
         <Typography
           color="inherit"
@@ -46,16 +49,16 @@ const GettingStarted = () => {
           variant="h5"
           sx={{
             mb: 4,
-            mt: { xs: 4, sm: 6 },
+            mt: { xs: 4 },
             fontFamily: '"Oswald", sans-serif',
           }}
         >
-          Enjoy us and discover your desired home
+          Start adding your properties
         </Typography>
         <Link
           variant="h6"
           underline="none"
-          href="/register"
+          href="/property/create"
           className="create-acc-btn"
           sx={{
             ...rightLink,
@@ -71,11 +74,8 @@ const GettingStarted = () => {
             },
           }}
         >
-          {"Create an account"}
+          {"Add a property"}
         </Link>
-        {/* <Typography variant="body2" align="center" color="inherit" sx={{ mt: 6, fontSize:'20px', fontFamily: '"Oswald", sans-serif'}}>
-        &try the experience
-      </Typography> */}
       </ProductHeroLayout>
     </div>
   );

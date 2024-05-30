@@ -28,6 +28,20 @@ import DryCleaningIcon from "@mui/icons-material/DryCleaning";
 import TvIcon from "@mui/icons-material/Tv";
 import AcUnitIcon from "@mui/icons-material/AcUnit";
 import BalconyIcon from "@mui/icons-material/Balcony";
+import { useUserStore } from "../../utils/useUserStore";
+import CheckIcon from "@mui/icons-material/Check";
+
+import LinearProgress from "@mui/material/LinearProgress";
+import {
+  styleBtn,
+  styleRoomBtn,
+  styleBathBtn,
+  styleAmenityBtn,
+  styleMealBtn,
+} from "./ButtonsStyle";
+import AuthService from "../../services/AuthService";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 const MainComponent = styled("section")(({ theme }) => ({
   color: theme.palette.common.white,
@@ -43,27 +57,88 @@ const MainComponent = styled("section")(({ theme }) => ({
   //   backgroundAttachment: "fixed",
 }));
 
+type createProperty = {
+  name: string;
+  country: string;
+  city: string;
+  address: string;
+  zipCode: number;
+  propertyDescription: string;
+  propertyType: string;
+  numberOfBathrooms: number;
+  numberOfRooms: number;
+  price: number;
+  userId: number | undefined;
+
+  facilities: createFacility;
+  amenities: createAmenity;
+  meals: createMeal;
+};
+
+type createFacility = {
+  towel: boolean;
+  balcony: boolean;
+  airConditioning: boolean;
+  tv: boolean;
+  // propertyId: number;
+};
+
+type createAmenity = {
+  gym: boolean;
+  swimmingPool: boolean;
+  garden: boolean;
+  parking: boolean;
+  wifi: boolean;
+  bikes: boolean;
+  kidsZone: boolean;
+  petsFriendly: boolean;
+  disabilitiesFriendly: boolean;
+  // propertyId: number;
+};
+
+type createMeal = {
+  breakfast: boolean;
+  lunch: boolean;
+  dinner: boolean;
+  // propertyId: number;
+};
+
 const AddProperty = () => {
   const [activeButton, setActiveButton] = useState("false");
   const [activeRoomButton, setActiveRoomButton] = useState("false");
   const [activeBathButton, setActiveBathButton] = useState("false");
-  const [activePetButton, setActivePetButton] = useState("false");
-  const [activeDisabilityButton, setActiveDisabilityButton] = useState("false");
-  const [activePoolButton, setActivePoolButton] = useState("false");
-  const [activeGardenButton, setActiveGardenButton] = useState("false");
-  const [activeParkingButton, setActiveParkingButton] = useState("false");
-  const [activeGymButton, setActiveGymButton] = useState("false");
-  const [activeWifiButton, setActiveWifiButton] = useState("false");
-  const [activeBikesButton, setActiveBikesButton] = useState("false");
-  const [activeKidsButton, setActiveKidsButton] = useState("false");
-  const [activeBreakfastButton, setActiveBreakfastButton] = useState("false");
-  const [activeLunchButton, setActiveLunchButton] = useState("false");
-  const [activeDinnerButton, setActiveDinnerButton] = useState("false");
-  const [activeTowelsButton, setActiveTowelsButton] = useState("false");
-  const [activeBalconyButton, setActiveBalconyButton] = useState("false");
-  const [activeAcButton, setActiveAcButton] = useState("false");
-  const [activeTvButton, setActiveTvButton] = useState("false");
   const [selectedCountry, setSelectedCountry] = useState("");
+  const [err, setErr] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [success, setSuccess] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [disabled, setDisabled] = useState(true);
+  const [amenities, setAmenities] = useState<createAmenity>({
+    petsFriendly: false,
+    disabilitiesFriendly: false,
+    swimmingPool: false,
+    garden: false,
+    parking: false,
+    gym: false,
+    wifi: false,
+    bikes: false,
+    kidsZone: false,
+  });
+
+  const [meals, setMeals] = useState<createMeal>({
+    breakfast: false,
+    lunch: false,
+    dinner: false,
+  });
+
+  const [facilities, setFacilities] = useState<createFacility>({
+    towel: false,
+    balcony: false,
+    airConditioning: false,
+    tv: false,
+  });
+  const { user, setUser } = useUserStore();
 
   const API_KEY = import.meta.env.VITE_MAPS_API_KEY;
 
@@ -73,484 +148,134 @@ const AddProperty = () => {
   };
   const countryCode = getCode(selectedCountry);
   const restriction = "" + countryCode?.toString().toLowerCase();
-  //   console.log(countryCode?.toString().toLowerCase());
-
-  //   const handleChange = (event: SelectChangeEvent) => {
-  //     setSelectedCountry(event.target.value);
-  //   };
-
-  const styleBtn = (buttonType: string) => ({
-    color: "#fff",
-    display: "flex",
-    flexDirection: "column",
-    width: "120px",
-    height: "120px",
-    marginLeft: "290px",
-    fontFamily: '"Oswald", sans-serif',
-    boxShadow: activeButton === buttonType ? "0 0 5px" : "0 0 3px",
-
-    background:
-      activeButton === buttonType ? "rgba(255, 255, 255, 0.1)" : "transparent",
-    "&:hover": {
-      backgroundColor: "rgba(255, 255, 255, 0.1)",
-    },
-  });
 
   const handleButtonClick = (buttonType: string) => {
     setActiveButton(activeButton === buttonType ? "false" : buttonType);
   };
-  const styleBreakfastBtn = (buttonType: string) => ({
-    color: "#fff",
-    display: "flex",
-    flexDirection: "column",
-    width: "120px",
-    height: "120px",
-    marginLeft: "290px",
-    fontFamily: '"Oswald", sans-serif',
-    boxShadow: activeBreakfastButton === buttonType ? "0 0 5px" : "0 0 3px",
-
-    background:
-      activeBreakfastButton === buttonType
-        ? "rgba(255, 255, 255, 0.1)"
-        : "transparent",
-    "&:hover": {
-      backgroundColor: "rgba(255, 255, 255, 0.1)",
-    },
-  });
-
-  const handleBreakfastButtonClick = (buttonType: string) => {
-    setActiveBreakfastButton(
-      activeBreakfastButton === buttonType ? "false" : buttonType
-    );
-  };
-
-  const styleLunchBtn = (buttonType: string) => ({
-    color: "#fff",
-    display: "flex",
-    flexDirection: "column",
-    width: "120px",
-    height: "120px",
-    marginLeft: "290px",
-    fontFamily: '"Oswald", sans-serif',
-    boxShadow: activeLunchButton === buttonType ? "0 0 5px" : "0 0 3px",
-
-    background:
-      activeLunchButton === buttonType
-        ? "rgba(255, 255, 255, 0.1)"
-        : "transparent",
-    "&:hover": {
-      backgroundColor: "rgba(255, 255, 255, 0.1)",
-    },
-  });
-
-  const handleLunchButtonClick = (buttonType: string) => {
-    setActiveLunchButton(
-      activeLunchButton === buttonType ? "false" : buttonType
-    );
-  };
-  const styleDinnerBtn = (buttonType: string) => ({
-    color: "#fff",
-    display: "flex",
-    flexDirection: "column",
-    width: "120px",
-    height: "120px",
-    marginLeft: "290px",
-    fontFamily: '"Oswald", sans-serif',
-    boxShadow: activeDinnerButton === buttonType ? "0 0 5px" : "0 0 3px",
-
-    background:
-      activeDinnerButton === buttonType
-        ? "rgba(255, 255, 255, 0.1)"
-        : "transparent",
-    "&:hover": {
-      backgroundColor: "rgba(255, 255, 255, 0.1)",
-    },
-  });
-
-  const handleDinnerButtonClick = (buttonType: string) => {
-    setActiveDinnerButton(
-      activeDinnerButton === buttonType ? "false" : buttonType
-    );
-  };
-
-  const styleRoomBtn = (buttonType: string) => ({
-    fontSize: "25px",
-    color: "#fff",
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "auto",
-    height: "50px",
-    marginLeft: "290px",
-    fontFamily: '"Oswald", sans-serif',
-    boxShadow: activeRoomButton === buttonType ? "0 0 5px" : "0 0 2px",
-
-    background:
-      activeRoomButton === buttonType
-        ? "rgba(255, 255, 255, 0.1)"
-        : "transparent",
-    "&:hover": {
-      backgroundColor: "rgba(255, 255, 255, 0.1)",
-    },
-  });
 
   const handleRoomButtonClick = (buttonType: string) => {
     setActiveRoomButton(activeRoomButton === buttonType ? "false" : buttonType);
   };
 
-  const styleBathBtn = (buttonType: string) => ({
-    fontSize: "25px",
-    color: "#fff",
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "auto",
-    height: "50px",
-    marginLeft: "290px",
-    fontFamily: '"Oswald", sans-serif',
-    boxShadow: activeBathButton === buttonType ? "0 0 5px" : "0 0 2px",
-
-    background:
-      activeBathButton === buttonType
-        ? "rgba(255, 255, 255, 0.1)"
-        : "transparent",
-    "&:hover": {
-      backgroundColor: "rgba(255, 255, 255, 0.1)",
-    },
-  });
-
   const handleBathButtonClick = (buttonType: string) => {
     setActiveBathButton(activeBathButton === buttonType ? "false" : buttonType);
   };
 
-  const stylePetBtn = (buttonType: string) => ({
-    fontSize: "15px",
-    color: "#fff",
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "auto",
-    height: "50px",
-    marginLeft: "290px",
-    fontFamily: '"Oswald", sans-serif',
-    boxShadow: activePetButton === buttonType ? "0 0 5px" : "0 0 2px",
+  const handleCloseSnackbar = (
+    event: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
 
-    background:
-      activePetButton === buttonType
-        ? "rgba(255, 255, 255, 0.1)"
-        : "transparent",
-    "&:hover": {
-      backgroundColor: "rgba(255, 255, 255, 0.1)",
-    },
-  });
-
-  const handlePetButtonClick = (buttonType: string) => {
-    setActivePetButton(activePetButton === buttonType ? "false" : buttonType);
+    setOpenSnackbar(false);
   };
 
-  const styleDisabilityBtn = (buttonType: string) => ({
-    fontSize: "15px",
-    color: "#fff",
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "auto",
-    height: "50px",
-    marginLeft: "290px",
-    fontFamily: '"Oswald", sans-serif',
-    boxShadow: activeDisabilityButton === buttonType ? "0 0 5px" : "0 0 2px",
-
-    background:
-      activeDisabilityButton === buttonType
-        ? "rgba(255, 255, 255, 0.1)"
-        : "transparent",
-    "&:hover": {
-      backgroundColor: "rgba(255, 255, 255, 0.1)",
-    },
+  const [propertyInputInfos, setPropertyInputInfos] = useState({
+    name: "",
+    city: "",
+    address: "",
+    zipCode: 0,
+    propertyDescription: "",
   });
 
-  const handleDisabilityButtonClick = (buttonType: string) => {
-    setActiveDisabilityButton(
-      activeDisabilityButton === buttonType ? "false" : buttonType
+  const handleInfosChange = (event: {
+    target: { value: string; name?: any };
+  }) => {
+    const { name, value } = event.target;
+    setPropertyInputInfos({ ...propertyInputInfos, [name]: value });
+  };
+
+  const isFilled = () => {
+    const nameIsFilled = propertyInputInfos.name.length !== 0;
+    const addressIsFilled = propertyInputInfos.address.length !== 0;
+    const countryIsFilled = selectedCountry.length !== 0;
+    const zipCodeIsFilled = propertyInputInfos.zipCode !== 0;
+    const numberOfBathroomsIsFilled = activeBathButton !== "false";
+    const numberOfRoomsIsFilled = activeRoomButton !== "false";
+    const descriptionIsFilled =
+      propertyInputInfos.propertyDescription.length !== 0;
+
+    return (
+      nameIsFilled &&
+      addressIsFilled &&
+      countryIsFilled &&
+      zipCodeIsFilled &&
+      numberOfBathroomsIsFilled &&
+      numberOfRoomsIsFilled &&
+      descriptionIsFilled
     );
-  };
-  const stylePoolBtn = (buttonType: string) => ({
-    fontSize: "15px",
-    color: "#fff",
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "auto",
-    height: "50px",
-    marginLeft: "290px",
-    fontFamily: '"Oswald", sans-serif',
-    boxShadow: activePoolButton === buttonType ? "0 0 5px" : "0 0 2px",
-
-    background:
-      activePoolButton === buttonType
-        ? "rgba(255, 255, 255, 0.1)"
-        : "transparent",
-    "&:hover": {
-      backgroundColor: "rgba(255, 255, 255, 0.1)",
-    },
-  });
-
-  const handlePoolButtonClick = (buttonType: string) => {
-    setActivePoolButton(activePoolButton === buttonType ? "false" : buttonType);
-  };
-  const styleGardenBtn = (buttonType: string) => ({
-    fontSize: "15px",
-    color: "#fff",
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "auto",
-    height: "50px",
-    marginLeft: "290px",
-    fontFamily: '"Oswald", sans-serif',
-    boxShadow: activeGardenButton === buttonType ? "0 0 5px" : "0 0 2px",
-
-    background:
-      activeGardenButton === buttonType
-        ? "rgba(255, 255, 255, 0.1)"
-        : "transparent",
-    "&:hover": {
-      backgroundColor: "rgba(255, 255, 255, 0.1)",
-    },
-  });
-
-  const handleGardenButtonClick = (buttonType: string) => {
-    setActiveGardenButton(
-      activeGardenButton === buttonType ? "false" : buttonType
-    );
-  };
-  const styleParkingBtn = (buttonType: string) => ({
-    fontSize: "15px",
-    color: "#fff",
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "auto",
-    height: "50px",
-    marginLeft: "290px",
-    fontFamily: '"Oswald", sans-serif',
-    boxShadow: activeParkingButton === buttonType ? "0 0 5px" : "0 0 2px",
-
-    background:
-      activeParkingButton === buttonType
-        ? "rgba(255, 255, 255, 0.1)"
-        : "transparent",
-    "&:hover": {
-      backgroundColor: "rgba(255, 255, 255, 0.1)",
-    },
-  });
-
-  const handleParkingButtonClick = (buttonType: string) => {
-    setActiveParkingButton(
-      activeParkingButton === buttonType ? "false" : buttonType
-    );
-  };
-  const styleGymBtn = (buttonType: string) => ({
-    fontSize: "15px",
-    color: "#fff",
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "auto",
-    height: "50px",
-    marginLeft: "290px",
-    fontFamily: '"Oswald", sans-serif',
-    boxShadow: activeGymButton === buttonType ? "0 0 5px" : "0 0 2px",
-
-    background:
-      activeGymButton === buttonType
-        ? "rgba(255, 255, 255, 0.1)"
-        : "transparent",
-    "&:hover": {
-      backgroundColor: "rgba(255, 255, 255, 0.1)",
-    },
-  });
-
-  const handleGymButtonClick = (buttonType: string) => {
-    setActiveGymButton(activeGymButton === buttonType ? "false" : buttonType);
-  };
-  const styleWifiBtn = (buttonType: string) => ({
-    fontSize: "15px",
-    color: "#fff",
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "auto",
-    height: "50px",
-    marginLeft: "290px",
-    fontFamily: '"Oswald", sans-serif',
-    boxShadow: activeWifiButton === buttonType ? "0 0 5px" : "0 0 2px",
-
-    background:
-      activeWifiButton === buttonType
-        ? "rgba(255, 255, 255, 0.1)"
-        : "transparent",
-    "&:hover": {
-      backgroundColor: "rgba(255, 255, 255, 0.1)",
-    },
-  });
-
-  const handleWifiButtonClick = (buttonType: string) => {
-    setActiveWifiButton(activeWifiButton === buttonType ? "false" : buttonType);
-  };
-  const styleBikesBtn = (buttonType: string) => ({
-    fontSize: "15px",
-    color: "#fff",
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "auto",
-    height: "50px",
-    marginLeft: "290px",
-    fontFamily: '"Oswald", sans-serif',
-    boxShadow: activeBikesButton === buttonType ? "0 0 5px" : "0 0 2px",
-
-    background:
-      activeBikesButton === buttonType
-        ? "rgba(255, 255, 255, 0.1)"
-        : "transparent",
-    "&:hover": {
-      backgroundColor: "rgba(255, 255, 255, 0.1)",
-    },
-  });
-
-  const handleBikesButtonClick = (buttonType: string) => {
-    setActiveBikesButton(
-      activeBikesButton === buttonType ? "false" : buttonType
-    );
-  };
-  const styleKidsBtn = (buttonType: string) => ({
-    fontSize: "15px",
-    color: "#fff",
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "auto",
-    height: "50px",
-    marginLeft: "290px",
-    fontFamily: '"Oswald", sans-serif',
-    boxShadow: activeKidsButton === buttonType ? "0 0 5px" : "0 0 2px",
-
-    background:
-      activeKidsButton === buttonType
-        ? "rgba(255, 255, 255, 0.1)"
-        : "transparent",
-    "&:hover": {
-      backgroundColor: "rgba(255, 255, 255, 0.1)",
-    },
-  });
-
-  const handleKidsButtonClick = (buttonType: string) => {
-    setActiveKidsButton(activeKidsButton === buttonType ? "false" : buttonType);
+    // const cityIsFilled = propertyInputInfos.name.trim() !== "";
   };
 
-  const styleAcBtn = (buttonType: string) => ({
-    fontSize: "15px",
-    color: "#fff",
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "auto",
-    height: "50px",
-    marginLeft: "290px",
-    fontFamily: '"Oswald", sans-serif',
-    boxShadow: activeAcButton === buttonType ? "0 0 5px" : "0 0 2px",
+  const handleCreateBtnClick = async () => {
+    if (isFilled() === false) {
+      setErr(true);
+      setErrorMessage("You should fill all mandatory fields");
+      setOpenSnackbar(true);
+    } else {
+      const addProperty: createProperty = {
+        name: propertyInputInfos.name,
+        country: selectedCountry,
+        city: propertyInputInfos.city,
+        address: propertyInputInfos.address,
+        zipCode: propertyInputInfos.zipCode,
+        propertyDescription: propertyInputInfos.propertyDescription,
+        propertyType: activeButton,
+        numberOfBathrooms: Number(activeBathButton),
+        numberOfRooms: Number(activeRoomButton),
+        price: 0,
+        userId: user?.id,
 
-    background:
-      activeAcButton === buttonType
-        ? "rgba(255, 255, 255, 0.1)"
-        : "transparent",
-    "&:hover": {
-      backgroundColor: "rgba(255, 255, 255, 0.1)",
-    },
-  });
+        facilities,
+        amenities,
+        meals,
+      };
 
-  const handleAcButtonClick = (buttonType: string) => {
-    setActiveAcButton(activeAcButton === buttonType ? "false" : buttonType);
-  };
+      console.log(addProperty);
+      // return;
 
-  const styleTowelsBtn = (buttonType: string) => ({
-    fontSize: "15px",
-    color: "#fff",
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "auto",
-    height: "50px",
-    marginLeft: "290px",
-    fontFamily: '"Oswald", sans-serif',
-    boxShadow: activeTowelsButton === buttonType ? "0 0 5px" : "0 0 2px",
+      const response = await AuthService().createProperty(addProperty);
 
-    background:
-      activeTowelsButton === buttonType
-        ? "rgba(255, 255, 255, 0.1)"
-        : "transparent",
-    "&:hover": {
-      backgroundColor: "rgba(255, 255, 255, 0.1)",
-    },
-  });
+      propertyInputInfos.address = "";
+      propertyInputInfos.name = "";
+      setSelectedCountry("");
+      propertyInputInfos.city = "";
+      propertyInputInfos.zipCode = 0;
+      propertyInputInfos.propertyDescription = "";
+      setActiveButton("false");
+      setActiveBathButton("false");
+      setActiveRoomButton("false");
+      facilities.airConditioning = false;
+      facilities.balcony = false;
+      facilities.towel = false;
+      facilities.tv = false;
+      amenities.bikes = false;
+      amenities.disabilitiesFriendly = false;
+      amenities.garden = false;
+      amenities.gym = false;
+      amenities.kidsZone = false;
+      amenities.parking = false;
+      amenities.petsFriendly = false;
+      amenities.swimmingPool = false;
+      amenities.wifi = false;
+      meals.breakfast = false;
+      meals.dinner = false;
+      meals.lunch = false;
 
-  const handleTowelsButtonClick = (buttonType: string) => {
-    setActiveTowelsButton(
-      activeTowelsButton === buttonType ? "false" : buttonType
-    );
-  };
+      if (response.error.length !== 0) {
+        setErr(true);
+        setErrorMessage(response.error);
+        setOpenSnackbar(true);
+      } else {
+        setSuccess(true);
+        setSuccessMessage("Property created successfully!");
+      }
 
-  const styleTvBtn = (buttonType: string) => ({
-    fontSize: "15px",
-    color: "#fff",
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "auto",
-    height: "50px",
-    marginLeft: "290px",
-    fontFamily: '"Oswald", sans-serif',
-    boxShadow: activeTvButton === buttonType ? "0 0 5px" : "0 0 2px",
-
-    background:
-      activeTvButton === buttonType
-        ? "rgba(255, 255, 255, 0.1)"
-        : "transparent",
-    "&:hover": {
-      backgroundColor: "rgba(255, 255, 255, 0.1)",
-    },
-  });
-
-  const handleTvButtonClick = (buttonType: string) => {
-    setActiveTvButton(activeTvButton === buttonType ? "false" : buttonType);
-  };
-
-  const styleBalconyBtn = (buttonType: string) => ({
-    fontSize: "15px",
-    color: "#fff",
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "auto",
-    height: "50px",
-    marginLeft: "290px",
-    fontFamily: '"Oswald", sans-serif',
-    boxShadow: activeBalconyButton === buttonType ? "0 0 5px" : "0 0 2px",
-
-    background:
-      activeBalconyButton === buttonType
-        ? "rgba(255, 255, 255, 0.1)"
-        : "transparent",
-    "&:hover": {
-      backgroundColor: "rgba(255, 255, 255, 0.1)",
-    },
-  });
-
-  const handleBalconyButtonClick = (buttonType: string) => {
-    setActiveBalconyButton(
-      activeBalconyButton === buttonType ? "false" : buttonType
-    );
+      console.log(addProperty);
+      console.log(selectedCountry);
+    }
   };
 
   return (
@@ -573,7 +298,7 @@ const AddProperty = () => {
           <Button
             variant="outlined"
             onClick={() => handleButtonClick("apartment")}
-            sx={styleBtn("apartment")}
+            sx={styleBtn("apartment", activeButton)}
           >
             <ApartmentIcon sx={{ fontSize: "50px" }} />
             Apartment
@@ -581,7 +306,7 @@ const AddProperty = () => {
           <Button
             variant="outlined"
             onClick={() => handleButtonClick("house")}
-            sx={styleBtn("house")}
+            sx={styleBtn("house", activeButton)}
           >
             <HouseIcon sx={{ fontSize: "50px" }} />
             House
@@ -589,7 +314,7 @@ const AddProperty = () => {
           <Button
             variant="outlined"
             onClick={() => handleButtonClick("villa")}
-            sx={styleBtn("villa")}
+            sx={styleBtn("villa", activeButton)}
           >
             <VillaIcon sx={{ fontSize: "50px" }} />
             Villa
@@ -600,26 +325,45 @@ const AddProperty = () => {
           <div className="title">Property Name</div>
           <input
             className="input-name"
+            required
+            name="name"
             placeholder="Write your property name"
+            value={propertyInputInfos.name}
+            onChange={handleInfosChange}
           />
         </div>
         <div className="adress-component">
           <div className="title">Property Adress</div>
           <input
+            required
             className="input-adress"
             placeholder="Write your property adress"
+            name="address"
+            value={propertyInputInfos.address}
+            onChange={handleInfosChange}
           />
         </div>
 
         <div className="adress-details-component">
           <div className="country-component">
             <div className="title">Country</div>
-            <Country handleSelectCountry={handleSelectCountry} />
+            <Country
+              handleSelectCountry={handleSelectCountry}
+              name="country"
+              //   value={propertyInputInfos.country}
+              //   onChange={handleInfosChange}
+            />
           </div>
 
           <div className="zip-code-component">
             <div className="title">Zip Code</div>
-            <input className="input-zip-code" />
+            <input
+              required
+              className="input-zip-code"
+              name="zipCode"
+              value={propertyInputInfos.zipCode}
+              onChange={handleInfosChange}
+            />
           </div>
 
           <div className="city-component">
@@ -630,6 +374,12 @@ const AddProperty = () => {
               className="input-city"
               placeholder="Select city"
               onPlaceSelected={(place) => {
+                if (place.formatted_address) {
+                  console.log(place);
+
+                  propertyInputInfos.city = place.formatted_address;
+                  console.log(propertyInputInfos.city);
+                }
                 console.log(place);
               }}
               options={{
@@ -651,7 +401,7 @@ const AddProperty = () => {
             <Button
               variant="outlined"
               onClick={() => handleRoomButtonClick("1")}
-              sx={styleRoomBtn("1")}
+              sx={styleRoomBtn("1", activeRoomButton)}
             >
               1
               <BedIcon sx={{ fontSize: "40px" }} />
@@ -659,7 +409,7 @@ const AddProperty = () => {
             <Button
               variant="outlined"
               onClick={() => handleRoomButtonClick("2")}
-              sx={styleRoomBtn("2")}
+              sx={styleRoomBtn("2", activeRoomButton)}
             >
               2
               <BedIcon sx={{ fontSize: "40px" }} />
@@ -667,7 +417,7 @@ const AddProperty = () => {
             <Button
               variant="outlined"
               onClick={() => handleRoomButtonClick("3")}
-              sx={styleRoomBtn("3")}
+              sx={styleRoomBtn("3", activeRoomButton)}
             >
               3
               <BedIcon sx={{ fontSize: "40px" }} />
@@ -675,7 +425,7 @@ const AddProperty = () => {
             <Button
               variant="outlined"
               onClick={() => handleRoomButtonClick("4")}
-              sx={styleRoomBtn("4")}
+              sx={styleRoomBtn("4", activeRoomButton)}
             >
               4
               <BedIcon sx={{ fontSize: "40px" }} />
@@ -683,7 +433,7 @@ const AddProperty = () => {
             <Button
               variant="outlined"
               onClick={() => handleRoomButtonClick("5")}
-              sx={styleRoomBtn("5")}
+              sx={styleRoomBtn("5", activeRoomButton)}
             >
               5
               <BedIcon sx={{ fontSize: "40px" }} />
@@ -691,7 +441,7 @@ const AddProperty = () => {
             <Button
               variant="outlined"
               onClick={() => handleRoomButtonClick("6")}
-              sx={styleRoomBtn("6")}
+              sx={styleRoomBtn("6", activeRoomButton)}
             >
               +6
               <BedIcon sx={{ fontSize: "40px" }} />
@@ -705,7 +455,7 @@ const AddProperty = () => {
             <Button
               variant="outlined"
               onClick={() => handleBathButtonClick("1")}
-              sx={styleBathBtn("1")}
+              sx={styleBathBtn("1", activeBathButton)}
             >
               1
               <BathtubIcon sx={{ fontSize: "40px" }} />
@@ -713,7 +463,7 @@ const AddProperty = () => {
             <Button
               variant="outlined"
               onClick={() => handleBathButtonClick("2")}
-              sx={styleBathBtn("2")}
+              sx={styleBathBtn("2", activeBathButton)}
             >
               2
               <BathtubIcon sx={{ fontSize: "40px" }} />
@@ -721,7 +471,7 @@ const AddProperty = () => {
             <Button
               variant="outlined"
               onClick={() => handleBathButtonClick("3")}
-              sx={styleBathBtn("3")}
+              sx={styleBathBtn("3", activeBathButton)}
             >
               3
               <BathtubIcon sx={{ fontSize: "40px" }} />
@@ -729,7 +479,7 @@ const AddProperty = () => {
             <Button
               variant="outlined"
               onClick={() => handleBathButtonClick("4")}
-              sx={styleBathBtn("4")}
+              sx={styleBathBtn("4", activeBathButton)}
             >
               4
               <BathtubIcon sx={{ fontSize: "40px" }} />
@@ -737,7 +487,7 @@ const AddProperty = () => {
             <Button
               variant="outlined"
               onClick={() => handleBathButtonClick("5")}
-              sx={styleBathBtn("5")}
+              sx={styleBathBtn("5", activeBathButton)}
             >
               5
               <BathtubIcon sx={{ fontSize: "40px" }} />
@@ -745,7 +495,7 @@ const AddProperty = () => {
             <Button
               variant="outlined"
               onClick={() => handleBathButtonClick("6")}
-              sx={styleBathBtn("6")}
+              sx={styleBathBtn("6", activeBathButton)}
             >
               +6
               <BathtubIcon sx={{ fontSize: "40px" }} />
@@ -758,8 +508,12 @@ const AddProperty = () => {
           <Stack spacing={5} direction="row">
             <Button
               variant="outlined"
-              onClick={() => handlePetButtonClick("pet")}
-              sx={stylePetBtn("pet")}
+              onClick={() =>
+                setAmenities((prev) => {
+                  return { ...prev, petsFriendly: !prev.petsFriendly };
+                })
+              }
+              sx={styleAmenityBtn(amenities.petsFriendly)}
             >
               <PetsIcon sx={{ fontSize: "30px" }} />
               Pet Friendly
@@ -767,8 +521,15 @@ const AddProperty = () => {
 
             <Button
               variant="outlined"
-              onClick={() => handleDisabilityButtonClick("disability")}
-              sx={styleDisabilityBtn("disability")}
+              onClick={() =>
+                setAmenities((prev) => {
+                  return {
+                    ...prev,
+                    disabilitiesFriendly: !prev.disabilitiesFriendly,
+                  };
+                })
+              }
+              sx={styleAmenityBtn(amenities.disabilitiesFriendly)}
             >
               <AccessibleIcon sx={{ fontSize: "40px" }} />
               Disabilities Friendly
@@ -776,16 +537,24 @@ const AddProperty = () => {
 
             <Button
               variant="outlined"
-              onClick={() => handlePoolButtonClick("pool")}
-              sx={stylePoolBtn("pool")}
+              onClick={() =>
+                setAmenities((prev) => {
+                  return { ...prev, swimmingPool: !prev.swimmingPool };
+                })
+              }
+              sx={styleAmenityBtn(amenities.swimmingPool)}
             >
               <PoolIcon sx={{ fontSize: "40px" }} />
               Swimming Pool
             </Button>
             <Button
               variant="outlined"
-              onClick={() => handleGardenButtonClick("garden")}
-              sx={styleGardenBtn("garden")}
+              onClick={() =>
+                setAmenities((prev) => {
+                  return { ...prev, garden: !prev.garden };
+                })
+              }
+              sx={styleAmenityBtn(amenities.garden)}
             >
               <DeckIcon sx={{ fontSize: "40px" }} />
               Garden
@@ -795,40 +564,60 @@ const AddProperty = () => {
           <Stack spacing={7} direction="row" sx={{ mt: "20px" }}>
             <Button
               variant="outlined"
-              onClick={() => handleParkingButtonClick("parking")}
-              sx={styleParkingBtn("parking")}
+              onClick={() =>
+                setAmenities((prev) => {
+                  return { ...prev, parking: !prev.parking };
+                })
+              }
+              sx={styleAmenityBtn(amenities.parking)}
             >
               <DirectionsCarIcon sx={{ fontSize: "40px" }} />
               Parking
             </Button>
             <Button
               variant="outlined"
-              onClick={() => handleGymButtonClick("gym")}
-              sx={styleGymBtn("gym")}
+              onClick={() =>
+                setAmenities((prev) => {
+                  return { ...prev, gym: !prev.gym };
+                })
+              }
+              sx={styleAmenityBtn(amenities.gym)}
             >
               <FitnessCenterIcon sx={{ fontSize: "40px" }} />
               Gym
             </Button>
             <Button
               variant="outlined"
-              onClick={() => handleWifiButtonClick("wifi")}
-              sx={styleWifiBtn("wifi")}
+              onClick={() =>
+                setAmenities((prev) => {
+                  return { ...prev, wifi: !prev.wifi };
+                })
+              }
+              sx={styleAmenityBtn(amenities.wifi)}
             >
               <WifiIcon sx={{ fontSize: "35px" }} />
               Wi-fi
             </Button>
             <Button
               variant="outlined"
-              onClick={() => handleBikesButtonClick("bikes")}
-              sx={styleBikesBtn("bikes")}
+              onClick={() =>
+                setAmenities((prev) => {
+                  return { ...prev, bikes: !prev.bikes };
+                })
+              }
+              sx={styleAmenityBtn(amenities.bikes)}
             >
               <DirectionsBikeIcon sx={{ fontSize: "40px" }} />
               Bikes
             </Button>
             <Button
               variant="outlined"
-              onClick={() => handleKidsButtonClick("kids")}
-              sx={styleKidsBtn("kids")}
+              onClick={() =>
+                setAmenities((prev) => {
+                  return { ...prev, kidsZone: !prev.kidsZone };
+                })
+              }
+              sx={styleAmenityBtn(amenities.kidsZone)}
             >
               <ChildCareIcon sx={{ fontSize: "40px" }} />
               Kids Zone
@@ -851,24 +640,36 @@ const AddProperty = () => {
           <Stack spacing={7} direction="row">
             <Button
               variant="outlined"
-              onClick={() => handleBreakfastButtonClick("breakfast")}
-              sx={styleBreakfastBtn("breakfast")}
+              onClick={() =>
+                setMeals((prev) => {
+                  return { ...prev, breakfast: !prev.breakfast };
+                })
+              }
+              sx={styleMealBtn(meals.breakfast)}
             >
               <BakeryDiningIcon sx={{ fontSize: "50px" }} />
               Breakfast
             </Button>
             <Button
               variant="outlined"
-              onClick={() => handleLunchButtonClick("lunch")}
-              sx={styleLunchBtn("lunch")}
+              onClick={() =>
+                setMeals((prev) => {
+                  return { ...prev, lunch: !prev.lunch };
+                })
+              }
+              sx={styleMealBtn(meals.lunch)}
             >
               <RamenDiningIcon sx={{ fontSize: "50px" }} />
               Lunch
             </Button>
             <Button
               variant="outlined"
-              onClick={() => handleDinnerButtonClick("dinner")}
-              sx={styleDinnerBtn("dinner")}
+              onClick={() =>
+                setMeals((prev) => {
+                  return { ...prev, dinner: !prev.dinner };
+                })
+              }
+              sx={styleMealBtn(meals.dinner)}
             >
               <LunchDiningIcon sx={{ fontSize: "50px" }} />
               Dinner
@@ -879,8 +680,12 @@ const AddProperty = () => {
         <div className="description-component">
           <div className="title">Property description:</div>
           <textarea
+            required
             className="input-description"
             placeholder="Write your property description"
+            name="propertyDescription"
+            value={propertyInputInfos.propertyDescription}
+            onChange={handleInfosChange}
           />
         </div>
 
@@ -889,32 +694,48 @@ const AddProperty = () => {
           <Stack spacing={5} direction="row" sx={{ mt: "20px" }}>
             <Button
               variant="outlined"
-              onClick={() => handleTowelsButtonClick("towels")}
-              sx={styleTowelsBtn("towels")}
+              onClick={() =>
+                setFacilities((prev) => {
+                  return { ...prev, towel: !prev.towel };
+                })
+              }
+              sx={styleAmenityBtn(facilities.towel)}
             >
               <DryCleaningIcon sx={{ fontSize: "40px" }} />
               Towels
             </Button>
             <Button
               variant="outlined"
-              onClick={() => handleBalconyButtonClick("balcony")}
-              sx={styleBalconyBtn("balcony")}
+              onClick={() =>
+                setFacilities((prev) => {
+                  return { ...prev, balcony: !prev.balcony };
+                })
+              }
+              sx={styleAmenityBtn(facilities.balcony)}
             >
               <BalconyIcon sx={{ fontSize: "35px" }} />
               Balcony
             </Button>
             <Button
               variant="outlined"
-              onClick={() => handleAcButtonClick("airconditioning")}
-              sx={styleAcBtn("airconditioning")}
+              onClick={() =>
+                setFacilities((prev) => {
+                  return { ...prev, airConditioning: !prev.airConditioning };
+                })
+              }
+              sx={styleAmenityBtn(facilities.airConditioning)}
             >
               <AcUnitIcon sx={{ fontSize: "40px" }} />
               Air conditioning
             </Button>
             <Button
               variant="outlined"
-              onClick={() => handleTvButtonClick("tv")}
-              sx={styleTvBtn("tv")}
+              onClick={() =>
+                setFacilities((prev) => {
+                  return { ...prev, tv: !prev.tv };
+                })
+              }
+              sx={styleAmenityBtn(facilities.tv)}
             >
               <TvIcon sx={{ fontSize: "40px" }} />
               TV
@@ -926,12 +747,47 @@ const AddProperty = () => {
           <div className="title">Price:</div>
           <input className="input-price" />
         </div> */}
-        <input
-          type="property"
-          value="Create property"
+        <button
+          onClick={handleCreateBtnClick}
+          // disabled={isFilled()}
           className="add-property-btn"
-        />
+        >
+          Create property
+        </button>
       </div>
+
+      {err && (
+        <Snackbar
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "center",
+          }}
+          open={openSnackbar}
+          className="snackbarError"
+          autoHideDuration={5000}
+          onClose={handleCloseSnackbar}
+        >
+          <Alert severity="error">{errorMessage}</Alert>
+        </Snackbar>
+      )}
+
+      {success && (
+        <Snackbar
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "center",
+          }}
+          open={success}
+          className="snackbarSuccess"
+          autoHideDuration={5000}
+          onClose={() => setSuccess(false)}
+          sx={{ width: "100%" }}
+        >
+          <Alert severity="success" icon={<CheckIcon fontSize="inherit" />}>
+            {successMessage}
+          </Alert>
+        </Snackbar>
+      )}
     </MainComponent>
   );
 };
