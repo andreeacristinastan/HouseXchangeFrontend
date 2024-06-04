@@ -30,6 +30,17 @@ import AcUnitIcon from "@mui/icons-material/AcUnit";
 import BalconyIcon from "@mui/icons-material/Balcony";
 import { useUserStore } from "../../utils/useUserStore";
 import CheckIcon from "@mui/icons-material/Check";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import { FilePond, registerPlugin } from "react-filepond";
+import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orientation";
+import FilePondPluginImagePreview from "filepond-plugin-image-preview";
+
+import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
+import "filepond/dist/filepond.min.css";
+
+registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
+
+// import { cloudinaryConfig } from './cloudinaryConfig';
 
 import LinearProgress from "@mui/material/LinearProgress";
 import {
@@ -42,6 +53,8 @@ import {
 import AuthService from "../../services/AuthService";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import Fab from "@mui/material/Fab";
+import Image from "next/image";
 
 const MainComponent = styled("section")(({ theme }) => ({
   color: theme.palette.common.white,
@@ -138,13 +151,148 @@ const AddProperty = () => {
     airConditioning: false,
     tv: false,
   });
+
+  const [files, setFiles] = useState([]);
+  // const process = (
+  //   fieldName,
+  //     file,
+  //     metadata,
+  //     load,
+  //     error,
+  //     progress,
+  //     abort,
+  //     transfer,
+  //     options
+  //   ) => {
+  //     const abortRequest = makeUploadRequest({
+  //       file,
+  //       fieldName,
+  //       successCallback: load,
+  //       errorCallback: error,
+  //       progressCallback: progress,
+  //     });
+
+  //     return {
+  //       abort: () => {
+  //         abortRequest();
+  //         abort();
+  //       },
+  //     };
+  //   };
   const { user, setUser } = useUserStore();
+  const [photo, setPhoto] = useState<File | null>(null);
+  const [uploadedImgUrl, setUploadedImgUrl] = useState("");
+  const [previewSrc, setPreviewSrc] = useState("");
+  // const [error, setError] = useState("");
+
+  const handleUploadPhoto = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      setPhoto(selectedFile);
+      setPreviewSrc(URL.createObjectURL(selectedFile));
+
+      console.log(selectedFile);
+
+      e.preventDefault();
+      // console.log(photo);
+      const formData: any = new FormData();
+      formData.append("file", selectedFile);
+      formData.append("upload_preset", "y9gqbvk9");
+
+      let uploadedImg = "";
+
+      await fetch("https://api.cloudinary.com/v1_1/depdeolt0/upload", {
+        method: "POST",
+        body: formData,
+      })
+        .then((res) => {
+          if (res.ok) {
+            return res.json();
+          } else {
+            return Promise.reject();
+          }
+        })
+        .then((data: { secure_url: string; public_id: string }) => {
+          uploadedImg = data.secure_url;
+        })
+        .catch((err) => {
+          console.log(err);
+          setErr(true);
+          setErrorMessage(
+            "An error occured while uploading the photo. Please try again"
+          );
+          setPhoto(null);
+          // setPreviewSrc(null);
+          setOpenSnackbar(true);
+        });
+      // console.log(selectedFile);
+
+      // setUploadedImgUrl(data.secure_url);
+    }
+  };
+
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   // Handle form submission logic here
+  //   e.preventDefault();
+  //   // console.log(photo);
+  //   const formData: any = new FormData();
+  //   formData.append("file", photo);
+  //   formData.append("upload_preset", "y9gqbvk9");
+
+  //   let uploadedImg = "";
+
+  //   await fetch("https://api.cloudinary.com/v1_1/depdeolt0/upload", {
+  //     method: "POST",
+  //     body: formData,
+  //   })
+  //     .then((res) => {
+  //       if (res.ok) {
+  //         return res.json();
+  //       } else {
+  //         return Promise.reject();
+  //       }
+  //     })
+  //     .then(
+  //       (data: { secure_url: string; public_id: string }) =>
+  //         (uploadedImg = data.secure_url)
+  //     )
+  // .catch((err) => {
+  //   console.log(err);
+  //   setErr(true);
+  //   setErrorMessage("You should sign in as a HOST user");
+  //   setOpenSnackbar(true);
+  // });
+
+  //   // console.log(uploadedImg);
+
+  //   // if (
+  //   //   currentCountry === DEFAULT_COUNTRY ||
+  //   //   currentCity === "" ||
+  //   //   name === ""
+  //   // ) {
+  //   //   setError("Please select a valid location");
+  //   //   return;
+  //   // }
+  //   // console.log("Submitted:", { currentCountry, currentCity, name, photo });
+
+  //   // dispatch({
+  //   //   type: PlaceActionType.ADD,
+  //   //   payload: {
+  //   //     name,
+  //   //     country: currentCountry,
+  //   //     city: currentCity,
+  //   //     imageURL: uploadedImg,
+  //   //   } as PlaceType,
+  //   // });
+
+  //   // setError("");
+  //   // onCloseFn();
+  // };
 
   const API_KEY = import.meta.env.VITE_MAPS_API_KEY;
 
   const handleSelectCountry = (selectedCountry: string) => {
     setSelectedCountry(selectedCountry);
-    // console.log(selectedCountry);
   };
   const countryCode = getCode(selectedCountry);
   const restriction = "" + countryCode?.toString().toLowerCase();
@@ -747,6 +895,65 @@ const AddProperty = () => {
           <div className="title">Price:</div>
           <input className="input-price" />
         </div> */}
+        <div className="mb-4" style={{ marginTop: "20px" }}>
+          <div className="flex items-center space-x-20">
+            <Button
+              component="label"
+              role={undefined}
+              variant="outlined"
+              tabIndex={-1}
+              startIcon={<CloudUploadIcon />}
+              sx={{
+                color: "#fff",
+                boxShadow: "0 0 2px",
+                borderColor: "transparent",
+
+                "&:hover": {
+                  borderColor: "transparent",
+                  backgroundColor: "rgba(255, 255, 255, 0.1)",
+                },
+              }}
+            >
+              Upload file
+              <input
+                type="file"
+                id="upload"
+                name="upload"
+                accept="image/*"
+                onChange={handleUploadPhoto}
+                className="hidden"
+                style={{ display: "none" }}
+              />
+            </Button>
+            {photo && (
+              // <span className="text-gray-700">{photo.name}</span>
+              <div className="relative max-w-[200px] min-w-[200px] max-h-[200px] min-h-[200px] mt-4">
+                <img
+                  src={previewSrc}
+                  alt="Uploaded"
+                  style={{ width: "200px", height: "auto" }}
+                />
+              </div>
+            )}
+          </div>
+        </div>
+        {/* {error !== "" && <span className="text-red">{error}</span>} */}
+        {/* <div className="flex justify-end">
+          <Button variant="contained" onClick={handleSubmit}>
+            Save
+          </Button>
+        </div> */}
+        <div style={{ width: "80%", margin: "auto", padding: "1%" }}>
+          <FilePond
+            files={files}
+            acceptedFileTypes="image/*"
+            onupdatefiles={setFiles}
+            allowMultiple={true}
+            // server={{ process, revert }}
+            name="file"
+            labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
+          />
+        </div>
         <button
           onClick={handleCreateBtnClick}
           // disabled={isFilled()}

@@ -189,9 +189,9 @@ const GuestProperties = () => {
           if (!res.ok) {
             return;
           }
-          setProperties(
-            properties.filter((property) => property !== selectedProperty)
-          );
+          // setProperties(
+          //   properties.filter((property) => property !== selectedProperty)
+          // );
         }
       }
     }
@@ -246,10 +246,7 @@ const GuestProperties = () => {
                   <TableCell>{property.bathrooms}</TableCell>
                   <TableCell>{property.rooms}</TableCell>
                   <TableCell>
-                    <Button
-                      color="secondary"
-                      onClick={() => handleAdd(property)}
-                    >
+                    <Button color="primary" onClick={() => handleAdd(property)}>
                       Add
                     </Button>
                   </TableCell>

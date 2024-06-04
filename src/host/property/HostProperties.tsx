@@ -182,9 +182,10 @@ const HostProperties = () => {
           if (!res.ok) {
             return;
           }
-          setProperties(
-            properties.filter((property) => property !== selectedProperty)
-          );
+          getProperties();
+          // setProperties(
+          //   properties.filter((property) => property !== selectedProperty)
+          // );
         }
       }
     }
@@ -233,13 +234,15 @@ const HostProperties = () => {
           if (!res.ok) {
             return;
           }
-          setProperties(
-            properties.map((property) =>
-              property.id === editedProperty.id
-                ? { ...property, name: editedName }
-                : property
-            )
-          );
+          // setProperties(
+          //   properties.map((property) =>
+          //     property.id === editedProperty.id
+          //       ? { ...property, name: editedName }
+          //       : property
+          //   )
+          // );
+
+          getProperties();
         }
       }
     }

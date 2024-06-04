@@ -18,6 +18,7 @@ import {
 import TextField from "../utils/TextField";
 import { jwtDecode } from "jwt-decode";
 import { useUserStore } from "../utils/useUserStore";
+import { json } from "stream/consumers";
 
 interface Trip {
   id: number;
@@ -111,42 +112,77 @@ type userInfos = {
   iat: number;
 };
 
+type patchTrip = {
+  numberOfPersons: number;
+  minRange: number;
+  maxRange: number;
+  checkInDate: Date;
+  checkOutDate: Date;
+};
+
+type responseGetAllTrips = {
+  id: number;
+  numberOfPersons: number;
+  destination: string;
+  minRange: number;
+  maxRange: number;
+  checkInDate: Date;
+  checkOutDate: Date;
+  userId: number;
+  propertyId: number;
+}[];
+
 const GuestTrips = () => {
-  const [trips, setTrips] = useState<Property[]>([]);
+  const [trips, setTrips] = useState<Trip[]>([]);
   const [open, setOpen] = useState(false);
-  const [selectedTrip, setSelectedTrip] = useState<Property | null>(null);
+  const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [search, setSearch] = useState("");
   const { user } = useUserStore();
   const [editOpen, setEditOpen] = useState(false);
-  const [editedTrip, setEditedTrip] = useState<Property | null>(null);
-  const [editedNumberOfPersons, setEditedNumberOfPersons] = useState("");
+  const [editedTrip, setEditedTrip] = useState<Trip | null>(null);
+  const [editedNumberOfPersons, setEditedNumberOfPersons] = useState(0);
 
   const getTrips = async () => {
-    const res = await fetch(
-      `http://localhost:8080/api/properties?page=${0}&size=${8}`,
-      {
-        method: "GET",
+    const token = localStorage.getItem("user");
+
+    if (token) {
+      const decodedToken: userInfos = jwtDecode(token);
+      console.log(token);
+
+      const currentTime = Date.now() / 1000;
+      if (decodedToken.exp > currentTime) {
+        const res = await fetch(
+          `http://localhost:8080/api/users/${
+            user?.id
+          }/trips?page=${0}&size=${8}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token.replace(/"/g, "")}`,
+            },
+          }
+        );
+        if (!res.ok) {
+          console.log("Eroare cand iei proprietati");
+          return;
+        }
+
+        const data: responseGetAllTrips = await res.json();
+        setTrips(
+          data.map((trip) => ({
+            id: trip.id,
+            numberOfPersons: trip.numberOfPersons,
+            checkIn: trip.checkInDate,
+            checkOut: trip.checkOutDate,
+            destination: trip.destination,
+          }))
+        );
       }
-    );
-    if (!res.ok) {
-      console.log("Eroare cand iei proprietati");
-      return;
     }
 
-    const data: responseGetAllProperties = await res.json();
-    setTrips(
-      data.map((property) => ({
-        id: property.id,
-        name: property.name,
-        propertyType: property.propertyType,
-        bathrooms: property.numberOfBathrooms,
-        rooms: property.numberOfRooms,
-      }))
-    );
-
-    console.log(data);
+    // console.log(data);
   };
 
   useEffect(() => {
@@ -162,30 +198,31 @@ const GuestTrips = () => {
     if (confirm && selectedTrip) {
       const token = localStorage.getItem("user");
 
-      //   if (token) {
-      //     const decodedToken: userInfos = jwtDecode(token);
-      //     console.log(token);
+      if (token) {
+        const decodedToken: userInfos = jwtDecode(token);
+        console.log(token);
 
-      //     const currentTime = Date.now() / 1000;
-      //     if (decodedToken.exp > currentTime) {
-      //       const res = await fetch(
-      //         `http://localhost:8080/api/users/${user?.id}/properties/${selectedProperty.id}`,
-      //         {
-      //           method: "DELETE",
-      //           headers: {
-      //             Authorization: `Bearer ${token.replace(/"/g, "")}`,
-      //             "Content-Type": "application/json",
-      //           },
-      //         }
-      //       );
-      //       if (!res.ok) {
-      //         return;
-      //       }
-      //       setProperties(
-      //         properties.filter((property) => property !== selectedProperty)
-      //       );
-      //     }
-      //   }
+        const currentTime = Date.now() / 1000;
+        if (decodedToken.exp > currentTime) {
+          const res = await fetch(
+            `http://localhost:8080/api/users/${user?.id}/trips/${selectedTrip.id}`,
+            {
+              method: "DELETE",
+              headers: {
+                Authorization: `Bearer ${token.replace(/"/g, "")}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          if (!res.ok) {
+            console.log("response:" + JSON.stringify(res));
+
+            return;
+          }
+          getTrips();
+          // setTrips(trips.filter((trip) => trip !== selectedTrip));
+        }
+      }
     }
     setOpen(false);
   };
@@ -203,43 +240,40 @@ const GuestTrips = () => {
       const token = localStorage.getItem("user");
 
       if (token) {
-        // const decodedToken: userInfos = jwtDecode(token);
-        // const currentTime = Date.now() / 1000;
-        // if (decodedToken.exp > currentTime) {
-        //   const values: patchProperty = {
-        //     name: editedName,
-        //     country: "",
-        //     city: "",
-        //     address: "",
-        //     zipCode: 0,
-        //     propertyDescription: "",
-        //     propertyType: "",
-        //     numberOfBathrooms: 0,
-        //     numberOfRooms: 0,
-        //     price: 0,
-        //   };
-        //   const res = await fetch(
-        //     `http://localhost:8080/api/users/${user?.id}/properties/${editedProperty.id}`,
-        //     {
-        //       method: "PATCH",
-        //       headers: {
-        //         Authorization: `Bearer ${token.replace(/"/g, "")}`,
-        //         "Content-Type": "application/json",
-        //       },
-        //       body: JSON.stringify(values),
-        //     }
-        //   );
-        //   if (!res.ok) {
-        //     return;
-        //   }
-        //   setProperties(
-        //     properties.map((property) =>
-        //       property.id === editedProperty.id
-        //         ? { ...property, name: editedName }
-        //         : property
-        //     )
-        //   );
-        // }
+        const decodedToken: userInfos = jwtDecode(token);
+        const currentTime = Date.now() / 1000;
+        if (decodedToken.exp > currentTime) {
+          const values: patchTrip = {
+            numberOfPersons: editedNumberOfPersons,
+            minRange: 0,
+            maxRange: 0,
+            checkInDate: new Date(),
+            checkOutDate: new Date(),
+          };
+          const res = await fetch(
+            `http://localhost:8080/api/users/${user?.id}/trips/${editedTrip.id}`,
+            {
+              method: "PATCH",
+              headers: {
+                Authorization: `Bearer ${token.replace(/"/g, "")}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(values),
+            }
+          );
+          if (!res.ok) {
+            return;
+          }
+
+          getTrips();
+          // setProperties(
+          //   properties.map((property) =>
+          //     property.id === editedProperty.id
+          //       ? { ...property, name: editedName }
+          //       : property
+          //   )
+          // );
+        }
       }
     }
     setEditOpen(false);
@@ -260,9 +294,9 @@ const GuestTrips = () => {
     setSearch(event.target.value);
   };
 
-  //   const filteredProperties = trip.filter((trip) =>
-  //     trip.name.toLowerCase().includes(search.toLowerCase())
-  //   );
+  const filteredTrips = trips.filter((trip) =>
+    trip.destination.toLowerCase().includes(search.toLowerCase())
+  );
   return (
     <div style={{ marginTop: "80px" }}>
       <TextField
@@ -276,32 +310,33 @@ const GuestTrips = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Property Type</TableCell>
-              <TableCell>Number of Bathrooms</TableCell>
-              <TableCell>Number of Rooms</TableCell>
+              <TableCell>Destination</TableCell>
+              <TableCell>Check In</TableCell>
+              <TableCell>Check Out</TableCell>
+              <TableCell>Number of Persons</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredProperties
+            {filteredTrips
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((property, index) => (
+              .map((trip, index) => (
                 <TableRow key={index}>
-                  <TableCell>{property.name}</TableCell>
-                  <TableCell>{property.propertyType}</TableCell>
-                  <TableCell>{property.bathrooms}</TableCell>
-                  <TableCell>{property.rooms}</TableCell>
+                  <TableCell>{trip.destination}</TableCell>
                   <TableCell>
-                    <Button
-                      color="primary"
-                      onClick={() => handleEdit(property)}
-                    >
+                    {new Date(trip.checkIn).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell>
+                    {new Date(trip.checkOut).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell>{trip.numberOfPersons}</TableCell>
+                  <TableCell>
+                    <Button color="primary" onClick={() => handleEdit(trip)}>
                       Edit
                     </Button>
                     <Button
                       color="secondary"
-                      onClick={() => handleDelete(property)}
+                      onClick={() => handleDelete(trip)}
                     >
                       Delete
                     </Button>
@@ -313,7 +348,7 @@ const GuestTrips = () => {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={filteredProperties.length}
+          count={filteredTrips.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
@@ -339,11 +374,13 @@ const GuestTrips = () => {
             <TextField
               autoFocus
               margin="dense"
-              label="Name"
-              type="text"
+              label="Number of persons"
+              type="number"
               fullWidth
-              value={editedName}
-              onChange={(event) => setEditedName(event.target.value)}
+              value={editedNumberOfPersons}
+              onChange={(event) =>
+                setEditedNumberOfPersons(parseInt(event.target.value))
+              }
             />
           </DialogContent>
           <DialogActions>

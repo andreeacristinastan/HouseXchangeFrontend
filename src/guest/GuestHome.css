@@ -44,3 +44,7 @@
 .login-btn:focus {
   outline: none;
 }
+
+.guest-home-container {
+  background-color: #588b97;
+}
