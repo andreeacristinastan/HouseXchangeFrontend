@@ -37,6 +37,7 @@ export const styleRoomBtn = (buttonType: string, activeRoomButton: string) => ({
   display: "flex",
   flexDirection: "row",
   justifyContent: "space-between",
+  gap: "10%",
   width: "auto",
   height: "50px",
   marginLeft: "290px",

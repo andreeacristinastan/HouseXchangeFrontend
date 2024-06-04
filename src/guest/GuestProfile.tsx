@@ -9,6 +9,7 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import AuthService from "../services/AuthService";
 import { useUserStore } from "../utils/useUserStore";
+import { EditUserType } from "../utils/types/UserTypes";
 
 const BackgroundStyle = styled("section")(({ theme }) => ({
   color: theme.palette.common.white,
@@ -18,13 +19,6 @@ const BackgroundStyle = styled("section")(({ theme }) => ({
     height: "100vh",
   },
 }));
-
-type editUser = {
-  email: string;
-  firstName: string;
-  lastName: string;
-  language: string;
-};
 
 const GuestProfile = () => {
   const { user, setUser } = useUserStore();
@@ -59,7 +53,7 @@ const GuestProfile = () => {
     language: "",
   });
 
-  const editUserDetails = async (values: editUser) => {
+  const editUserDetails = async (values: EditUserType) => {
     try {
       const response = await AuthService().updateUser(values);
 
@@ -97,7 +91,7 @@ const GuestProfile = () => {
       setShowDetails(false);
       setProfileButton("Save Changes");
     } else if (profileButton === "Save Changes") {
-      const updatedUser: editUser = {
+      const updatedUser: EditUserType = {
         email: newUserInfos.email,
         firstName: newUserInfos.firstName,
         lastName: newUserInfos.lastName,

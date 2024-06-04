@@ -19,7 +19,7 @@
   outline: none;
   border-color: white;
   text-align: center;
-  width: 70%;
+  width: 80%;
   min-width: 290px;
   min-height: 40px;
   border-radius: 8px;
@@ -41,7 +41,7 @@
   outline: none;
   border-color: white;
   text-align: center;
-  width: 70%;
+  width: 80%;
   min-width: 290px;
   min-height: 40px;
   border-radius: 8px;
@@ -62,9 +62,10 @@
 
 .adress-details-component {
   display: flex;
-  flex-direction: row;
+  justify-content: flex-start;
+  /* gap: 0.01px; */
+  /* flex-direction: row; */
   margin-top: 20px;
-  /* justify-content; */
 }
 
 .input-zip-code {
@@ -73,6 +74,7 @@
   text-align: center;
   width: 70%;
   margin-right: 100px;
+  padding: 0px;
 
   /* min-width: 290px; */
   min-height: 40px;
@@ -82,6 +84,16 @@
   color: #588b97;
   background-color: #ffffff;
   box-shadow: 0 0 10px;
+}
+
+.country-component,
+.zip-code-component {
+  margin-right: 8%; /* Adjust this value as needed */
+}
+
+.city-component,
+.zip-code-component {
+  margin-right: 3%; /* Adjust this value as needed */
 }
 
 .zip-code-component {

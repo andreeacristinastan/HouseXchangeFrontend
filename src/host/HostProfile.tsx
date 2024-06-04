@@ -9,6 +9,7 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import AuthService from "../services/AuthService";
 import Language from "../guest/utils/Language";
+import { EditUserType } from "../utils/types/UserTypes";
 
 const BackgroundStyle = styled("section")(({ theme }) => ({
   color: theme.palette.common.white,
@@ -18,47 +19,6 @@ const BackgroundStyle = styled("section")(({ theme }) => ({
     height: "100vh",
   },
 }));
-
-type PropertyInfo = {
-  id: number;
-  name: string;
-};
-
-type TripInfo = {
-  id: number;
-  numberOfPersons: number;
-  destination: string;
-  minRange: number;
-  maxRange: number;
-  checkInDate: Date;
-  checkOutDate: Date;
-  userId: number;
-  propertyId: number;
-};
-
-type userInfo = {
-  id: number;
-  role: string;
-  email: string;
-  username: string;
-  firstName: string;
-  lastName: string;
-  language: string;
-  phoneNumber: string;
-  properties: PropertyInfo[];
-  tripInfoDto: TripInfo[];
-};
-
-type editUser = {
-  email: string;
-  firstName: string;
-  lastName: string;
-  language: string;
-};
-
-// interface MyComponentProps {
-//   user: userInfo | null;
-// }
 
 const HostProfile = () => {
   const [showDetails, setShowDetails] = useState(false);
@@ -98,7 +58,7 @@ const HostProfile = () => {
     language: "",
   });
 
-  const editUserDetails = async (values: editUser) => {
+  const editUserDetails = async (values: EditUserType) => {
     try {
       const response = await AuthService().updateUser(values);
 
@@ -136,7 +96,7 @@ const HostProfile = () => {
       setShowDetails(false);
       setProfileButton("Save Changes");
     } else if (profileButton === "Save Changes") {
-      const updatedUser: editUser = {
+      const updatedUser: EditUserType = {
         email: newUserInfos.email,
         firstName: newUserInfos.firstName,
         lastName: newUserInfos.lastName,
