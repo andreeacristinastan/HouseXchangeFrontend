@@ -1,11 +1,8 @@
-import { CreateAmenityType } from "./AmenityTypes";
-import { CreateFacilityType } from "./FacilityTypes";
-import { CreateMealType } from "./MealTypes";
-
-export type ImageCreationType = {
-  publicId: string;
-  propertyId: number | undefined;
-};
+import { CreateAmenityType, ResponseAmenityType } from "./AmenityTypes";
+import { CreateFacilityType, ResponseFacilityType } from "./FacilityTypes";
+import { ResponseImageInfoType, ResponseImagesInfoType } from "./ImageTypes";
+import { CreateMealType, ResponseMealType } from "./MealTypes";
+import { ResponseTripsType } from "./TripTypes";
 
 export type PropertyCreationType = {
   name: string;
@@ -32,4 +29,43 @@ export type ResponsePropertyType = {
 export type ResponseAddPropertyType = {
   propertyDetails: ResponsePropertyType | null;
   error: string;
+};
+
+export type ResponseGetAllPropertiesType = {
+  id: number;
+  name: string;
+  country: string;
+  city: string;
+  address: string;
+  zipCode: number;
+  propertyDescription: string;
+  propertyType: string;
+  numberOfBathrooms: number;
+  numberOfRooms: number;
+  price: number;
+  userId: number;
+  trips: ResponseTripsType;
+  images: ResponseImageInfoType[];
+  mealInfo: ResponseMealType;
+  amenityInfo: ResponseAmenityType;
+  facilityDto: ResponseFacilityType;
+}[];
+
+export interface Property {
+  id: number;
+  name: string;
+  propertyDescription: string;
+  propertyType: string;
+  bathrooms: number;
+  rooms: number;
+  country: string;
+  city: string;
+  address: string;
+  price: number;
+  images: ResponseImagesInfoType;
+}
+
+export type ResponsePropertyInfoType = {
+  id: number;
+  name: string;
 };

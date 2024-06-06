@@ -4,28 +4,24 @@ import LoginPage from "./login/LoginPage.tsx";
 import HomePage from "./home/HomePage.tsx";
 import RegisterPage from "./register/RegisterPage.tsx";
 import AppBar from "./home/AppBar.tsx";
-import Profile from "./profile/Profile.tsx";
-
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useEffect, useState } from "react";
 import AuthService from "./services/AuthService.tsx";
 import React from "react";
 import Snackbar from "@mui/material/Snackbar";
 import GuestHome from "./guest/GuestHome.tsx";
 import HostHome from "./host/HostHome.tsx";
-import HostProfile from "./host/HostProfile.tsx";
 import GuestAppBar from "./guest/GuestAppBar.tsx";
-import GuestProfile from "./guest/GuestProfile.tsx";
 import HostAppBar from "./host/HostAppBar.tsx";
 import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { lime, purple } from "@mui/material/colors";
-import { log } from "console";
 import { useUserStore } from "./utils/useUserStore";
 import AddProperty from "./host/property/AddProperty.tsx";
 import HostProperties from "./host/property/HostProperties.tsx";
-import GuestProperties from "./guest/GuestProperties.tsx";
 import GuestTrips from "./guest/GuestTrips.tsx";
+import DisplayAllProperties from "./properties/DisplayAllProperties.tsx";
+import UserProfile from "./profile/UserProfile.tsx";
 
 const theme = createTheme({
   palette: {
@@ -41,6 +37,7 @@ function App() {
   const [errorMessage, setErrorMessage] = useState("");
   const [openSnackbar, setOpenSnackbar] = React.useState(false);
   const [showContent, setShowContent] = useState(false);
+  const [showTitle, setShowTitle] = useState("");
 
   useEffect(() => {
     setTimeout(() => {
@@ -54,20 +51,6 @@ function App() {
       : user?.role === "HOST"
       ? HostAppBar
       : AppBar;
-  // useUserStore.getState().user?.role === "GUEST"
-  //   ? GuestAppBar
-  //   : useUserStore.getState().user?.role === "HOST"
-  //   ? HostAppBar
-  //   : AppBar;
-
-  const ProfileComponent =
-    user?.role === "GUEST" ? (
-      <GuestProfile />
-    ) : user?.role === "HOST" ? (
-      <HostProfile />
-    ) : (
-      <Profile />
-    );
 
   const PageComponent =
     user?.role === "GUEST"
@@ -116,47 +99,37 @@ function App() {
         }
       }
     })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [setUser]);
 
-  // useUserStore.getState().user?.role === "GUEST"
-  //   ? GuestHome
-  //   : useUserStore.getState().user?.role === "HOST"
-  //   ? HostHome
-  //   : HomePage;
-
-  // let ProfileComponent =
-  //   user?.role === "GUEST" ? (
-  //     <GuestProfile />
-  //   ) : user?.role === "HOST" ? (
-  //     <HostProfile />
-  //   ) : (
-  //     <Profile />
-  //   );
-
-  //   useUserStore.getState().user?.role === "GUEST" ? (
-  //     <GuestProfile />
-  //   ) : useUserStore.getState().user?.role === "HOST" ? (
-  //     <HostProfile />
-  //   ) : (
-  //     <Profile />
-  //   );
+  useEffect(() => {
+    user?.role === "GUEST"
+      ? setShowTitle("Your total trips:")
+      : user?.role === "HOST"
+      ? setShowTitle("Your total properties:")
+      : setShowTitle("");
+  }, [user?.role]);
 
   return (
     <div>
       {showContent ? (
         <>
           <Router>
-            <AppBarComponent />
+            <AppBarComponent profilePhoto={user?.profileImage?.url} />
             <Routes>
               <Route path="/" element={<PageComponent />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
-              <Route path="/profile" element={ProfileComponent} />
+              <Route
+                path="/profile"
+                element={<UserProfile showTitle={showTitle} />}
+              />
               <Route path="/property/create" element={<AddProperty />} />
-              <Route path="/properties" element={<HostProperties />} />
-              <Route path="/properties/all" element={<GuestProperties />} />
-              <Route path="/trips" element={<GuestTrips />} />
+              <Route path="/my-properties" element={<HostProperties />} />
+              <Route
+                path="/properties/all"
+                element={<DisplayAllProperties />}
+              />
+              <Route path="/my-trips" element={<GuestTrips />} />
             </Routes>
           </Router>
 

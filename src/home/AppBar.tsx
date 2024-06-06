@@ -9,7 +9,7 @@ const rightLink = {
   ml: 3,
 };
 
-const AppBar = () => {
+const AppBar = ({ profilePhoto }: { profilePhoto: string | undefined }) => {
   return (
     <div>
       <link

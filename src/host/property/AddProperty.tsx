@@ -30,7 +30,6 @@ import AcUnitIcon from "@mui/icons-material/AcUnit";
 import BalconyIcon from "@mui/icons-material/Balcony";
 import { useUserStore } from "../../utils/useUserStore";
 import CheckIcon from "@mui/icons-material/Check";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { FilePond, registerPlugin } from "react-filepond";
 import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orientation";
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
@@ -39,10 +38,6 @@ import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 import "filepond/dist/filepond.min.css";
 
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
-
-// import { cloudinaryConfig } from './cloudinaryConfig';
-
-import LinearProgress from "@mui/material/LinearProgress";
 import {
   styleBtn,
   styleRoomBtn,
@@ -50,11 +45,9 @@ import {
   styleAmenityBtn,
   styleMealBtn,
 } from "./ButtonsStyle";
-import AuthService, { ImageCreationType } from "../../services/AuthService";
+import AuthService from "../../services/AuthService";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
-import Fab from "@mui/material/Fab";
-import Image from "next/image";
 
 const MainComponent = styled("section")(({ theme }) => ({
   color: theme.palette.common.white,
@@ -80,6 +73,8 @@ import {
   PropertyCreationType,
   ResponseAddPropertyType,
 } from "../../utils/types/PropertyTypes";
+import { ImageCreationType } from "../../utils/types/ImageTypes";
+import { CreateAmenityType } from "../../utils/types/AmenityTypes";
 
 const AddProperty = () => {
   const [activeButton, setActiveButton] = useState("false");
@@ -92,7 +87,9 @@ const AddProperty = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [disabled, setDisabled] = useState(true);
-  const [amenities, setAmenities] = useState<createAmenity>({
+  const [tokens, setTokens] = useState<string[]>([]);
+  const [files, setFiles] = useState([]);
+  const [amenities, setAmenities] = useState<CreateAmenityType>({
     petsFriendly: false,
     disabilitiesFriendly: false,
     swimmingPool: false,
@@ -117,13 +114,11 @@ const AddProperty = () => {
     tv: false,
   });
 
-  const [images, setImages] = React.useState<string[]>([]);
+  const [images, setImages] = useState<string[]>([]);
 
   const handleAddImages = (image: string) => {
     setImages((prevImageVector) => [...prevImageVector, image]);
   };
-
-  const [files, setFiles] = useState([]);
 
   const revert = (token, successCallback, errorCallback) => {
     makeDeleteRequest({
@@ -151,6 +146,7 @@ const AddProperty = () => {
       errorCallback: error,
       progressCallback: progress,
       addImages: handleAddImages,
+      setTokens,
     });
 
     return {
@@ -162,114 +158,6 @@ const AddProperty = () => {
   };
 
   const { user, setUser } = useUserStore();
-  const [photo, setPhoto] = useState<File | null>(null);
-  const [uploadedImgUrl, setUploadedImgUrl] = useState("");
-  const [previewSrc, setPreviewSrc] = useState("");
-  // const [error, setError] = useState("");
-
-  // const handleUploadPhoto = async (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const selectedFile = e.target.files?.[0];
-  //   if (selectedFile) {
-  //     setPhoto(selectedFile);
-  //     setPreviewSrc(URL.createObjectURL(selectedFile));
-
-  //     console.log(selectedFile);
-
-  //     e.preventDefault();
-  //     // console.log(photo);
-  //     const formData: any = new FormData();
-  //     formData.append("file", selectedFile);
-  //     formData.append("upload_preset", "y9gqbvk9");
-
-  //     let uploadedImg = "";
-
-  //     await fetch("https://api.cloudinary.com/v1_1/depdeolt0/upload", {
-  //       method: "POST",
-  //       body: formData,
-  //     })
-  //       .then((res) => {
-  //         if (res.ok) {
-  //           return res.json();
-  //         } else {
-  //           return Promise.reject();
-  //         }
-  //       })
-  //       .then((data: { secure_url: string; public_id: string }) => {
-  //         uploadedImg = data.secure_url;
-  //       })
-  //       .catch((err) => {
-  //         console.log(err);
-  //         setErr(true);
-  //         setErrorMessage(
-  //           "An error occured while uploading the photo. Please try again"
-  //         );
-  //         setPhoto(null);
-  //         // setPreviewSrc(null);
-  //         setOpenSnackbar(true);
-  //       });
-  //     // console.log(selectedFile);
-
-  //     // setUploadedImgUrl(data.secure_url);
-  //   }
-  // };
-
-  // const handleSubmit = async (e: React.FormEvent) => {
-  //   // Handle form submission logic here
-  //   e.preventDefault();
-  //   // console.log(photo);
-  //   const formData: any = new FormData();
-  //   formData.append("file", photo);
-  //   formData.append("upload_preset", "y9gqbvk9");
-
-  //   let uploadedImg = "";
-
-  //   await fetch("https://api.cloudinary.com/v1_1/depdeolt0/upload", {
-  //     method: "POST",
-  //     body: formData,
-  //   })
-  //     .then((res) => {
-  //       if (res.ok) {
-  //         return res.json();
-  //       } else {
-  //         return Promise.reject();
-  //       }
-  //     })
-  //     .then(
-  //       (data: { secure_url: string; public_id: string }) =>
-  //         (uploadedImg = data.secure_url)
-  //     )
-  // .catch((err) => {
-  //   console.log(err);
-  //   setErr(true);
-  //   setErrorMessage("You should sign in as a HOST user");
-  //   setOpenSnackbar(true);
-  // });
-
-  //   // console.log(uploadedImg);
-
-  //   // if (
-  //   //   currentCountry === DEFAULT_COUNTRY ||
-  //   //   currentCity === "" ||
-  //   //   name === ""
-  //   // ) {
-  //   //   setError("Please select a valid location");
-  //   //   return;
-  //   // }
-  //   // console.log("Submitted:", { currentCountry, currentCity, name, photo });
-
-  //   // dispatch({
-  //   //   type: PlaceActionType.ADD,
-  //   //   payload: {
-  //   //     name,
-  //   //     country: currentCountry,
-  //   //     city: currentCity,
-  //   //     imageURL: uploadedImg,
-  //   //   } as PlaceType,
-  //   // });
-
-  //   // setError("");
-  //   // onCloseFn();
-  // };
 
   const API_KEY = import.meta.env.VITE_MAPS_API_KEY;
 
@@ -379,6 +267,7 @@ const AddProperty = () => {
       propertyInputInfos.city = "";
       propertyInputInfos.zipCode = 0;
       propertyInputInfos.propertyDescription = "";
+      propertyInputInfos.price = 0;
       setActiveButton("false");
       setActiveBathButton("false");
       setActiveRoomButton("false");
@@ -398,8 +287,16 @@ const AddProperty = () => {
       meals.breakfast = false;
       meals.dinner = false;
       meals.lunch = false;
-
       if (response.error.length !== 0) {
+        tokens.map((token) => {
+          revert(
+            token,
+            () => {},
+            () => {}
+          );
+        });
+        setImages([]);
+        setFiles([]);
         setErr(true);
         setErrorMessage(response.error);
         setOpenSnackbar(true);
@@ -412,14 +309,21 @@ const AddProperty = () => {
         // // {
         if (id) {
           images.map(async (image) => {
-            console.log("first" + image);
+            // console.log("first" + image);
             const addImage: ImageCreationType = {
-              publicId: image,
+              url: image,
               propertyId: id,
             };
 
             const response = await AuthService().createImage(addImage);
             if (response.error.length !== 0) {
+              tokens.map((token) => {
+                revert(
+                  token,
+                  () => {},
+                  () => {}
+                );
+              });
               setErr(true);
               setErrorMessage(response.error);
               setOpenSnackbar(true);
@@ -430,7 +334,9 @@ const AddProperty = () => {
         // }
         setSuccess(true);
         setSuccessMessage("Property created successfully!");
+
         setImages([]);
+        setFiles([]);
         // console.log("my images are:" + images);
       }
 
@@ -438,6 +344,11 @@ const AddProperty = () => {
       console.log(selectedCountry);
     }
   };
+
+  console.log(propertyInputInfos.city);
+  useEffect(() => {
+    console.log(propertyInputInfos.city);
+  }, [propertyInputInfos.city]);
 
   return (
     <MainComponent>
@@ -534,13 +445,17 @@ const AddProperty = () => {
               apiKey={API_KEY}
               className="input-city"
               placeholder="Select city"
+              // onChange={handleInfosChange}
               onPlaceSelected={(place) => {
-                if (place.formatted_address) {
-                  console.log(place);
+                const formatted_address = place.formatted_address || "";
+                // if (place.formatted_address) {
+                console.log(place.formatted_address);
 
-                  propertyInputInfos.city = place.formatted_address;
-                  console.log(propertyInputInfos.city);
-                }
+                setPropertyInputInfos((prevInfos) => ({
+                  ...prevInfos,
+                  city: formatted_address,
+                }));
+                // }
                 console.log(place);
               }}
               options={{
@@ -977,7 +892,7 @@ const AddProperty = () => {
           </Stack>
         </div>
         <div className="price-component">
-          <div className="title">Price:</div>
+          <div className="title">Price (RON):</div>
           <input
             required
             className="input-price"

@@ -12,6 +12,8 @@ import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+
 import profilePicture from "../utils/images/Foto ritratto corporate_ Headshots Portrait_.jpg";
 import "./HostAppBar.css";
 import { useNavigate } from "react-router-dom";
@@ -20,7 +22,7 @@ import CardMedia from "@mui/material/CardMedia";
 const pages = ["Properties", "Add property", "Help"];
 const settings = ["My Properties", "My Account", "Logout"];
 
-const HostAppBar = () => {
+const HostAppBar = ({ profilePhoto }: { profilePhoto: string | undefined }) => {
   const navigate = useNavigate();
   const { removeUser } = useUserStore();
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
@@ -47,7 +49,7 @@ const HostAppBar = () => {
   // };
 
   const handleProperties = () => {
-    navigate("/properties");
+    navigate("/my-properties");
   };
 
   const handleAddProperty = () => {
@@ -207,21 +209,41 @@ const HostAppBar = () => {
                   color="inherit"
                   sx={{ p: 0 }}
                 >
-                  <CardMedia
-                    component="img"
-                    height="200"
-                    image={profilePicture}
-                    alt="profile picture"
-                    sx={{
-                      mr: 2,
-                      scale: "2",
-                      objectFit: "cover",
-                      objectPosition: "top",
-                      width: "25px",
-                      height: "25px",
-                      borderRadius: "100%",
-                    }}
-                  />
+                  {profilePhoto ? (
+                    <CardMedia
+                      component="img"
+                      height="200"
+                      image={profilePhoto}
+                      alt="profile picture"
+                      sx={{
+                        mr: 2,
+                        scale: "2",
+                        objectFit: "cover",
+                        objectPosition: "top",
+                        width: "25px",
+                        height: "25px",
+                        borderRadius: "100%",
+                      }}
+                    />
+                  ) : (
+                    <CardMedia
+                      // component="img"
+                      // height="200"
+                      // image={profilePicture}
+                      // alt="profile picture"
+                      sx={{
+                        mr: 2,
+                        scale: "2",
+                        objectFit: "cover",
+                        objectPosition: "top",
+                        width: "25px",
+                        height: "25px",
+                        borderRadius: "100%",
+                      }}
+                    >
+                      <AccountCircleIcon />
+                    </CardMedia>
+                  )}
                 </IconButton>
               </Tooltip>
               <Menu

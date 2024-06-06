@@ -1,34 +1,6 @@
 import { create } from "zustand";
-
-type PropertyInfo = {
-  id: number;
-  name: string;
-};
-
-type TripInfo = {
-  id: number;
-  numberOfPersons: number;
-  destination: string;
-  minRange: number;
-  maxRange: number;
-  checkInDate: Date;
-  checkOutDate: Date;
-  userId: number;
-  propertyId: number;
-};
-
-type userInfo = {
-  id: number;
-  role: string;
-  email: string;
-  username: string;
-  firstName: string;
-  lastName: string;
-  language: string;
-  phoneNumber: string;
-  properties: PropertyInfo[];
-  tripInfoDto: TripInfo[];
-};
+import { ResponseGetAllProfileImageType } from "./types/ProfileImageTypes";
+import { userInfo } from "./types/UserTypes";
 
 interface UserStore {
   user: userInfo | null;

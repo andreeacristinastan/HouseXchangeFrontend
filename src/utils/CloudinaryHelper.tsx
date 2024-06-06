@@ -8,6 +8,7 @@ type MakeUploadFnParams = {
   successCallback: (arg1: undefined) => void;
   errorCallback: (arg1: string) => void;
   addImages: (image: string) => void;
+  setTokens: (value: (prevState: string[]) => string[]) => void;
 };
 
 export const makeUploadRequest = ({
@@ -17,6 +18,7 @@ export const makeUploadRequest = ({
   successCallback,
   errorCallback,
   addImages,
+  setTokens,
 }: MakeUploadFnParams) => {
   const url = `${baseUrl}/image/upload`;
 
@@ -34,9 +36,10 @@ export const makeUploadRequest = ({
   request.onload = () => {
     if (request.status >= 200 && request.status < 300) {
       const { delete_token: deleteToken } = JSON.parse(request.response);
-      const { public_id: publicId } = JSON.parse(request.response);
-      addImages(publicId);
-      console.log(typeof publicId);
+      const { url } = JSON.parse(request.response);
+      setTokens((prevTokenVector) => [...prevTokenVector, deleteToken]);
+      addImages(url);
+      console.log(request.response);
 
       successCallback(deleteToken);
     } else {

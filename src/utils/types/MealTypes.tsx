@@ -4,3 +4,10 @@ export type CreateMealType = {
   dinner: boolean;
   // propertyId: number;
 };
+
+export type ResponseMealType = {
+  id: number;
+  breakfast: boolean;
+  lunch: boolean;
+  dinner: boolean;
+};

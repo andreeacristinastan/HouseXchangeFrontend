@@ -1,84 +1,23 @@
 import React, { useEffect, useState } from "react";
-
-interface Property {
-  id: number;
-  name: string;
-  propertyType: string;
-  bathrooms: number;
-  rooms: number;
-  country: string;
-  city: string;
-  address: string;
-}
-
-type responsePropertyInfo = {
-  id: number;
-  name: string;
-};
-
-type responseFacility = {
-  id: number;
-  towel: boolean;
-  balcony: boolean;
-  airConditioning: boolean;
-  tv: boolean;
-  propertyInfo: responsePropertyInfo;
-};
-
-type responseAmenity = {
-  id: number;
-  gym: boolean;
-  swimmingPool: boolean;
-  garden: boolean;
-  parking: boolean;
-  wifi: boolean;
-  bikes: boolean;
-  kidsZone: boolean;
-  petsFriendly: boolean;
-  disabilitiesFriendly: boolean;
-};
-
-type responseMeal = {
-  id: number;
-  breakfast: boolean;
-  lunch: boolean;
-  dinner: boolean;
-};
-
-type responseTrips = {
-  id: number;
-  numberOfPersons: number;
-  destination: string;
-  checkInDate: Date;
-  checkOutDate: Date;
-  userId: number;
-};
-
-type responseGetAllProperties = {
-  id: number;
-  name: string;
-  country: string;
-  city: string;
-  address: string;
-  zipCode: number;
-  propertyDescription: string;
-  propertyType: string;
-  numberOfBathrooms: number;
-  numberOfRooms: number;
-  price: number;
-  userId: number;
-  trips: responseTrips;
-  mealInfo: responseMeal;
-  amenityInfo: responseAmenity;
-  facilityDto: responseFacility;
-}[];
+import {
+  Property,
+  ResponseGetAllPropertiesType,
+} from "../utils/types/PropertyTypes";
+import PropertyCard from "./PropertyCard";
+import "./DisplayAllProperties.css";
+import backgroundImage from "../utils/images/stacked-waves-haikei2.png";
+import backgroundStart from "../utils/images/pexels-solliefoto-298842.jpg";
+import SearchProperties from "../utils/SearchProperties";
+import PriceRangeSlider from "../utils/PriceRangeSlider";
+import Typography from "../utils/Typography";
 
 const DisplayAllProperties = () => {
   const [properties, setProperties] = useState<Property[]>([]);
+  const [defaultImageId, setDefaultImageId] = useState("");
 
   const getProperties = async () => {
     const res = await fetch(
-      `http://localhost:8080/api/properties?page=${0}&size=${8}`,
+      `http://localhost:8080/api/properties?page=${0}&size=${20}`,
       {
         method: "GET",
       }
@@ -88,7 +27,7 @@ const DisplayAllProperties = () => {
       return;
     }
 
-    const data: responseGetAllProperties = await res.json();
+    const data: ResponseGetAllPropertiesType = await res.json();
     setProperties(
       data.map((property) => ({
         id: property.id,
@@ -99,6 +38,9 @@ const DisplayAllProperties = () => {
         country: property.country,
         city: property.city,
         address: property.address,
+        price: property.price,
+        images: property.images,
+        propertyDescription: property.propertyDescription,
       }))
     );
 
@@ -110,12 +52,64 @@ const DisplayAllProperties = () => {
   }, []);
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12 mt-4">
-      {properties.map((property) => (
-        <div key={property.id}>
-          <PropertyCard property={property} />
+    // <MainComponent>
+    <div
+      style={{
+        backgroundImage: `url(${backgroundImage})`,
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+        height: "200vh",
+      }}
+    >
+      <link
+        href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap"
+        rel="stylesheet"
+      />
+      <div
+        className="bottom-page"
+        style={{
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${backgroundStart})`,
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "100%",
+          position: "relative",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "30%",
+        }}
+      >
+        <Typography
+          color="inherit"
+          align="center"
+          variant="h2"
+          marked="center"
+          sx={{
+            transform: "translateY(300px)",
+            mt: { xs: 4 },
+            fontFamily: '"Oswald", sans-serif',
+            color: "#fff",
+            position: "absolute",
+            top: "1%",
+          }}
+        >
+          Seamless house rentals for Every Lifestyle
+        </Typography>
+        <div className="search-box">
+          <PriceRangeSlider />
+          <SearchProperties showTitle={true} />
         </div>
-      ))}
+      </div>
+      <div className="all-properties-box">
+        {properties.map((property) => (
+          <div key={property.id}>
+            <PropertyCard
+              property={property}
+              imageUrl={property.images[0]?.url}
+            />
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
