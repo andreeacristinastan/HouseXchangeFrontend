@@ -1,17 +1,71 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Paper from "@mui/material/Paper";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
-import NumberOfPersons from "../guest/utils/NumberOfPersons";
+import TypeOfProperty from "../guest/utils/TypeOfProperty";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Autocomplete from "react-google-autocomplete";
+import dayjs, { Dayjs } from "dayjs";
+import moment from "moment";
+import { SearchValuesType } from "./types/SearchTypes";
+import { useNavigate } from "react-router-dom";
+import CircularProgress from "@mui/material/CircularProgress";
+import { useSearch } from "./SearchContext";
+import { useFilterStore } from "./useFilterStore";
+import ApartmentIcon from "@mui/icons-material/Apartment";
 
-const SearchProperties = ({ showTitle }: { showTitle: boolean }) => {
+interface SearchPropertiesProps {
+  textBtn?: boolean;
+  onFormErr?: () => void;
+  setNewPriceRange: (value: []) => void;
+  // handleChangeSearchDetails?: (name: string, value: string | number) => void;
+}
+
+const SearchProperties = ({
+  textBtn: showTitle,
+  onFormErr,
+  setNewPriceRange,
+}: SearchPropertiesProps) => {
+  // props) {
+  //   const { handleChangeLanguage } = props;
+  //   const [language, setLanguage] = useState("");
+  const filters = useFilterStore((state) => state.searchDetails);
+  const setFilters = useFilterStore((state) => state.setSearchDetails);
+  const resetFilters = useFilterStore((state) => state.resetSearchDetails);
+  const navigate = useNavigate();
   const API_KEY = import.meta.env.VITE_MAPS_API_KEY;
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleClickButton = () => {
+    if (
+      onFormErr &&
+      (filters.checkIn.length === 0 ||
+        filters.checkOut.length === 0 ||
+        filters.destination.length === 0)
+    ) {
+      onFormErr();
+      return;
+    }
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+
+      navigate("/properties/all");
+    }, 3000);
+  };
+
+  const handleClickFiltersButton = () => {
+    resetFilters();
+    setNewPriceRange([]);
+  };
+
+  // const [priceRange, setpriceRange] = useState([]);
+
   return (
     <div
       className="book-trip-details"
@@ -28,14 +82,14 @@ const SearchProperties = ({ showTitle }: { showTitle: boolean }) => {
           alignItems: "flex-start",
         }}
       >
-        {showTitle && (
-          <div
-            className="title-display"
-            style={{ color: "#fff", fontFamily: '"Oswald", sans-serif' }}
-          >
-            Destination:
-          </div>
-        )}
+        {/* {showTitle && ( */}
+        <div
+          className="title-display"
+          style={{ color: "#fff", fontFamily: '"Oswald", sans-serif' }}
+        >
+          Destination:
+        </div>
+        {/* )} */}
         <Paper
           component="form"
           sx={{
@@ -51,6 +105,8 @@ const SearchProperties = ({ showTitle }: { showTitle: boolean }) => {
           </IconButton>
 
           <Autocomplete
+            key={filters.destination}
+            defaultValue={filters.destination}
             apiKey={API_KEY}
             className="location-search"
             style={{
@@ -65,6 +121,10 @@ const SearchProperties = ({ showTitle }: { showTitle: boolean }) => {
             }}
             placeholder="Where do you wanna go?"
             onPlaceSelected={(place) => {
+              if (place.formatted_address) {
+                setFilters("destination", place.formatted_address);
+                // setDestination(place.formatted_address);
+              }
               console.log(place);
             }}
             options={{
@@ -86,14 +146,98 @@ const SearchProperties = ({ showTitle }: { showTitle: boolean }) => {
           alignItems: "flex-start",
         }}
       >
-        {showTitle && (
-          <div
-            className="title-display"
-            style={{ color: "#fff", fontFamily: '"Oswald", sans-serif' }}
+        {/* {showTitle && ( */}
+        <div
+          className="title-display"
+          style={{ color: "#fff", fontFamily: '"Oswald", sans-serif' }}
+        >
+          Check in:
+        </div>
+        {/* )} */}
+
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <Paper
+            defaultValue={filters.checkIn}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+            }}
           >
-            Check in:
-          </div>
-        )}
+            <IconButton aria-label="search">
+              <CalendarMonthOutlinedIcon />
+            </IconButton>
+
+            <MobileDatePicker
+              key={filters.checkIn}
+              defaultValue={dayjs(filters.checkIn, "MM-DD-YYYY")}
+              onChange={(date) => {
+                console.log(typeof date);
+                if (date) {
+                  setFilters("checkIn", date.format("MM/DD/YYYY"));
+                  // setCheckInDate(date?.format("DD/MM/YYYY"));
+                }
+              }}
+              sx={{
+                "& .MuiInputLabel-root": {
+                  border: "1px solid #fff",
+                  color: "#588b97",
+                },
+                "& .MuiInputBase-root": {
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    border: "1px solid #fff",
+                  },
+                  padding: 0,
+                  backgroundColor: "white",
+                  height: 74,
+                  width: 125,
+
+                  "&:hover": {
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      border: "1px solid #fff",
+                    },
+                  },
+                  "&.Mui-focused": {
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      border: "1px solid #fff",
+                    },
+                  },
+                },
+                "& .MuiInputBase-input": {
+                  color: "#588b97",
+                },
+                "& .MuiOutlinedInput-root": {
+                  border: "none",
+                  "& fieldset": {
+                    borderColor: "white!important",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "white!important",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "white !important",
+                  },
+                },
+              }}
+            />
+          </Paper>
+        </LocalizationProvider>
+      </div>
+
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-start",
+        }}
+      >
+        {/* {showTitle && ( */}
+        <div
+          className="title-display"
+          style={{ color: "#fff", fontFamily: '"Oswald", sans-serif' }}
+        >
+          Check out:
+        </div>
+        {/* )} */}
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <Paper
             sx={{
@@ -106,11 +250,23 @@ const SearchProperties = ({ showTitle }: { showTitle: boolean }) => {
             </IconButton>
 
             <MobileDatePicker
+              key={filters.checkOut}
+              defaultValue={dayjs(filters.checkOut, "MM-DD-YYYY")}
+              onChange={(date) => {
+                console.log(date?.format("MM-DD-YYYY"));
+                if (date) {
+                  setFilters("checkOut", date.format("MM/DD/YYYY"));
+                }
+              }}
               sx={{
                 "& .MuiInputLabel-root": {
+                  border: "1px solid #fff",
                   color: "#588b97",
                 },
                 "& .MuiInputBase-root": {
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    border: "1px solid #fff",
+                  },
                   padding: 0,
                   backgroundColor: "white",
                   height: 74,
@@ -155,101 +311,86 @@ const SearchProperties = ({ showTitle }: { showTitle: boolean }) => {
           alignItems: "flex-start",
         }}
       >
-        {showTitle && (
-          <div
-            className="title-display"
-            style={{ color: "#fff", fontFamily: '"Oswald", sans-serif' }}
-          >
-            Check out:
-          </div>
-        )}
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <Paper
-            sx={{
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            <IconButton aria-label="search">
-              <CalendarMonthOutlinedIcon />
-            </IconButton>
-
-            <MobileDatePicker
-              sx={{
-                "& .MuiInputLabel-root": {
-                  color: "#588b97",
-                },
-                "& .MuiInputBase-root": {
-                  padding: 0,
-                  backgroundColor: "white",
-                  height: 74,
-                  width: 125,
-
-                  "&:hover": {
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      border: "1px solid #fff",
-                    },
-                  },
-                  "&.Mui-focused": {
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      border: "1px solid #fff",
-                    },
-                  },
-                },
-                "& .MuiInputBase-input": {
-                  color: "#588b97",
-                },
-                "& .MuiOutlinedInput-root": {
-                  border: "none",
-                  "& fieldset": {
-                    borderColor: "white",
-                  },
-                  "&:hover fieldset": {
-                    borderColor: "white",
-                  },
-                  "&.Mui-focused fieldset": {
-                    borderColor: "white",
-                  },
-                },
-              }}
-            />
-          </Paper>
-        </LocalizationProvider>
-      </div>
-
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "flex-start",
-        }}
-      >
-        {showTitle && (
-          <div
-            className="title-display"
-            style={{ color: "#fff", fontFamily: '"Oswald", sans-serif' }}
-          >
-            Number of persons:
-          </div>
-        )}
+        {/* {showTitle && ( */}
+        <div
+          className="title-display"
+          style={{ color: "#fff", fontFamily: '"Oswald", sans-serif' }}
+        >
+          Type of property:
+        </div>
+        {/* )} */}
         <Paper
+          defaultValue={filters.typeOfProperty}
           sx={{
             display: "flex",
             alignItems: "center",
           }}
         >
           <IconButton aria-label="search">
-            <PersonOutlineOutlinedIcon />
+            <ApartmentIcon sx={{ fontSize: "30px", color: "#757575" }} />
           </IconButton>
-          <NumberOfPersons />
+          <TypeOfProperty
+            setTypeOfProperty={(val) => setFilters("typeOfProperty", val)}
+          />
         </Paper>
       </div>
-      <input
-        type="submit"
-        value="Search"
-        className="login-btn"
-        style={{ width: "100px", borderRadius: "48px" }}
-      />
+
+      {showTitle ? (
+        <input
+          type="submit"
+          value="Search"
+          onClick={handleClickButton}
+          className="search-trip-btn"
+          style={{ width: "100px", borderRadius: "48px" }}
+        />
+      ) : (
+        <input
+          type="submit"
+          value="Remove Filters"
+          onClick={handleClickFiltersButton}
+          className="remove-filter-btn"
+          style={{
+            // alignItems: "center",
+            width: "150px",
+            borderRadius: "70px",
+            background: "#588b97",
+            boxShadow: "20px 12px 15px 2px rgba(0, 0, 0, 0.4)",
+          }}
+        />
+      )}
+
+      {isLoading && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "transparent",
+            backdropFilter: "blur(10px)",
+            zIndex: 9999,
+          }}
+        >
+          <div>
+            <CircularProgress style={{ color: "#fff" }} />{" "}
+            {/* This is your loading icon */}
+            <p
+              style={{
+                color: "#fff",
+                width: "auto",
+                fontSize: "50px",
+                textShadow: "12px 12px 15px #588b97",
+              }}
+            >
+              We'll find the best accommodations for you...
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

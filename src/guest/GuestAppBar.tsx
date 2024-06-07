@@ -19,6 +19,7 @@ import "./GuestAppBar.css";
 import { useNavigate } from "react-router-dom";
 import CardMedia from "@mui/material/CardMedia";
 import { useUserStore } from "../utils/useUserStore";
+import { useFilterStore } from "../utils/useFilterStore";
 
 const pages = ["Properties", "Trips"];
 const settings = ["My Trips", "My Account", "Logout"];
@@ -30,6 +31,7 @@ const GuestAppBar = ({
 }) => {
   const navigate = useNavigate();
   const { user, removeUser } = useUserStore();
+  const { resetSearchDetails } = useFilterStore();
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
@@ -72,6 +74,11 @@ const GuestAppBar = ({
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
+  function handleClick(): void {
+    resetSearchDetails();
+    navigate("/");
+  }
 
   return (
     <div>
@@ -124,8 +131,9 @@ const GuestAppBar = ({
             </Box>
             <Link
               variant="h6"
-              href="/"
+              onClick={handleClick}
               sx={{
+                cursor: "pointer",
                 display: { xs: "none", md: "flex" },
                 fontFamily: "monospace",
                 marginLeft: "-150px",
@@ -136,7 +144,7 @@ const GuestAppBar = ({
                 textDecoration: "none",
               }}
             >
-              HousExchange
+              HouseXchange
             </Link>
 
             <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>

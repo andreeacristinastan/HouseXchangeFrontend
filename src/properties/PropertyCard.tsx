@@ -106,7 +106,7 @@ const PropertyCard = ({
           component="div"
           sx={{ marginTop: "20px", color: "#588b97" }}
         >
-          RON{property.price} /Day
+          RON{property.price} /Night
         </Typography>
       </CardContent>
       {/* </CardActionArea> */}

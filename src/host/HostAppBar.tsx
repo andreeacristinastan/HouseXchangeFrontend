@@ -133,7 +133,7 @@ const HostAppBar = ({ profilePhoto }: { profilePhoto: string | undefined }) => {
                 textDecoration: "none",
               }}
             >
-              HousExchange
+              HouseXchange
             </Link>
 
             <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>

@@ -1,11 +1,9 @@
-import React from "react";
-import Slider, {
-  SliderThumb,
-  SliderValueLabelProps,
-} from "@mui/material/Slider";
+import React, { useEffect, useState } from "react";
+import Slider, { SliderThumb } from "@mui/material/Slider";
 import { styled } from "@mui/material/styles";
-import Tooltip from "@mui/material/Tooltip";
 import Box from "@mui/material/Box";
+import { SearchValuesType } from "./types/SearchTypes";
+import { useSearch } from "./SearchContext";
 
 const AirbnbSlider = styled(Slider)(({ theme }) => ({
   color: "#255f6c",
@@ -76,7 +74,22 @@ function AirbnbThumbComponent(props: AirbnbThumbComponentProps) {
   );
 }
 
-const PriceRangeSlider = () => {
+const PriceRangeSlider = (props) => {
+  const [priceRange, setPriceRange] = useState([500, 1000]);
+  // const { searchDetails, handleSearchDetails } = useSearch();
+
+  const { handleChangePriceRange } = props;
+  // const [priceRange, setpriceRange] = useState([]);
+
+  const handleChange = (event, newValue) => {
+    setPriceRange(newValue);
+    console.log(newValue);
+  };
+
+  useEffect(() => {
+    handleChangePriceRange(priceRange);
+  }, [priceRange]);
+
   return (
     <Box
       sx={{
@@ -94,6 +107,8 @@ const PriceRangeSlider = () => {
         Price range (RON):
       </div>
       <AirbnbSlider
+        value={priceRange}
+        onChange={handleChange}
         valueLabelDisplay="auto"
         slots={{ thumb: AirbnbThumbComponent }}
         getAriaLabel={(index) =>

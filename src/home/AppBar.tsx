@@ -39,7 +39,7 @@ const AppBar = ({ profilePhoto }: { profilePhoto: string | undefined }) => {
               // letterSpacing: ".3rem",
             }}
           >
-            {"HousExchange"}
+            {"HouseXchange"}
           </Link>
           <Box sx={{ flex: 1, display: "flex", justifyContent: "flex-end" }}>
             <Link

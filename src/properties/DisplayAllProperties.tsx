@@ -14,12 +14,52 @@ import Pagination from "@mui/material/Pagination";
 import Box from "@mui/material/Box";
 import { ResponsePropertiesPagesType } from "../utils/types/PagesTypes";
 import { useActionData } from "react-router-dom";
+import { SearchValuesType } from "../utils/types/SearchTypes";
+import { useFilterStore } from "../utils/useFilterStore";
 
 const DisplayAllProperties = () => {
   const [properties, setProperties] = useState<Property[]>([]);
+  const [propertiesAll, setPropertiesAll] = useState<Property[]>([]);
   const [defaultImageId, setDefaultImageId] = useState("");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [newPriceRange, setNewPriceRange] = useState<number[]>([]);
+  const filters = useFilterStore((state) => state.searchDetails);
+  const setFilters = useFilterStore((state) => state.setSearchDetails);
+  const [isFiltered, setIsFiltered] = useState(false);
+
+  const handleChangePriceRange = (selectedPriceRange: number[]) => {
+    setNewPriceRange(selectedPriceRange);
+  };
+
+  // const handleChangeSearchDetails = ()
+
+  const filterFunction = (property: Property) => {
+    // console.log(filters.typeOfProperty);
+    if (
+      filters.typeOfProperty.length !== 0 &&
+      property.propertyType !== filters.typeOfProperty.toLowerCase()
+    ) {
+      return false;
+    }
+
+    if (
+      property.price < newPriceRange[0] ||
+      property.price > newPriceRange[1]
+    ) {
+      return false;
+    }
+
+    if (
+      filters.destination.length !== 0 &&
+      filters.destination !== property.city
+    ) {
+      return false;
+    }
+
+    // If the property passed all filters, include it in the new array
+    return true;
+  };
 
   const getProperties = async () => {
     const res = await fetch(
@@ -51,7 +91,42 @@ const DisplayAllProperties = () => {
         propertyDescription: property.propertyDescription,
       }))
     );
+    console.log(data);
+  };
 
+  useEffect(() => {
+    getAllProperties();
+  }, []);
+
+  const getAllProperties = async () => {
+    const res = await fetch(`http://localhost:8080/api/properties-all`, {
+      method: "GET",
+    });
+    if (!res.ok) {
+      console.log("Eroare cand iei proprietati");
+      // console.log(await res);
+
+      return;
+    }
+
+    const data: ResponseGetAllPropertiesType = await res.json();
+    // setTotalPages(data.totalPages);
+    // const totalProperties: ResponseGetAllPropertiesType = data.content;
+    setPropertiesAll(
+      data.map((property) => ({
+        id: property.id,
+        name: property.name,
+        propertyType: property.propertyType,
+        bathrooms: property.numberOfBathrooms,
+        rooms: property.numberOfRooms,
+        country: property.country,
+        city: property.city,
+        address: property.address,
+        price: property.price,
+        images: property.images,
+        propertyDescription: property.propertyDescription,
+      }))
+    );
     console.log(data);
   };
 
@@ -106,19 +181,26 @@ const DisplayAllProperties = () => {
         </Typography>
 
         <div className="search-box">
-          <PriceRangeSlider />
-          <SearchProperties showTitle={true} />
+          <PriceRangeSlider handleChangePriceRange={handleChangePriceRange} />
+          <SearchProperties
+            textBtn={false}
+            setNewPriceRange={setNewPriceRange}
+            // handleSearchDetails={handleSearchDetails}
+          />
         </div>
       </div>
       <div className="all-properties-box">
-        {properties.map((property) => (
-          <div key={property.id}>
-            <PropertyCard
-              property={property}
-              imageUrl={property.images[0]?.url}
-            />
-          </div>
-        ))}
+        {propertiesAll
+          .filter(filterFunction)
+          .slice((page - 1) * 8, page * 8)
+          .map((property) => (
+            <div key={property.id}>
+              <PropertyCard
+                property={property}
+                imageUrl={property.images[0]?.url}
+              />
+            </div>
+          ))}
       </div>
       <div
         style={{
@@ -136,10 +218,10 @@ const DisplayAllProperties = () => {
             "& .MuiPaginationItem-root": {
               fontSize: "20px",
 
-              color: "#fff", // Change the color of the pagination items
+              color: "#fff",
             },
             "& .MuiPaginationItem-page.Mui-selected": {
-              backgroundColor: "#87a9b0", // Change the background color of the selected item
+              backgroundColor: "#87a9b0",
             },
           }}
         />
