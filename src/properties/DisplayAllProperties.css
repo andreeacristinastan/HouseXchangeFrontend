@@ -50,6 +50,6 @@
   .all-properties-box {
     /* transform: translateY(300px); */
     grid-template-columns: repeat(4, 1fr);
-    gap: 1rem 5rem;
+    gap: 5rem 5rem;
   }
 }

@@ -10,14 +10,20 @@ import backgroundStart from "../utils/images/pexels-solliefoto-298842.jpg";
 import SearchProperties from "../utils/SearchProperties";
 import PriceRangeSlider from "../utils/PriceRangeSlider";
 import Typography from "../utils/Typography";
+import Pagination from "@mui/material/Pagination";
+import Box from "@mui/material/Box";
+import { ResponsePropertiesPagesType } from "../utils/types/PagesTypes";
+import { useActionData } from "react-router-dom";
 
 const DisplayAllProperties = () => {
   const [properties, setProperties] = useState<Property[]>([]);
   const [defaultImageId, setDefaultImageId] = useState("");
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   const getProperties = async () => {
     const res = await fetch(
-      `http://localhost:8080/api/properties?page=${0}&size=${20}`,
+      `http://localhost:8080/api/properties?page=${page - 1}&size=${8}`,
       {
         method: "GET",
       }
@@ -27,9 +33,11 @@ const DisplayAllProperties = () => {
       return;
     }
 
-    const data: ResponseGetAllPropertiesType = await res.json();
+    const data: ResponsePropertiesPagesType = await res.json();
+    setTotalPages(data.totalPages);
+    const totalProperties: ResponseGetAllPropertiesType = data.content;
     setProperties(
-      data.map((property) => ({
+      totalProperties.map((property) => ({
         id: property.id,
         name: property.name,
         propertyType: property.propertyType,
@@ -49,10 +57,11 @@ const DisplayAllProperties = () => {
 
   useEffect(() => {
     getProperties();
-  }, []);
+  }, [page]);
 
   return (
     // <MainComponent>
+
     <div
       style={{
         backgroundImage: `url(${backgroundImage})`,
@@ -95,6 +104,7 @@ const DisplayAllProperties = () => {
         >
           Seamless house rentals for Every Lifestyle
         </Typography>
+
         <div className="search-box">
           <PriceRangeSlider />
           <SearchProperties showTitle={true} />
@@ -109,6 +119,30 @@ const DisplayAllProperties = () => {
             />
           </div>
         ))}
+      </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          transform: "translateY(200px)",
+        }}
+      >
+        <Pagination
+          defaultPage={1}
+          count={totalPages}
+          page={page}
+          onChange={(event, value) => setPage(value)}
+          sx={{
+            "& .MuiPaginationItem-root": {
+              fontSize: "20px",
+
+              color: "#fff", // Change the color of the pagination items
+            },
+            "& .MuiPaginationItem-page.Mui-selected": {
+              backgroundColor: "#87a9b0", // Change the background color of the selected item
+            },
+          }}
+        />
       </div>
     </div>
   );
