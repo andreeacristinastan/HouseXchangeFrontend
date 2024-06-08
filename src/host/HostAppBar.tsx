@@ -52,6 +52,10 @@ const HostAppBar = ({ profilePhoto }: { profilePhoto: string | undefined }) => {
     navigate("/my-properties");
   };
 
+  const handleShowAllProperties = () => {
+    navigate("/properties/all");
+  };
+
   const handleAddProperty = () => {
     navigate("/property/create");
   };
@@ -99,7 +103,7 @@ const HostAppBar = ({ profilePhoto }: { profilePhoto: string | undefined }) => {
                   onClick={() => {
                     switch (page) {
                       case "Properties":
-                        handleProperties();
+                        handleShowAllProperties();
                         break;
                       case "Add property":
                         handleAddProperty();

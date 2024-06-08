@@ -185,6 +185,7 @@
   font-size: 20px;
   font-family: "Spicy Rice", cursive;
   box-shadow: 0 0 50px;
+  margin-bottom: 20px;
 }
 
 .add-property-btn:hover {

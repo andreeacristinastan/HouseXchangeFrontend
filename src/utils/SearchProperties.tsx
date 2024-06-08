@@ -21,7 +21,7 @@ import ApartmentIcon from "@mui/icons-material/Apartment";
 interface SearchPropertiesProps {
   textBtn?: boolean;
   onFormErr?: () => void;
-  setNewPriceRange: (value: []) => void;
+  setNewPriceRange?: (value: []) => void;
   // handleChangeSearchDetails?: (name: string, value: string | number) => void;
 }
 
@@ -169,11 +169,12 @@ const SearchProperties = ({
 
             <MobileDatePicker
               key={filters.checkIn}
-              defaultValue={dayjs(filters.checkIn, "MM-DD-YYYY")}
+              format="DD-MM-YYYY"
+              defaultValue={dayjs(filters.checkIn, "DD-MM-YYYY")}
               onChange={(date) => {
                 console.log(typeof date);
                 if (date) {
-                  setFilters("checkIn", date.format("MM/DD/YYYY"));
+                  setFilters("checkIn", date.format("DD/MM/YYYY"));
                   // setCheckInDate(date?.format("DD/MM/YYYY"));
                 }
               }}
@@ -251,11 +252,12 @@ const SearchProperties = ({
 
             <MobileDatePicker
               key={filters.checkOut}
-              defaultValue={dayjs(filters.checkOut, "MM-DD-YYYY")}
+              format="DD-MM-YYYY"
+              defaultValue={dayjs(filters.checkOut, "DD-MM-YYYY")}
               onChange={(date) => {
-                console.log(date?.format("MM-DD-YYYY"));
+                console.log(date?.format("DD-MM-YYYY"));
                 if (date) {
-                  setFilters("checkOut", date.format("MM/DD/YYYY"));
+                  setFilters("checkOut", date.format("DD/MM/YYYY"));
                 }
               }}
               sx={{

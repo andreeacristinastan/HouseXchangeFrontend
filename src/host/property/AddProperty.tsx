@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { ComponentType, useEffect, useState } from "react";
 import backgroundImage from "../../utils/images/stacked-waves-haikei2.png";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
@@ -54,9 +54,9 @@ const MainComponent = styled("section")(({ theme }) => ({
   display: "flex",
   flexDirection: "row",
   justifyContent: "space-between",
-  [theme.breakpoints.up("sm")]: {
-    height: "130vh",
-  },
+  // [theme.breakpoints.up("sm")]: {
+  //   height: "140vh",
+  // },
   backgroundImage: `url(${backgroundImage})`,
   backgroundSize: "cover",
   backgroundRepeat: "no-repeat",
@@ -75,6 +75,11 @@ import {
 } from "../../utils/types/PropertyTypes";
 import { ImageCreationType } from "../../utils/types/ImageTypes";
 import { CreateAmenityType } from "../../utils/types/AmenityTypes";
+import DateRangePicker from "../../utils/DateRangePicker";
+import DateRangePickerComponent from "../../utils/DateRangePicker";
+import AvilablePeriodsPicker from "../../utils/DateRangePicker";
+import Calendar from "../../utils/DateRangePicker";
+import { CreateAvailabilityType } from "../../utils/types/AvailabilityTypes";
 
 const AddProperty = () => {
   const [activeButton, setActiveButton] = useState("false");
@@ -88,6 +93,10 @@ const AddProperty = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [disabled, setDisabled] = useState(true);
   const [tokens, setTokens] = useState<string[]>([]);
+  const [showRanges, setShowRanges] = useState(true);
+  const [dates, setDates] = useState<{ startDate: string; endDate: string }[]>(
+    []
+  );
   const [files, setFiles] = useState([]);
   const [amenities, setAmenities] = useState<CreateAmenityType>({
     petsFriendly: false,
@@ -119,6 +128,34 @@ const AddProperty = () => {
   const handleAddImages = (image: string) => {
     setImages((prevImageVector) => [...prevImageVector, image]);
   };
+
+  const handleAvailabilities = (start: string, end: string, action: string) => {
+    if (action === "add") {
+      const newDate = { startDate: start, endDate: end };
+      setDates((prevDates) => [...prevDates, newDate]);
+    } else if (action === "delete") {
+      setDates((prevDates) =>
+        prevDates.filter(
+          (date) => date.startDate !== start && date.endDate !== end
+        )
+      );
+
+      // dates.map((d) => {
+      //   console.log("Cand sterg un  range am valorile: ");
+      //   // console.log(parts[0]);
+      //   // console.log(parts[1]);
+      //   console.log(d);
+      // });
+    }
+  };
+
+  // useEffect(() => {
+  //   console.log("am valorile: ");
+
+  //   dates.map((d) => {
+  //     console.log(d);
+  //   });
+  // }, [dates]);
 
   const revert = (token, successCallback, errorCallback) => {
     makeDeleteRequest({
@@ -216,6 +253,8 @@ const AddProperty = () => {
     const numberOfRoomsIsFilled = activeRoomButton !== "false";
     const descriptionIsFilled =
       propertyInputInfos.propertyDescription.length !== 0;
+    const availabilitiesFilled = dates.length !== 0;
+    const imagesFilled = images.length !== 0;
 
     return (
       nameIsFilled &&
@@ -225,12 +264,16 @@ const AddProperty = () => {
       priceIsFilled &&
       numberOfBathroomsIsFilled &&
       numberOfRoomsIsFilled &&
-      descriptionIsFilled
+      descriptionIsFilled &&
+      availabilitiesFilled &&
+      imagesFilled
     );
     // const cityIsFilled = propertyInputInfos.name.trim() !== "";
   };
 
   const handleCreateBtnClick = async () => {
+    dates.map((a) => console.log(a));
+
     if (isFilled() === false) {
       setErr(true);
       setErrorMessage("You should fill all mandatory fields");
@@ -330,13 +373,43 @@ const AddProperty = () => {
             }
             console.log(response);
           });
+
+          dates.map(async (date) => {
+            console.log(date);
+            const addAvailability: CreateAvailabilityType = {
+              userId: user?.id,
+              propertyId: id,
+              startDate: date.startDate,
+              endDate: date.endDate,
+            };
+
+            const response = await AuthService().createAvailability(
+              addAvailability
+            );
+            if (response.error.length !== 0) {
+              console.log("eroare cand bagi chestii");
+
+              // tokens.map((token) => {
+              //   revert(
+              //     token,
+              //     () => {},
+              //     () => {}
+              //   );
+              // });
+              // setErr(true);
+              // setErrorMessage(response.error);
+              // setOpenSnackbar(true);
+            }
+            console.log(response);
+          });
         }
         // }
         setSuccess(true);
         setSuccessMessage("Property created successfully!");
-
+        setShowRanges(false);
         setImages([]);
         setFiles([]);
+        setDates([]);
         // console.log("my images are:" + images);
       }
 
@@ -393,6 +466,19 @@ const AddProperty = () => {
           </Button>
         </Stack>
 
+        <div
+          style={{
+            // marginLeft: "20px",
+            maxWidth: "50%",
+            marginTop: "20px",
+          }}
+        >
+          <div className="title">Available dates for exchange:</div>
+          <DateRangePicker
+            handleAvailabilities={handleAvailabilities}
+            showRanges={showRanges}
+          />
+        </div>
         <div className="name-component">
           <div className="title">Property Name:</div>
           <input
@@ -471,119 +557,13 @@ const AddProperty = () => {
           </div>
         </div>
 
-        <div className="room-component">
-          <div className="title">Number of rooms:</div>
-          <Stack spacing={4} direction="row">
-            <Button
-              variant="outlined"
-              onClick={() => handleRoomButtonClick("1")}
-              sx={styleRoomBtn("1", activeRoomButton)}
-            >
-              1
-              <BedIcon sx={{ fontSize: "40px" }} />
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() => handleRoomButtonClick("2")}
-              sx={styleRoomBtn("2", activeRoomButton)}
-            >
-              2
-              <BedIcon sx={{ fontSize: "40px" }} />
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() => handleRoomButtonClick("3")}
-              sx={styleRoomBtn("3", activeRoomButton)}
-            >
-              3
-              <BedIcon sx={{ fontSize: "40px" }} />
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() => handleRoomButtonClick("4")}
-              sx={styleRoomBtn("4", activeRoomButton)}
-            >
-              4
-              <BedIcon sx={{ fontSize: "40px" }} />
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() => handleRoomButtonClick("5")}
-              sx={styleRoomBtn("5", activeRoomButton)}
-            >
-              5
-              <BedIcon sx={{ fontSize: "40px" }} />
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() => handleRoomButtonClick("6")}
-              sx={styleRoomBtn("6", activeRoomButton)}
-            >
-              +6
-              <BedIcon sx={{ fontSize: "40px" }} />
-            </Button>
-          </Stack>
-        </div>
-
-        <div className="bathroom-component">
-          <div className="title">Number of bathrooms:</div>
-          <Stack spacing={4} direction="row">
-            <Button
-              variant="outlined"
-              onClick={() => handleBathButtonClick("1")}
-              sx={styleBathBtn("1", activeBathButton)}
-            >
-              1
-              <BathtubIcon sx={{ fontSize: "40px" }} />
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() => handleBathButtonClick("2")}
-              sx={styleBathBtn("2", activeBathButton)}
-            >
-              2
-              <BathtubIcon sx={{ fontSize: "40px" }} />
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() => handleBathButtonClick("3")}
-              sx={styleBathBtn("3", activeBathButton)}
-            >
-              3
-              <BathtubIcon sx={{ fontSize: "40px" }} />
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() => handleBathButtonClick("4")}
-              sx={styleBathBtn("4", activeBathButton)}
-            >
-              4
-              <BathtubIcon sx={{ fontSize: "40px" }} />
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() => handleBathButtonClick("5")}
-              sx={styleBathBtn("5", activeBathButton)}
-            >
-              5
-              <BathtubIcon sx={{ fontSize: "40px" }} />
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() => handleBathButtonClick("6")}
-              sx={styleBathBtn("6", activeBathButton)}
-            >
-              +6
-              <BathtubIcon sx={{ fontSize: "40px" }} />
-            </Button>
-          </Stack>
-        </div>
         <div
           style={{
             width: "100%",
             height: "70px",
             // padding: "10px",
             marginTop: "20px",
+            marginBottom: "350px",
           }}
         >
           <div className="title">Insert your property photos:</div>
@@ -901,6 +881,113 @@ const AddProperty = () => {
             onChange={handleInfosChange}
           />
         </div>
+        <div className="room-component">
+          <div className="title">Number of rooms:</div>
+          <Stack spacing={4} direction="row">
+            <Button
+              variant="outlined"
+              onClick={() => handleRoomButtonClick("1")}
+              sx={styleRoomBtn("1", activeRoomButton)}
+            >
+              1
+              <BedIcon sx={{ fontSize: "40px" }} />
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => handleRoomButtonClick("2")}
+              sx={styleRoomBtn("2", activeRoomButton)}
+            >
+              2
+              <BedIcon sx={{ fontSize: "40px" }} />
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => handleRoomButtonClick("3")}
+              sx={styleRoomBtn("3", activeRoomButton)}
+            >
+              3
+              <BedIcon sx={{ fontSize: "40px" }} />
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => handleRoomButtonClick("4")}
+              sx={styleRoomBtn("4", activeRoomButton)}
+            >
+              4
+              <BedIcon sx={{ fontSize: "40px" }} />
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => handleRoomButtonClick("5")}
+              sx={styleRoomBtn("5", activeRoomButton)}
+            >
+              5
+              <BedIcon sx={{ fontSize: "40px" }} />
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => handleRoomButtonClick("6")}
+              sx={styleRoomBtn("6", activeRoomButton)}
+            >
+              +6
+              <BedIcon sx={{ fontSize: "40px" }} />
+            </Button>
+          </Stack>
+        </div>
+
+        <div className="bathroom-component">
+          <div className="title">Number of bathrooms:</div>
+          <Stack spacing={4} direction="row">
+            <Button
+              variant="outlined"
+              onClick={() => handleBathButtonClick("1")}
+              sx={styleBathBtn("1", activeBathButton)}
+            >
+              1
+              <BathtubIcon sx={{ fontSize: "40px" }} />
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => handleBathButtonClick("2")}
+              sx={styleBathBtn("2", activeBathButton)}
+            >
+              2
+              <BathtubIcon sx={{ fontSize: "40px" }} />
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => handleBathButtonClick("3")}
+              sx={styleBathBtn("3", activeBathButton)}
+            >
+              3
+              <BathtubIcon sx={{ fontSize: "40px" }} />
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => handleBathButtonClick("4")}
+              sx={styleBathBtn("4", activeBathButton)}
+            >
+              4
+              <BathtubIcon sx={{ fontSize: "40px" }} />
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => handleBathButtonClick("5")}
+              sx={styleBathBtn("5", activeBathButton)}
+            >
+              5
+              <BathtubIcon sx={{ fontSize: "40px" }} />
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => handleBathButtonClick("6")}
+              sx={styleBathBtn("6", activeBathButton)}
+            >
+              +6
+              <BathtubIcon sx={{ fontSize: "40px" }} />
+            </Button>
+          </Stack>
+        </div>
         <button
           onClick={handleCreateBtnClick}
           // disabled={isFilled()}
@@ -918,7 +1005,7 @@ const AddProperty = () => {
           }}
           open={openSnackbar}
           className="snackbarError"
-          autoHideDuration={5000}
+          autoHideDuration={3000}
           onClose={handleCloseSnackbar}
         >
           <Alert severity="error">{errorMessage}</Alert>

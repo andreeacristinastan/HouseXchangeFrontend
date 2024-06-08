@@ -12,6 +12,7 @@ import {
 } from "../utils/types/PropertyTypes";
 import { FeedbackCreationType } from "../utils/types/FeedbackTypes";
 import { ProfileImageCreationType } from "../utils/types/ProfileImageTypes";
+import { CreateAvailabilityType } from "../utils/types/AvailabilityTypes";
 // import setUser from "../App";
 const API_URL = "http://localhost:8080/api";
 
@@ -361,6 +362,62 @@ const AuthService = () => {
     return { error: errorMessage };
   };
 
+  const createAvailability = async (
+    availabilityCreate: CreateAvailabilityType
+  ) => {
+    // console.log("my property details= " + JSON.stringify(feedbackCreate));
+
+    const token = localStorage.getItem("user");
+    let errorMessage = "";
+
+    if (token) {
+      const decodedToken: UserInfosType = jwtDecode(token);
+      const currentTime = Date.now() / 1000;
+      if (decodedToken.exp > currentTime) {
+        // const userId = decodedToken.id;
+        // console.log("infos = " + JSON.stringify(updateUserVal));
+        // console.log(user?.id);
+
+        await fetch(`${API_URL}/availabilities`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token.replace(/"/g, "")}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(availabilityCreate),
+        })
+          .then(async (res) => {
+            console.log(res);
+
+            if (!res.ok) {
+              const apiError = await res.json();
+              console.log(apiError);
+              throw new Error(JSON.stringify(apiError));
+            }
+            return res.json();
+          })
+          // .then((data) => {
+          //   console.log(data);
+
+          //   // user = data;
+          // })
+          .catch((err) => {
+            console.log("err:");
+
+            console.log(JSON.parse(err.message).message);
+            errorMessage = JSON.parse(err.message).message;
+            // errorMessage = JSON.parse(err.message);
+          });
+      } else {
+        localStorage.removeItem("user");
+        errorMessage = "Session expired. Please log in again";
+        // setUser(null);
+      }
+    }
+
+    return { error: errorMessage };
+  };
+
   const createProfileImage = async (imageCreate: ProfileImageCreationType) => {
     // console.log("my property details= " + JSON.stringify(feedbackCreate));
 
@@ -484,6 +541,7 @@ const AuthService = () => {
     createImage,
     createProfileImage,
     updateProfileImage,
+    createAvailability,
   };
 };
 
