@@ -51,6 +51,26 @@ export type ResponseGetAllPropertiesType = {
   facilityDto: ResponseFacilityType;
 }[];
 
+export type ResponseGetPropertyByIdType = {
+  id: number;
+  name: string;
+  country: string;
+  city: string;
+  address: string;
+  zipCode: number;
+  propertyDescription: string;
+  propertyType: string;
+  numberOfBathrooms: number;
+  numberOfRooms: number;
+  price: number;
+  userId: number;
+  trips: ResponseTripsType;
+  images: ResponseImageInfoType[];
+  mealInfo: ResponseMealType;
+  amenityInfo: ResponseAmenityType;
+  facilityDto: ResponseFacilityType;
+};
+
 export interface Property {
   id: number;
   name: string;

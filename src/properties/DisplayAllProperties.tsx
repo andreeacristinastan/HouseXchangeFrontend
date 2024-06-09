@@ -236,12 +236,12 @@ const DisplayAllProperties = () => {
   useEffect(() => {
     getAllProperties();
     getAllAvailabilities();
-    console.log("========================filters are:");
+    // console.log("========================filters are:");
 
-    console.log(filters);
-    console.log("========================prices are:");
+    // console.log(filters);
+    // console.log("========================prices are:");
 
-    console.log(newPriceRange);
+    // console.log(newPriceRange);
   }, []);
 
   const getAllAvailabilities = async () => {

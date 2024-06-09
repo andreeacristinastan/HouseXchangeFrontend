@@ -22,6 +22,7 @@ import HostProperties from "./host/property/HostProperties.tsx";
 import GuestTrips from "./guest/GuestTrips.tsx";
 import DisplayAllProperties from "./properties/DisplayAllProperties.tsx";
 import UserProfile from "./profile/UserProfile.tsx";
+import DisplayPropertyDetails from "./properties/DisplayPropertyDetails.tsx";
 
 const theme = createTheme({
   palette: {
@@ -130,6 +131,10 @@ function App() {
                 element={<DisplayAllProperties />}
               />
               <Route path="/my-trips" element={<GuestTrips />} />
+              <Route
+                path="/property-details/:id"
+                element={<DisplayPropertyDetails />}
+              />
             </Routes>
           </Router>
 

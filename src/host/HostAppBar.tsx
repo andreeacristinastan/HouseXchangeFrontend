@@ -172,7 +172,18 @@ const HostAppBar = ({ profilePhoto }: { profilePhoto: string | undefined }) => {
                 {pages.map((page) => (
                   <MenuItem
                     key={page}
-                    onClick={handleCloseNavMenu}
+                    onClick={() => {
+                      switch (page) {
+                        case "Properties":
+                          handleShowAllProperties();
+                          break;
+                        case "Add property":
+                          handleAddProperty();
+                          break;
+                        default:
+                          handleCloseNavMenu();
+                      }
+                    }}
                     sx={{
                       fontFamily: "monospace",
                       color: "#588b97",
@@ -187,7 +198,7 @@ const HostAppBar = ({ profilePhoto }: { profilePhoto: string | undefined }) => {
               variant="h5"
               noWrap
               component="a"
-              href="#app-bar-with-responsive-menu"
+              href="/"
               sx={{
                 mr: 2,
                 display: { xs: "flex", md: "none" },
@@ -199,7 +210,7 @@ const HostAppBar = ({ profilePhoto }: { profilePhoto: string | undefined }) => {
                 textDecoration: "none",
               }}
             >
-              HousExchange
+              HouseXchange
             </Typography>
 
             <Box>
