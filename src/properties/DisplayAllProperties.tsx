@@ -21,6 +21,8 @@ import {
   ResponseAllAvailabilitiesType,
 } from "../utils/types/AvailabilityTypes";
 import { convertStringToDate } from "../utils/convertStringToDate";
+import { userInfo } from "os";
+import { useUserStore } from "../utils/useUserStore";
 
 const DisplayAllProperties = () => {
   const [properties, setProperties] = useState<Property[]>([]);
@@ -33,6 +35,7 @@ const DisplayAllProperties = () => {
   const filters = useFilterStore((state) => state.searchDetails);
   const setFilters = useFilterStore((state) => state.setSearchDetails);
   const [isFiltered, setIsFiltered] = useState(false);
+  const { user } = useUserStore();
 
   const handleChangePriceRange = (selectedPriceRange: number[]) => {
     setNewPriceRange(selectedPriceRange);
@@ -363,6 +366,12 @@ const DisplayAllProperties = () => {
         {propertiesAll
           .filter(filterFunction)
           .filter(filterByDates)
+          .filter(
+            (p) =>
+              !user?.properties.some(
+                (currUserProperty) => currUserProperty.id === p.id
+              )
+          )
           .slice((page - 1) * 8, page * 8)
           .map((property) => (
             <div key={property.id}>

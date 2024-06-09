@@ -18,3 +18,14 @@ export type TripInfo = {
   userId: number;
   propertyId: number;
 };
+
+export type PostTripType = {
+  numberOfPersons: number;
+  destination: string | undefined;
+  minRange: number;
+  maxRange: number;
+  checkInDate: Date | null;
+  checkOutDate: Date | null;
+  userId: number | undefined;
+  propertyId: number | undefined;
+};

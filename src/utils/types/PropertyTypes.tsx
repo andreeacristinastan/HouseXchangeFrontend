@@ -64,7 +64,7 @@ export type ResponseGetPropertyByIdType = {
   numberOfRooms: number;
   price: number;
   userId: number;
-  trips: ResponseTripsType;
+  trips: ResponseTripsType[];
   images: ResponseImageInfoType[];
   mealInfo: ResponseMealType;
   amenityInfo: ResponseAmenityType;
@@ -88,4 +88,9 @@ export interface Property {
 export type ResponsePropertyInfoType = {
   id: number;
   name: string;
+};
+
+export type PropertyInfosUserType = {
+  id: number;
+  city: string;
 };

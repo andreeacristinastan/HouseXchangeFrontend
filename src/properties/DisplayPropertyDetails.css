@@ -1,0 +1,178 @@
+@import url(https://fonts.googleapis.com/css2?family=Roboto:wght@900&family=Spicy+Rice&display=swap);
+@import url(https://fonts.googleapis.com/css2?family=Radio+Canada+Big:ital,wght@0,400..700;1,400..700&display=swap);
+@import url(https://fonts.googleapis.com/css2?family=Roboto:wght@900&family=Spicy+Rice&display=swap);
+
+.main-component {
+  background-image: url("../utils/images/test1.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 200vh;
+  margin-top: 70px;
+  padding: 2rem;
+  padding-right: 20%;
+  padding-left: 20%;
+  /* display: flex; */
+  /* flex-direction: row; */
+  /* justify-content: space-between; */
+}
+
+.slide-box {
+  width: 100%;
+  height: 100%;
+  /* max-height: 550px; */
+  box-shadow: 15px 15px 12px 2px rgba(30, 30, 30, 0.2);
+}
+
+.description-text {
+  color: rgba(228, 226, 226, 3.584);
+  font-size: 25px;
+  max-width: 900px;
+  text-align: left;
+  text-shadow: 12px 12px 15px #588b97;
+}
+
+.name-text {
+  color: #fff;
+  text-align: left;
+  font-size: 50px;
+  /* text-shadow: 2px 2px 5px #000; */
+  font-family: "Spicy Rice", cursive;
+}
+
+.name-of-property-component {
+  font-family: "Spicy Rice", cursive;
+  font-size: 60px;
+  color: #588b97;
+}
+
+.slide-container {
+  width: 200px;
+  flex: 1;
+  height: 100%;
+}
+.name-description-images-component {
+  width: 100%;
+  min-width: 280px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  /* align-items: center; */
+
+  /* height: 500px; */
+}
+
+.title {
+  font-family: "Oswald", sans-serif;
+  color: #fff;
+  text-align: start;
+  font-size: 20px;
+  margin-left: 5px;
+  margin-bottom: 10px;
+}
+
+.box-container {
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+  backdrop-filter: blur(10px);
+  background-color: #588b97;
+  /* box-shadow: 0 0 10px; */
+  border: 2px solid rgb(255, 255, 255);
+  border-radius: 8px;
+  gap: 5rem;
+  padding: 2%;
+}
+
+.title-description-component {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  /* width: 90%; */
+}
+
+.details-component {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+  max-width: 80%;
+  flex: 1;
+}
+
+.details-second-component {
+  display: flex;
+  justify-content: flex-start !important;
+  gap: 2rem;
+
+  flex: 1;
+}
+
+.details-third-component {
+  display: flex;
+  justify-content: flex-start !important;
+  gap: 2rem;
+  flex: 1;
+  flex-wrap: wrap;
+  max-width: 80%;
+}
+
+.details-all-rows-component {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  justify-content: space-between;
+}
+
+.deatils-calendar-component {
+  display: flex;
+  justify-content: space-between;
+  /* gap: 5%; */
+}
+
+.calendar-box {
+  display: block;
+  padding: 2rem;
+  border: 2px solid rgb(255, 255, 255);
+  border-radius: 8px;
+  background: transparent;
+  backdrop-filter: blur(10px);
+  background-color: #8ab8c4;
+}
+
+.price-component {
+  display: flex;
+  flex-direction: row;
+}
+.price {
+  color: rgb(8, 124, 8);
+  font-family: "Oswald", sans-serif;
+  font-size: 30px;
+  padding-right: 10px;
+  margin-top: -20px;
+}
+
+.title {
+  font-size: 25px;
+}
+
+.text {
+  color: rgba(228, 226, 226, 3.584);
+  font-family: "Oswald", sans-serif;
+  font-size: 30px;
+  margin-top: -20px;
+}
+
+.address-details-component {
+  display: flex;
+  justify-content: flex-start;
+  gap: 2rem;
+  /* padding-left: 20%; */
+  padding-right: 20%;
+}
+
+.booking-details {
+  display: flex;
+  flex-direction: column;
+}

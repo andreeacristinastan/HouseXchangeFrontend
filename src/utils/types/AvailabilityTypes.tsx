@@ -1,8 +1,8 @@
 export type CreateAvailabilityType = {
-  startDate: string;
-  endDate: string;
+  startDate: string | undefined;
+  endDate: string | undefined;
   userId: number | undefined;
-  propertyId: number;
+  propertyId: number | undefined;
 };
 
 export type ResponseAllAvailabilitiesType = {
