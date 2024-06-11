@@ -75,7 +75,9 @@
   display: flex;
   flex-direction: column;
   background: transparent;
-  backdrop-filter: blur(10px);
+  height: 1024vh;
+  /* height: 100%; */
+  /* backdrop-filter: blur(10px); */
   background-color: #588b97;
   /* box-shadow: 0 0 10px; */
   border: 2px solid rgb(255, 255, 255);
@@ -158,7 +160,7 @@
 }
 
 .text {
-  color: rgba(228, 226, 226, 3.584);
+  color: rgb(255, 255, 255);
   font-family: "Oswald", sans-serif;
   font-size: 30px;
   margin-top: -20px;

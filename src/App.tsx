@@ -23,6 +23,7 @@ import GuestTrips from "./guest/GuestTrips.tsx";
 import DisplayAllProperties from "./properties/DisplayAllProperties.tsx";
 import UserProfile from "./profile/UserProfile.tsx";
 import DisplayPropertyDetails from "./properties/DisplayPropertyDetails.tsx";
+import TripsPage from "./trips/TripsPage.tsx";
 
 const theme = createTheme({
   palette: {
@@ -130,7 +131,7 @@ function App() {
                 path="/properties/all"
                 element={<DisplayAllProperties />}
               />
-              <Route path="/my-trips" element={<GuestTrips />} />
+              <Route path="/my-trips" element={<TripsPage />} />
               <Route
                 path="/property-details/:id"
                 element={<DisplayPropertyDetails />}

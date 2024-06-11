@@ -1,0 +1,28 @@
+.see-details {
+  width: 100%;
+  /* height: 40%; */
+  /* margin-left: 2%; */
+  height: 100%;
+  border-radius: 25px;
+  background-color: #fff;
+  color: #588b97;
+  cursor: pointer;
+  margin-bottom: 20px;
+  font-size: 20px;
+  font-family: "Oswald", sans-serif;
+  border: 2px solid #588b97 !important;
+  box-shadow: 5px 5px 2px;
+  margin-left: 30px;
+}
+.see-details:hover {
+  background-color: #87a9b0;
+  color: #fff;
+  border: 2px solid #87a9b0 !important;
+  box-shadow: 5px 5px 2px #333737 !important;
+}
+
+.see-details:focus {
+  outline: none;
+  border: 2px solid #87a9b0 !important;
+  box-shadow: 5px 5px 2px #333737 !important;
+}

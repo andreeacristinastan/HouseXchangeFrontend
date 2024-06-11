@@ -53,7 +53,10 @@ import {
   ResponseAllAvailabilitiesType,
 } from "../utils/types/AvailabilityTypes";
 import { UserInfosType } from "../utils/types/UserTypes";
-import { PostTripType } from "../utils/types/TripTypes";
+import {
+  PostTripType,
+  ResponseGetAllTripsType,
+} from "../utils/types/TripTypes";
 import { useUserStore } from "../utils/useUserStore";
 import { useFilterStore } from "../utils/useFilterStore";
 import Paper from "@mui/material/Paper";
@@ -201,7 +204,7 @@ const DisplayPropertyDetails = () => {
         setShowAvailabilityFalse(true);
       }
       // navigate("/properties/all");
-    }, 3000);
+    }, 1000);
   };
 
   const filterByDates = () => {
@@ -279,6 +282,61 @@ const DisplayPropertyDetails = () => {
 
         const currentTime = Date.now() / 1000;
         if (decodedToken.exp > currentTime && user) {
+          const r = await fetch(
+            `http://localhost:8080/api/users/${user.id}/trips-all`,
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token.replace(/"/g, "")}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          if (!r.ok) {
+            console.log("Eroare cand iei calatorii");
+            return;
+          }
+
+          const data: ResponseGetAllTripsType = await r.json();
+          for (const trip of data) {
+            console.log(trip);
+
+            const t1 = new Date(trip.checkInDate);
+            // .toLocaleDateString("en-GB");
+            const convertedStartDate = convertStringToDate(
+              t1.toLocaleDateString("en-GB")
+            );
+
+            const t2 = new Date(trip.checkOutDate);
+            const convertedEndDate = convertStringToDate(
+              t2.toLocaleDateString("en-GB")
+            );
+            // let filteredCheckIn;
+            // let filteredCheckOut;
+
+            if (dateRange[0] !== null && dateRange[1] !== null) {
+              const filteredCheckIn = convertStringToDate(
+                dateRange[0].toLocaleDateString("en-GB")
+              );
+              const filteredCheckOut = convertStringToDate(
+                dateRange[1].toLocaleDateString("en-GB")
+              );
+              if (
+                (convertedStartDate >= filteredCheckIn &&
+                  convertedStartDate <= filteredCheckOut) ||
+                (convertedEndDate >= filteredCheckIn &&
+                  convertedEndDate <= filteredCheckOut)
+              ) {
+                setErr(true);
+                setErrorMessage(
+                  "You already have a trip planned for that time!"
+                );
+                setOpenSnackbar(true);
+                return;
+              }
+            }
+          }
+
           const values: PostTripType = {
             numberOfPersons: 0,
             destination: property?.city,
@@ -551,7 +609,8 @@ const DisplayPropertyDetails = () => {
       <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@900&family=Spicy+Rice&display=swap" />
 
       {/* <h1 className="name-of-property-component">{property?.name}</h1> */}
-      <div className="box-container">
+
+      <div className="box-container" style={{ height: "1320px" }}>
         <div className="name-description-images-component">
           <div className="title-description-component">
             <p className="name-text">{property?.name}</p>
@@ -823,37 +882,9 @@ const DisplayPropertyDetails = () => {
         <DialogTitle color={"#f58989"}>{"Warning! 🥺"}</DialogTitle>
         <DialogContent>
           <DialogContentText>You should select a valid date</DialogContentText>
-          {/* <TextField
-            autoFocus
-            margin="dense"
-            label="Check-in Date"
-            type="date"
-            fullWidth
-            value={checkInDate.toISOString().substr(0, 10)}
-            onChange={(event) => setCheckInDate(new Date(event.target.value))}
-          />
-          <TextField
-            margin="dense"
-            label="Check-out Date"
-            type="date"
-            fullWidth
-            value={checkOutDate.toISOString().substr(0, 10)}
-            onChange={(event) => setCheckOutDate(new Date(event.target.value))}
-          />
-          <TextField
-            margin="dense"
-            label="Number of persons"
-            type="number"
-            fullWidth
-            value={num}
-            onChange={(event) => setNumber(parseInt(event.target.value, 10))}
-          /> */}
         </DialogContent>
         <DialogActions>
           <Button onClick={() => handleClose()}>Ok</Button>
-          {/* <Button onClick={() => handleClose(true)} autoFocus>
-            Add
-          </Button> */}
         </DialogActions>
       </Dialog>
       <Dialog
@@ -869,31 +900,6 @@ const DisplayPropertyDetails = () => {
             {" "}
             You can start book your trip now!
           </DialogContentText>
-          {/* <TextField
-            autoFocus
-            margin="dense"
-            label="Check-in Date"
-            type="date"
-            fullWidth
-            value={checkInDate.toISOString().substr(0, 10)}
-            onChange={(event) => setCheckInDate(new Date(event.target.value))}
-          />
-          <TextField
-            margin="dense"
-            label="Check-out Date"
-            type="date"
-            fullWidth
-            value={checkOutDate.toISOString().substr(0, 10)}
-            onChange={(event) => setCheckOutDate(new Date(event.target.value))}
-          />
-          <TextField
-            margin="dense"
-            label="Number of persons"
-            type="number"
-            fullWidth
-            value={num}
-            onChange={(event) => setNumber(parseInt(event.target.value, 10))}
-          /> */}
         </DialogContent>
         <DialogActions>
           <Button onClick={() => handleCloseAvailability()}>Cancel</Button>
@@ -912,32 +918,6 @@ const DisplayPropertyDetails = () => {
           <DialogContentText>
             There are no spots available for this period
           </DialogContentText>
-
-          {/* <TextField
-            autoFocus
-            margin="dense"
-            label="Check-in Date"
-            type="date"
-            fullWidth
-            value={checkInDate.toISOString().substr(0, 10)}
-            onChange={(event) => setCheckInDate(new Date(event.target.value))}
-          />
-          <TextField
-            margin="dense"
-            label="Check-out Date"
-            type="date"
-            fullWidth
-            value={checkOutDate.toISOString().substr(0, 10)}
-            onChange={(event) => setCheckOutDate(new Date(event.target.value))}
-          />
-          <TextField
-            margin="dense"
-            label="Number of persons"
-            type="number"
-            fullWidth
-            value={num}
-            onChange={(event) => setNumber(parseInt(event.target.value, 10))}
-          /> */}
         </DialogContent>
         <DialogActions>
           <Button onClick={() => handleCloseAvailability()}>Cancel</Button>
@@ -951,31 +931,6 @@ const DisplayPropertyDetails = () => {
             {" "}
             Get ready for your new adventure!
           </DialogContentText>
-          {/* <TextField
-            autoFocus
-            margin="dense"
-            label="Check-in Date"
-            type="date"
-            fullWidth
-            value={checkInDate.toISOString().substr(0, 10)}
-            onChange={(event) => setCheckInDate(new Date(event.target.value))}
-          />
-          <TextField
-            margin="dense"
-            label="Check-out Date"
-            type="date"
-            fullWidth
-            value={checkOutDate.toISOString().substr(0, 10)}
-            onChange={(event) => setCheckOutDate(new Date(event.target.value))}
-          />
-          <TextField
-            margin="dense"
-            label="Number of persons"
-            type="number"
-            fullWidth
-            value={num}
-            onChange={(event) => setNumber(parseInt(event.target.value, 10))}
-          /> */}
         </DialogContent>
         <DialogActions>
           <Button onClick={() => handleCloseAvailability()}>Cancel</Button>

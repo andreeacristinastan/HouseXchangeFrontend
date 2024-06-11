@@ -20,7 +20,7 @@ import { useNavigate } from "react-router-dom";
 import CardMedia from "@mui/material/CardMedia";
 
 const pages = ["Properties", "Add property", "Help"];
-const settings = ["My Properties", "My Account", "Logout"];
+const settings = ["My Properties", "My Account", "My Trips", "Logout"];
 
 const HostAppBar = ({ profilePhoto }: { profilePhoto: string | undefined }) => {
   const navigate = useNavigate();
@@ -50,6 +50,10 @@ const HostAppBar = ({ profilePhoto }: { profilePhoto: string | undefined }) => {
 
   const handleProperties = () => {
     navigate("/my-properties");
+  };
+
+  const handleTrips = () => {
+    navigate("/my-trips");
   };
 
   const handleShowAllProperties = () => {
@@ -290,6 +294,9 @@ const HostAppBar = ({ profilePhoto }: { profilePhoto: string | undefined }) => {
                           break;
                         case "My Properties":
                           handleProperties();
+                          break;
+                        case "My Trips":
+                          handleTrips();
                           break;
                         default:
                           handleCloseUserMenu();

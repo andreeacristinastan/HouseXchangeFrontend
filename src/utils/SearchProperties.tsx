@@ -17,6 +17,12 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { useSearch } from "./SearchContext";
 import { useFilterStore } from "./useFilterStore";
 import ApartmentIcon from "@mui/icons-material/Apartment";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import Button from "@mui/material/Button";
 
 interface SearchPropertiesProps {
   textBtn?: boolean;
@@ -36,6 +42,8 @@ const SearchProperties = ({
   const filters = useFilterStore((state) => state.searchDetails);
   const setFilters = useFilterStore((state) => state.setSearchDetails);
   const resetFilters = useFilterStore((state) => state.resetSearchDetails);
+  const err = useFilterStore((state) => state.error);
+  const setErr = useFilterStore((state) => state.setError);
   const navigate = useNavigate();
   const API_KEY = import.meta.env.VITE_MAPS_API_KEY;
 
@@ -62,6 +70,10 @@ const SearchProperties = ({
   const handleClickFiltersButton = () => {
     resetFilters();
     setNewPriceRange([]);
+  };
+
+  const handleCloseErr = () => {
+    setErr("");
   };
 
   // const [priceRange, setpriceRange] = useState([]);
@@ -175,6 +187,10 @@ const SearchProperties = ({
                 console.log(typeof date);
                 if (date) {
                   setFilters("checkIn", date.format("DD/MM/YYYY"));
+
+                  // if(err.length !== 0) {
+
+                  // }
                   // setCheckInDate(date?.format("DD/MM/YYYY"));
                 }
               }}
@@ -360,6 +376,16 @@ const SearchProperties = ({
           }}
         />
       )}
+
+      <Dialog open={err.length !== 0} onClose={() => handleCloseErr()}>
+        <DialogTitle color={"#f58989"}>{"Warning! 🥺"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>{err}</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => handleCloseErr()}>Ok</Button>
+        </DialogActions>
+      </Dialog>
 
       {isLoading && (
         <div

@@ -1,0 +1,32 @@
+@import url(https://fonts.googleapis.com/css2?family=Roboto:wght@900&family=Spicy+Rice&display=swap);
+@import url(https://fonts.googleapis.com/css2?family=Radio+Canada+Big:ital,wght@0,400..700;1,400..700&display=swap);
+@import url(https://fonts.googleapis.com/css2?family=Roboto:wght@900&family=Spicy+Rice&display=swap);
+
+.main-container {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+    url("../utils/images/trips2.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 200vh;
+  margin-top: 70px;
+  padding: 2rem;
+  padding-right: 20%;
+  padding-left: 20%;
+  /* display: flex; */
+  /* flex-direction: row; */
+  /* justify-content: space-between; */
+}
+.box-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: transparent;
+  height: 1200px;
+  backdrop-filter: blur(10px);
+  /* background-color: #588b97; */
+  /* box-shadow: 0 0 10px; */
+  border: 2px solid rgb(255, 255, 255);
+  border-radius: 8px;
+  gap: 5rem;
+  padding: 2%;
+}

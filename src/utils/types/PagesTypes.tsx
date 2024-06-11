@@ -1,4 +1,5 @@
 import { ResponseGetAllPropertiesType } from "./PropertyTypes";
+import { ResponseGetAllTripsType } from "./TripTypes";
 export type SortType = {
   direction: string;
   nullHandling: string;
@@ -21,6 +22,20 @@ export type ResponsePropertiesPagesType = {
   totalElements: number;
   size: number;
   content: ResponseGetAllPropertiesType;
+  number: number;
+  sort: SortType;
+  first: boolean;
+  last: boolean;
+  numberOfElements: number;
+  pageable: PageableType;
+  empty: boolean;
+};
+
+export type ResponseTripsPagesType = {
+  totalPages: number;
+  totalElements: number;
+  size: number;
+  content: ResponseGetAllTripsType;
   number: number;
   sort: SortType;
   first: boolean;
