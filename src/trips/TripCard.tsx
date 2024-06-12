@@ -346,7 +346,7 @@ const TripCard = ({
                   // size="small"
                   // color="primary"
                   onClick={() => handleCancelTrip()}
-                  className="see-details"
+                  className="see-property"
                 >
                   Cancel Trip
                 </button>

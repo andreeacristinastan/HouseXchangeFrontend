@@ -97,17 +97,6 @@ const UserProfile = ({ showTitle }: { showTitle: string }) => {
     // createProfileImage();
   }, [image]);
 
-  // const editorRef = useRef(document.createElement("div"));
-
-  // useEffect(() => {
-  //   if (editorRef.current && editorRef.current.nodeName !== "DIV") {
-  //     appendDefaultEditor(editorRef.current, {
-  //       src: image,
-  //       imageCropAspectRatio: 1,
-  //     });
-  //   }
-  // }, [image]);
-
   const handleAddImages = (image: string) => {
     setImage(image);
   };

@@ -1,6 +1,6 @@
 import { CreateAmenityType, ResponseAmenityType } from "./AmenityTypes";
 import { CreateFacilityType, ResponseFacilityType } from "./FacilityTypes";
-import { ResponseImageInfoType, ResponseImagesInfoType } from "./ImageTypes";
+import { ResponseImageInfoType } from "./ImageTypes";
 import { CreateMealType, ResponseMealType } from "./MealTypes";
 import { ResponseTripsType } from "./TripTypes";
 
@@ -82,7 +82,12 @@ export interface Property {
   city: string;
   address: string;
   price: number;
-  images: ResponseImagesInfoType;
+  images: ResponseImageInfoType[];
+}
+
+export interface PropertyImageSearch {
+  id: number;
+  images: ResponseImageInfoType[];
 }
 
 export type ResponsePropertyInfoType = {

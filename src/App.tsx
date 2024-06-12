@@ -24,6 +24,8 @@ import DisplayAllProperties from "./properties/DisplayAllProperties.tsx";
 import UserProfile from "./profile/UserProfile.tsx";
 import DisplayPropertyDetails from "./properties/DisplayPropertyDetails.tsx";
 import TripsPage from "./trips/TripsPage.tsx";
+import ImageSearching from "./image_search/ImageSearching.tsx";
+import ShowFindProperties from "./image_search/ShowFindProperties.tsx";
 
 const theme = createTheme({
   palette: {
@@ -127,6 +129,8 @@ function App() {
               />
               <Route path="/property/create" element={<AddProperty />} />
               <Route path="/my-properties" element={<HostProperties />} />
+              <Route path="/image-search" element={<ImageSearching />} />
+              <Route path="/properties" element={<ShowFindProperties />} />
               <Route
                 path="/properties/all"
                 element={<DisplayAllProperties />}

@@ -19,7 +19,7 @@ import "./HostAppBar.css";
 import { useNavigate } from "react-router-dom";
 import CardMedia from "@mui/material/CardMedia";
 
-const pages = ["Properties", "Add property", "Help"];
+const pages = ["Properties", "Add property", "Image Search", "Help"];
 const settings = ["My Properties", "My Account", "My Trips", "Logout"];
 
 const HostAppBar = ({ profilePhoto }: { profilePhoto: string | undefined }) => {
@@ -54,6 +54,10 @@ const HostAppBar = ({ profilePhoto }: { profilePhoto: string | undefined }) => {
 
   const handleTrips = () => {
     navigate("/my-trips");
+  };
+
+  const handleImageSearch = () => {
+    navigate("/image-search");
   };
 
   const handleShowAllProperties = () => {
@@ -111,6 +115,9 @@ const HostAppBar = ({ profilePhoto }: { profilePhoto: string | undefined }) => {
                         break;
                       case "Add property":
                         handleAddProperty();
+                        break;
+                      case "Image Search":
+                        handleImageSearch();
                         break;
                       default:
                         handleCloseNavMenu();
