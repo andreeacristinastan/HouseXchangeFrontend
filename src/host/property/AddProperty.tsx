@@ -54,13 +54,6 @@ const MainComponent = styled("section")(({ theme }) => ({
   display: "flex",
   flexDirection: "row",
   justifyContent: "space-between",
-  // [theme.breakpoints.up("sm")]: {
-  //   height: "140vh",
-  // },
-  backgroundImage: `url(${backgroundImage})`,
-  backgroundSize: "cover",
-  backgroundRepeat: "no-repeat",
-  //   backgroundAttachment: "fixed",
 }));
 
 import {
@@ -302,7 +295,9 @@ const AddProperty = () => {
 
       const response: ResponseAddPropertyType =
         await AuthService().createProperty(addProperty);
-      console.log(response.propertyDetails);
+      console.log("property is: " + addProperty);
+
+      // console.log(response.propertyDetails);
 
       propertyInputInfos.address = "";
       propertyInputInfos.name = "";
@@ -424,283 +419,295 @@ const AddProperty = () => {
   }, [propertyInputInfos.city]);
 
   return (
-    <MainComponent>
-      <link
-        href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap"
-        rel="stylesheet"
-      />
-      <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@900&family=Spicy+Rice&display=swap" />
-      <div
-        style={{
-          marginLeft: "20px",
-          marginTop: "90px",
-          maxWidth: "50%",
-          //   maxHeight: "50%",
-        }}
-      >
-        <div className="title">Property Type:</div>
-        <Stack spacing={4} direction="row">
-          <Button
-            variant="outlined"
-            onClick={() => handleButtonClick("apartment")}
-            sx={styleBtn("apartment", activeButton)}
-          >
-            <ApartmentIcon sx={{ fontSize: "50px" }} />
-            Apartment
-          </Button>
-          <Button
-            variant="outlined"
-            onClick={() => handleButtonClick("house")}
-            sx={styleBtn("house", activeButton)}
-          >
-            <HouseIcon sx={{ fontSize: "50px" }} />
-            House
-          </Button>
-          <Button
-            variant="outlined"
-            onClick={() => handleButtonClick("villa")}
-            sx={styleBtn("villa", activeButton)}
-          >
-            <VillaIcon sx={{ fontSize: "50px" }} />
-            Villa
-          </Button>
-        </Stack>
-
+    <div
+      style={{
+        height: "200vh",
+        backgroundImage: `url(${backgroundImage})`,
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+        // marginTop: "70px",
+        // padding: "2rem",
+        // paddingRight: "20%",
+        // paddingLeft: "20%",
+      }}
+    >
+      <MainComponent>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap"
+          rel="stylesheet"
+        />
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@900&family=Spicy+Rice&display=swap" />
         <div
           style={{
-            // marginLeft: "20px",
+            marginLeft: "20px",
+            marginTop: "90px",
             maxWidth: "50%",
-            marginTop: "20px",
+            //   maxHeight: "50%",
           }}
         >
-          <div className="title">Available dates for exchange:</div>
-          <DateRangePicker
-            handleAvailabilities={handleAvailabilities}
-            showRanges={showRanges}
-          />
-        </div>
-        <div className="name-component">
-          <div className="title">Property Name:</div>
-          <input
-            className="input-name"
-            required
-            name="name"
-            placeholder="Write your property name"
-            value={propertyInputInfos.name}
-            onChange={handleInfosChange}
-          />
-        </div>
-        <div className="adress-component">
-          <div className="title">Property Adress:</div>
-          <input
-            required
-            className="input-adress"
-            placeholder="Write your property adress"
-            name="address"
-            value={propertyInputInfos.address}
-            onChange={handleInfosChange}
-          />
-        </div>
+          <div className="title">Property Type:</div>
+          <Stack spacing={4} direction="row">
+            <Button
+              variant="outlined"
+              onClick={() => handleButtonClick("apartment")}
+              sx={styleBtn("apartment", activeButton)}
+            >
+              <ApartmentIcon sx={{ fontSize: "50px" }} />
+              Apartment
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => handleButtonClick("house")}
+              sx={styleBtn("house", activeButton)}
+            >
+              <HouseIcon sx={{ fontSize: "50px" }} />
+              House
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => handleButtonClick("villa")}
+              sx={styleBtn("villa", activeButton)}
+            >
+              <VillaIcon sx={{ fontSize: "50px" }} />
+              Villa
+            </Button>
+          </Stack>
 
-        <div className="adress-details-component">
-          <div className="country-component">
-            <div className="title">Country:</div>
-            <Country
-              handleSelectCountry={handleSelectCountry}
-              name="country"
-              //   value={propertyInputInfos.country}
-              //   onChange={handleInfosChange}
+          <div
+            style={{
+              // marginLeft: "20px",
+              maxWidth: "50%",
+              marginTop: "20px",
+            }}
+          >
+            <div className="title">Available dates for exchange:</div>
+            <DateRangePicker
+              handleAvailabilities={handleAvailabilities}
+              showRanges={showRanges}
             />
           </div>
-
-          <div className="zip-code-component">
-            <div className="title">Zip Code:</div>
+          <div className="name-component">
+            <div className="title">Property Name:</div>
+            <input
+              className="input-name"
+              required
+              name="name"
+              placeholder="Write your property name"
+              value={propertyInputInfos.name}
+              onChange={handleInfosChange}
+            />
+          </div>
+          <div className="adress-component">
+            <div className="title">Property Adress:</div>
             <input
               required
-              className="input-zip-code"
-              name="zipCode"
-              value={propertyInputInfos.zipCode}
+              className="input-adress"
+              placeholder="Write your property adress"
+              name="address"
+              value={propertyInputInfos.address}
               onChange={handleInfosChange}
             />
           </div>
 
-          <div className="city-component">
-            <div className="title">City:</div>
+          <div className="adress-details-component">
+            <div className="country-component">
+              <div className="title">Country:</div>
+              <Country
+                handleSelectCountry={handleSelectCountry}
+                name="country"
+                //   value={propertyInputInfos.country}
+                //   onChange={handleInfosChange}
+              />
+            </div>
 
-            <Autocomplete
-              apiKey={API_KEY}
-              className="input-city"
-              placeholder="Select city"
-              // onChange={handleInfosChange}
-              onPlaceSelected={(place) => {
-                const formatted_address = place.formatted_address || "";
-                // if (place.formatted_address) {
-                console.log(place.formatted_address);
+            <div className="zip-code-component">
+              <div className="title">Zip Code:</div>
+              <input
+                required
+                className="input-zip-code"
+                name="zipCode"
+                value={propertyInputInfos.zipCode}
+                onChange={handleInfosChange}
+              />
+            </div>
 
-                setPropertyInputInfos((prevInfos) => ({
-                  ...prevInfos,
-                  city: formatted_address,
-                }));
-                // }
-                console.log(place);
-              }}
-              options={{
-                types: ["(regions)"],
-                componentRestrictions: { country: restriction },
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                }
-              }}
+            <div className="city-component">
+              <div className="title">City:</div>
+
+              <Autocomplete
+                apiKey={API_KEY}
+                className="input-city"
+                placeholder="Select city"
+                // onChange={handleInfosChange}
+                onPlaceSelected={(place) => {
+                  const formatted_address = place.formatted_address || "";
+                  // if (place.formatted_address) {
+                  console.log(place.formatted_address);
+
+                  setPropertyInputInfos((prevInfos) => ({
+                    ...prevInfos,
+                    city: formatted_address,
+                  }));
+                  // }
+                  console.log(place);
+                }}
+                options={{
+                  types: ["(regions)"],
+                  componentRestrictions: { country: restriction },
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                  }
+                }}
+              />
+            </div>
+          </div>
+
+          <div
+            style={{
+              width: "100%",
+              height: "70px",
+              // padding: "10px",
+              marginTop: "20px",
+              marginBottom: "350px",
+            }}
+          >
+            <div className="title">Insert your property photos:</div>
+            <FilePond
+              files={files}
+              acceptedFileTypes="image/*"
+              onupdatefiles={setFiles}
+              allowMultiple={true}
+              server={{ process, revert }}
+              name="file"
+              labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
             />
           </div>
         </div>
 
         <div
+          className="right-side-component"
           style={{
-            width: "100%",
-            height: "70px",
-            // padding: "10px",
-            marginTop: "20px",
-            marginBottom: "350px",
+            marginRight: "20px",
+            marginTop: "90px",
+            maxWidth: "50%",
+            //   maxHeight: "50%",
           }}
         >
-          <div className="title">Insert your property photos:</div>
-          <FilePond
-            files={files}
-            acceptedFileTypes="image/*"
-            onupdatefiles={setFiles}
-            allowMultiple={true}
-            server={{ process, revert }}
-            name="file"
-            labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
-          />
-        </div>
-      </div>
+          <div className="meal-component">
+            <div className="title">Meals:</div>
+            <Stack spacing={4} direction="row">
+              <Button
+                variant="outlined"
+                onClick={() =>
+                  setMeals((prev) => {
+                    return { ...prev, breakfast: !prev.breakfast };
+                  })
+                }
+                sx={styleMealBtn(meals.breakfast)}
+              >
+                <BakeryDiningIcon sx={{ fontSize: "50px" }} />
+                Breakfast
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() =>
+                  setMeals((prev) => {
+                    return { ...prev, lunch: !prev.lunch };
+                  })
+                }
+                sx={styleMealBtn(meals.lunch)}
+              >
+                <RamenDiningIcon sx={{ fontSize: "50px" }} />
+                Lunch
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() =>
+                  setMeals((prev) => {
+                    return { ...prev, dinner: !prev.dinner };
+                  })
+                }
+                sx={styleMealBtn(meals.dinner)}
+              >
+                <LunchDiningIcon sx={{ fontSize: "50px" }} />
+                Dinner
+              </Button>
+            </Stack>
+          </div>
 
-      <div
-        className="right-side-component"
-        style={{
-          marginRight: "20px",
-          marginTop: "90px",
-          maxWidth: "50%",
-          //   maxHeight: "50%",
-        }}
-      >
-        <div className="meal-component">
-          <div className="title">Meals:</div>
-          <Stack spacing={4} direction="row">
-            <Button
-              variant="outlined"
-              onClick={() =>
-                setMeals((prev) => {
-                  return { ...prev, breakfast: !prev.breakfast };
-                })
-              }
-              sx={styleMealBtn(meals.breakfast)}
-            >
-              <BakeryDiningIcon sx={{ fontSize: "50px" }} />
-              Breakfast
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() =>
-                setMeals((prev) => {
-                  return { ...prev, lunch: !prev.lunch };
-                })
-              }
-              sx={styleMealBtn(meals.lunch)}
-            >
-              <RamenDiningIcon sx={{ fontSize: "50px" }} />
-              Lunch
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() =>
-                setMeals((prev) => {
-                  return { ...prev, dinner: !prev.dinner };
-                })
-              }
-              sx={styleMealBtn(meals.dinner)}
-            >
-              <LunchDiningIcon sx={{ fontSize: "50px" }} />
-              Dinner
-            </Button>
-          </Stack>
-        </div>
+          <div className="description-component">
+            <div className="title">Property description:</div>
+            <textarea
+              required
+              className="input-description"
+              placeholder="Write your property description"
+              name="propertyDescription"
+              value={propertyInputInfos.propertyDescription}
+              onChange={handleInfosChange}
+            />
+          </div>
 
-        <div className="description-component">
-          <div className="title">Property description:</div>
-          <textarea
-            required
-            className="input-description"
-            placeholder="Write your property description"
-            name="propertyDescription"
-            value={propertyInputInfos.propertyDescription}
-            onChange={handleInfosChange}
-          />
-        </div>
+          <div className="facilities-component">
+            <div className="title">Facilities:</div>
+            <Stack spacing={4} direction="row" sx={{ mt: "20px" }}>
+              <Button
+                variant="outlined"
+                onClick={() =>
+                  setFacilities((prev) => {
+                    return { ...prev, towel: !prev.towel };
+                  })
+                }
+                sx={styleAmenityBtn(facilities.towel)}
+              >
+                <DryCleaningIcon sx={{ fontSize: "40px" }} />
+                Towels
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() =>
+                  setFacilities((prev) => {
+                    return { ...prev, balcony: !prev.balcony };
+                  })
+                }
+                sx={styleAmenityBtn(facilities.balcony)}
+              >
+                <BalconyIcon sx={{ fontSize: "35px" }} />
+                Balcony
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() =>
+                  setFacilities((prev) => {
+                    return { ...prev, airConditioning: !prev.airConditioning };
+                  })
+                }
+                sx={styleAmenityBtn(facilities.airConditioning)}
+              >
+                <AcUnitIcon sx={{ fontSize: "40px" }} />
+                Air conditioning
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() =>
+                  setFacilities((prev) => {
+                    return { ...prev, tv: !prev.tv };
+                  })
+                }
+                sx={styleAmenityBtn(facilities.tv)}
+              >
+                <TvIcon sx={{ fontSize: "40px" }} />
+                TV
+              </Button>
+            </Stack>
+          </div>
 
-        <div className="facilities-component">
-          <div className="title">Facilities:</div>
-          <Stack spacing={4} direction="row" sx={{ mt: "20px" }}>
-            <Button
-              variant="outlined"
-              onClick={() =>
-                setFacilities((prev) => {
-                  return { ...prev, towel: !prev.towel };
-                })
-              }
-              sx={styleAmenityBtn(facilities.towel)}
-            >
-              <DryCleaningIcon sx={{ fontSize: "40px" }} />
-              Towels
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() =>
-                setFacilities((prev) => {
-                  return { ...prev, balcony: !prev.balcony };
-                })
-              }
-              sx={styleAmenityBtn(facilities.balcony)}
-            >
-              <BalconyIcon sx={{ fontSize: "35px" }} />
-              Balcony
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() =>
-                setFacilities((prev) => {
-                  return { ...prev, airConditioning: !prev.airConditioning };
-                })
-              }
-              sx={styleAmenityBtn(facilities.airConditioning)}
-            >
-              <AcUnitIcon sx={{ fontSize: "40px" }} />
-              Air conditioning
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() =>
-                setFacilities((prev) => {
-                  return { ...prev, tv: !prev.tv };
-                })
-              }
-              sx={styleAmenityBtn(facilities.tv)}
-            >
-              <TvIcon sx={{ fontSize: "40px" }} />
-              TV
-            </Button>
-          </Stack>
-        </div>
-
-        {/* <div className="price-component">
+          {/* <div className="price-component">
           <div className="title">Price:</div>
           <input className="input-price" />
         </div> */}
-        {/* <div className="mb-4" style={{ marginTop: "20px" }}>
+          {/* <div className="mb-4" style={{ marginTop: "20px" }}>
           <div className="flex items-center space-x-20">
             <Button
               component="label"
@@ -742,294 +749,295 @@ const AddProperty = () => {
             )}
           </div>
         </div> */}
-        {/* {error !== "" && <span className="text-red">{error}</span>} */}
-        {/* <div className="flex justify-end">
+          {/* {error !== "" && <span className="text-red">{error}</span>} */}
+          {/* <div className="flex justify-end">
           <Button variant="contained" onClick={handleSubmit}>
             Save
           </Button>
         </div> */}
-        {/* <div style={{ width: "80%", margin: "auto", padding: "2%" }}> */}
+          {/* <div style={{ width: "80%", margin: "auto", padding: "2%" }}> */}
 
-        <div className="amenities-component">
-          <div className="title">Amenities:</div>
-          <Stack spacing={4} direction="row">
-            <Button
-              variant="outlined"
-              onClick={() =>
-                setAmenities((prev) => {
-                  return { ...prev, petsFriendly: !prev.petsFriendly };
-                })
-              }
-              sx={styleAmenityBtn(amenities.petsFriendly)}
-            >
-              <PetsIcon sx={{ fontSize: "30px" }} />
-              Pet Friendly
-            </Button>
+          <div className="amenities-component">
+            <div className="title">Amenities:</div>
+            <Stack spacing={4} direction="row">
+              <Button
+                variant="outlined"
+                onClick={() =>
+                  setAmenities((prev) => {
+                    return { ...prev, petsFriendly: !prev.petsFriendly };
+                  })
+                }
+                sx={styleAmenityBtn(amenities.petsFriendly)}
+              >
+                <PetsIcon sx={{ fontSize: "30px" }} />
+                Pet Friendly
+              </Button>
 
-            <Button
-              variant="outlined"
-              onClick={() =>
-                setAmenities((prev) => {
-                  return {
-                    ...prev,
-                    disabilitiesFriendly: !prev.disabilitiesFriendly,
-                  };
-                })
-              }
-              sx={styleAmenityBtn(amenities.disabilitiesFriendly)}
-            >
-              <AccessibleIcon sx={{ fontSize: "40px" }} />
-              Disabilities Friendly
-            </Button>
+              <Button
+                variant="outlined"
+                onClick={() =>
+                  setAmenities((prev) => {
+                    return {
+                      ...prev,
+                      disabilitiesFriendly: !prev.disabilitiesFriendly,
+                    };
+                  })
+                }
+                sx={styleAmenityBtn(amenities.disabilitiesFriendly)}
+              >
+                <AccessibleIcon sx={{ fontSize: "40px" }} />
+                Disabilities Friendly
+              </Button>
 
-            <Button
-              variant="outlined"
-              onClick={() =>
-                setAmenities((prev) => {
-                  return { ...prev, swimmingPool: !prev.swimmingPool };
-                })
-              }
-              sx={styleAmenityBtn(amenities.swimmingPool)}
-            >
-              <PoolIcon sx={{ fontSize: "40px" }} />
-              Swimming Pool
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() =>
-                setAmenities((prev) => {
-                  return { ...prev, garden: !prev.garden };
-                })
-              }
-              sx={styleAmenityBtn(amenities.garden)}
-            >
-              <DeckIcon sx={{ fontSize: "40px" }} />
-              Garden
-            </Button>
-          </Stack>
+              <Button
+                variant="outlined"
+                onClick={() =>
+                  setAmenities((prev) => {
+                    return { ...prev, swimmingPool: !prev.swimmingPool };
+                  })
+                }
+                sx={styleAmenityBtn(amenities.swimmingPool)}
+              >
+                <PoolIcon sx={{ fontSize: "40px" }} />
+                Swimming Pool
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() =>
+                  setAmenities((prev) => {
+                    return { ...prev, garden: !prev.garden };
+                  })
+                }
+                sx={styleAmenityBtn(amenities.garden)}
+              >
+                <DeckIcon sx={{ fontSize: "40px" }} />
+                Garden
+              </Button>
+            </Stack>
 
-          <Stack spacing={4} direction="row" sx={{ mt: "20px" }}>
-            <Button
-              variant="outlined"
-              onClick={() =>
-                setAmenities((prev) => {
-                  return { ...prev, parking: !prev.parking };
-                })
-              }
-              sx={styleAmenityBtn(amenities.parking)}
-            >
-              <DirectionsCarIcon sx={{ fontSize: "40px" }} />
-              Parking
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() =>
-                setAmenities((prev) => {
-                  return { ...prev, gym: !prev.gym };
-                })
-              }
-              sx={styleAmenityBtn(amenities.gym)}
-            >
-              <FitnessCenterIcon sx={{ fontSize: "40px" }} />
-              Gym
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() =>
-                setAmenities((prev) => {
-                  return { ...prev, wifi: !prev.wifi };
-                })
-              }
-              sx={styleAmenityBtn(amenities.wifi)}
-            >
-              <WifiIcon sx={{ fontSize: "35px" }} />
-              Wi-fi
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() =>
-                setAmenities((prev) => {
-                  return { ...prev, bikes: !prev.bikes };
-                })
-              }
-              sx={styleAmenityBtn(amenities.bikes)}
-            >
-              <DirectionsBikeIcon sx={{ fontSize: "40px" }} />
-              Bikes
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() =>
-                setAmenities((prev) => {
-                  return { ...prev, kidsZone: !prev.kidsZone };
-                })
-              }
-              sx={styleAmenityBtn(amenities.kidsZone)}
-            >
-              <ChildCareIcon sx={{ fontSize: "40px" }} />
-              Kids Zone
-            </Button>
-          </Stack>
+            <Stack spacing={4} direction="row" sx={{ mt: "20px" }}>
+              <Button
+                variant="outlined"
+                onClick={() =>
+                  setAmenities((prev) => {
+                    return { ...prev, parking: !prev.parking };
+                  })
+                }
+                sx={styleAmenityBtn(amenities.parking)}
+              >
+                <DirectionsCarIcon sx={{ fontSize: "40px" }} />
+                Parking
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() =>
+                  setAmenities((prev) => {
+                    return { ...prev, gym: !prev.gym };
+                  })
+                }
+                sx={styleAmenityBtn(amenities.gym)}
+              >
+                <FitnessCenterIcon sx={{ fontSize: "40px" }} />
+                Gym
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() =>
+                  setAmenities((prev) => {
+                    return { ...prev, wifi: !prev.wifi };
+                  })
+                }
+                sx={styleAmenityBtn(amenities.wifi)}
+              >
+                <WifiIcon sx={{ fontSize: "35px" }} />
+                Wi-fi
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() =>
+                  setAmenities((prev) => {
+                    return { ...prev, bikes: !prev.bikes };
+                  })
+                }
+                sx={styleAmenityBtn(amenities.bikes)}
+              >
+                <DirectionsBikeIcon sx={{ fontSize: "40px" }} />
+                Bikes
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() =>
+                  setAmenities((prev) => {
+                    return { ...prev, kidsZone: !prev.kidsZone };
+                  })
+                }
+                sx={styleAmenityBtn(amenities.kidsZone)}
+              >
+                <ChildCareIcon sx={{ fontSize: "40px" }} />
+                Kids Zone
+              </Button>
+            </Stack>
+          </div>
+          <div className="price-component">
+            <div className="title">Price (RON):</div>
+            <input
+              required
+              className="input-price"
+              name="price"
+              value={propertyInputInfos.price}
+              onChange={handleInfosChange}
+            />
+          </div>
+          <div className="room-component">
+            <div className="title">Number of rooms:</div>
+            <Stack spacing={4} direction="row">
+              <Button
+                variant="outlined"
+                onClick={() => handleRoomButtonClick("1")}
+                sx={styleRoomBtn("1", activeRoomButton)}
+              >
+                1
+                <BedIcon sx={{ fontSize: "40px" }} />
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() => handleRoomButtonClick("2")}
+                sx={styleRoomBtn("2", activeRoomButton)}
+              >
+                2
+                <BedIcon sx={{ fontSize: "40px" }} />
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() => handleRoomButtonClick("3")}
+                sx={styleRoomBtn("3", activeRoomButton)}
+              >
+                3
+                <BedIcon sx={{ fontSize: "40px" }} />
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() => handleRoomButtonClick("4")}
+                sx={styleRoomBtn("4", activeRoomButton)}
+              >
+                4
+                <BedIcon sx={{ fontSize: "40px" }} />
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() => handleRoomButtonClick("5")}
+                sx={styleRoomBtn("5", activeRoomButton)}
+              >
+                5
+                <BedIcon sx={{ fontSize: "40px" }} />
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() => handleRoomButtonClick("6")}
+                sx={styleRoomBtn("6", activeRoomButton)}
+              >
+                +6
+                <BedIcon sx={{ fontSize: "40px" }} />
+              </Button>
+            </Stack>
+          </div>
+
+          <div className="bathroom-component">
+            <div className="title">Number of bathrooms:</div>
+            <Stack spacing={4} direction="row">
+              <Button
+                variant="outlined"
+                onClick={() => handleBathButtonClick("1")}
+                sx={styleBathBtn("1", activeBathButton)}
+              >
+                1
+                <BathtubIcon sx={{ fontSize: "40px" }} />
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() => handleBathButtonClick("2")}
+                sx={styleBathBtn("2", activeBathButton)}
+              >
+                2
+                <BathtubIcon sx={{ fontSize: "40px" }} />
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() => handleBathButtonClick("3")}
+                sx={styleBathBtn("3", activeBathButton)}
+              >
+                3
+                <BathtubIcon sx={{ fontSize: "40px" }} />
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() => handleBathButtonClick("4")}
+                sx={styleBathBtn("4", activeBathButton)}
+              >
+                4
+                <BathtubIcon sx={{ fontSize: "40px" }} />
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() => handleBathButtonClick("5")}
+                sx={styleBathBtn("5", activeBathButton)}
+              >
+                5
+                <BathtubIcon sx={{ fontSize: "40px" }} />
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() => handleBathButtonClick("6")}
+                sx={styleBathBtn("6", activeBathButton)}
+              >
+                +6
+                <BathtubIcon sx={{ fontSize: "40px" }} />
+              </Button>
+            </Stack>
+          </div>
+          <button
+            onClick={handleCreateBtnClick}
+            // disabled={isFilled()}
+            className="add-property-btn"
+          >
+            Create property
+          </button>
         </div>
-        <div className="price-component">
-          <div className="title">Price (RON):</div>
-          <input
-            required
-            className="input-price"
-            name="price"
-            value={propertyInputInfos.price}
-            onChange={handleInfosChange}
-          />
-        </div>
-        <div className="room-component">
-          <div className="title">Number of rooms:</div>
-          <Stack spacing={4} direction="row">
-            <Button
-              variant="outlined"
-              onClick={() => handleRoomButtonClick("1")}
-              sx={styleRoomBtn("1", activeRoomButton)}
-            >
-              1
-              <BedIcon sx={{ fontSize: "40px" }} />
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() => handleRoomButtonClick("2")}
-              sx={styleRoomBtn("2", activeRoomButton)}
-            >
-              2
-              <BedIcon sx={{ fontSize: "40px" }} />
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() => handleRoomButtonClick("3")}
-              sx={styleRoomBtn("3", activeRoomButton)}
-            >
-              3
-              <BedIcon sx={{ fontSize: "40px" }} />
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() => handleRoomButtonClick("4")}
-              sx={styleRoomBtn("4", activeRoomButton)}
-            >
-              4
-              <BedIcon sx={{ fontSize: "40px" }} />
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() => handleRoomButtonClick("5")}
-              sx={styleRoomBtn("5", activeRoomButton)}
-            >
-              5
-              <BedIcon sx={{ fontSize: "40px" }} />
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() => handleRoomButtonClick("6")}
-              sx={styleRoomBtn("6", activeRoomButton)}
-            >
-              +6
-              <BedIcon sx={{ fontSize: "40px" }} />
-            </Button>
-          </Stack>
-        </div>
 
-        <div className="bathroom-component">
-          <div className="title">Number of bathrooms:</div>
-          <Stack spacing={4} direction="row">
-            <Button
-              variant="outlined"
-              onClick={() => handleBathButtonClick("1")}
-              sx={styleBathBtn("1", activeBathButton)}
-            >
-              1
-              <BathtubIcon sx={{ fontSize: "40px" }} />
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() => handleBathButtonClick("2")}
-              sx={styleBathBtn("2", activeBathButton)}
-            >
-              2
-              <BathtubIcon sx={{ fontSize: "40px" }} />
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() => handleBathButtonClick("3")}
-              sx={styleBathBtn("3", activeBathButton)}
-            >
-              3
-              <BathtubIcon sx={{ fontSize: "40px" }} />
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() => handleBathButtonClick("4")}
-              sx={styleBathBtn("4", activeBathButton)}
-            >
-              4
-              <BathtubIcon sx={{ fontSize: "40px" }} />
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() => handleBathButtonClick("5")}
-              sx={styleBathBtn("5", activeBathButton)}
-            >
-              5
-              <BathtubIcon sx={{ fontSize: "40px" }} />
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() => handleBathButtonClick("6")}
-              sx={styleBathBtn("6", activeBathButton)}
-            >
-              +6
-              <BathtubIcon sx={{ fontSize: "40px" }} />
-            </Button>
-          </Stack>
-        </div>
-        <button
-          onClick={handleCreateBtnClick}
-          // disabled={isFilled()}
-          className="add-property-btn"
-        >
-          Create property
-        </button>
-      </div>
+        {err && (
+          <Snackbar
+            anchorOrigin={{
+              vertical: "top",
+              horizontal: "center",
+            }}
+            open={openSnackbar}
+            className="snackbarError"
+            autoHideDuration={3000}
+            onClose={handleCloseSnackbar}
+          >
+            <Alert severity="error">{errorMessage}</Alert>
+          </Snackbar>
+        )}
 
-      {err && (
-        <Snackbar
-          anchorOrigin={{
-            vertical: "top",
-            horizontal: "center",
-          }}
-          open={openSnackbar}
-          className="snackbarError"
-          autoHideDuration={3000}
-          onClose={handleCloseSnackbar}
-        >
-          <Alert severity="error">{errorMessage}</Alert>
-        </Snackbar>
-      )}
-
-      {success && (
-        <Snackbar
-          anchorOrigin={{
-            vertical: "top",
-            horizontal: "center",
-          }}
-          open={success}
-          className="snackbarSuccess"
-          autoHideDuration={5000}
-          onClose={() => setSuccess(false)}
-          sx={{ width: "100%" }}
-        >
-          <Alert severity="success" icon={<CheckIcon fontSize="inherit" />}>
-            {successMessage}
-          </Alert>
-        </Snackbar>
-      )}
-    </MainComponent>
+        {success && (
+          <Snackbar
+            anchorOrigin={{
+              vertical: "top",
+              horizontal: "center",
+            }}
+            open={success}
+            className="snackbarSuccess"
+            autoHideDuration={5000}
+            onClose={() => setSuccess(false)}
+            sx={{ width: "100%" }}
+          >
+            <Alert severity="success" icon={<CheckIcon fontSize="inherit" />}>
+              {successMessage}
+            </Alert>
+          </Snackbar>
+        )}
+      </MainComponent>
+    </div>
   );
 };
 

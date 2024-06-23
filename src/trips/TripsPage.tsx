@@ -58,7 +58,17 @@ const TripsPage = () => {
             propertyId: trip.propertyId,
           }))
         );
-        console.log(data);
+
+        // console.log("Trips:");
+
+        // console.log(
+        //   data.content.map((x) => {
+        //     return {
+        //       checkIn: new Date(x.checkInDate),
+        //       checkout: new Date(x.checkOutDate),
+        //     };
+        //   })
+        // );
       }
     }
   };

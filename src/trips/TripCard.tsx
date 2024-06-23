@@ -57,6 +57,8 @@ const TripCard = ({
   const navigate = useNavigate();
   const { user } = useUserStore();
   const [removedTrip, setRemovedTrip] = useState(false);
+  const [checkInString, setCheckInString] = useState("");
+  const [checkOutString, setCheckOutString] = useState("");
 
   const handleCloseBtn = () => {
     setRemovedTrip(false);
@@ -108,6 +110,8 @@ const TripCard = ({
 
         const data: ResponseGetAllTripsType = await r.json();
         for (const tripPropertyUser of data) {
+          console.log("curr trip is: " + tripPropertyUser);
+
           if (tripPropertyUser.userId === property?.userId) {
             const res = await fetch(
               `http://localhost:8080/api/users/${property?.userId}/trips/${tripPropertyUser.id}`,
@@ -127,7 +131,7 @@ const TripCard = ({
 
             const addAvailability: CreateAvailabilityType = {
               userId: property?.userId,
-              propertyId: tripPropertyUser?.propertyId,
+              propertyId: property?.id,
               startDate: new Date(trip.checkInDate).toLocaleDateString("en-GB"),
               endDate: new Date(trip.checkOutDate).toLocaleDateString("en-GB"),
             };
@@ -144,7 +148,7 @@ const TripCard = ({
             }
 
             const addAvailabilityCurrUser: CreateAvailabilityType = {
-              userId: property?.userId,
+              userId: user?.id,
               propertyId: tripPropertyUser?.propertyId,
               startDate: new Date(trip.checkInDate).toLocaleDateString("en-GB"),
               endDate: new Date(trip.checkOutDate).toLocaleDateString("en-GB"),
@@ -168,6 +172,17 @@ const TripCard = ({
 
   useEffect(() => {
     getPropertyById();
+    // let newDate = new Date(trip.checkInDate);
+    // const m = newDate.getTime() + 3 * 60 * 60 * 1000;
+    // console.log(
+    //   "my dates are: " +
+    //     new Date(trip.checkInDate) +
+    //     " and " +
+    //     new Date(trip.checkOutDate)
+    // );
+
+    setCheckInString(new Date(trip.checkInDate).toLocaleDateString("en-GB"));
+    setCheckOutString(new Date(trip.checkOutDate).toLocaleDateString("en-GB"));
   }, []);
 
   const getPropertyById = async () => {
@@ -207,7 +222,7 @@ const TripCard = ({
   //   city: data.city,
   // });
 
-  console.log("selected property is:");
+  // console.log("selected property is:");
   return (
     <>
       <Card
@@ -291,27 +306,24 @@ const TripCard = ({
               }}
             >
               <Typography
-                gutterBottom
                 variant="h5"
                 component="div"
                 sx={{ marginTop: "20px", color: "#588b97" }}
               >
-                Booked between:
+                Booking dates:
               </Typography>
               <Typography
-                gutterBottom
-                variant="h7"
+                fontWeight="normal"
                 component="div"
-                sx={{ color: "#588b97" }}
+                sx={{ color: "#588b97", fontFamily: "Oswald, sans-serif" }}
               >
-                {trip.checkInDate} and {trip.checkOutDate}
+                {checkInString} - {checkOutString}
               </Typography>
+
               <CardActions sx={{ paddingTop: "20px" }}>
                 <button
-                  // size="small"
-                  // color="primary"
                   onClick={() => handlePropertyDetails()}
-                  className="see-details"
+                  className="see-curr-property"
                 >
                   See details
                 </button>
@@ -326,7 +338,6 @@ const TripCard = ({
               }}
             >
               <Typography
-                gutterBottom
                 variant="h5"
                 component="div"
                 sx={{ marginTop: "20px", color: "#588b97" }}
@@ -334,17 +345,13 @@ const TripCard = ({
                 City:
               </Typography>
               <Typography
-                gutterBottom
-                variant="h7"
                 component="div"
-                sx={{ color: "#588b97" }}
+                sx={{ color: "#588b97", fontFamily: "Oswald, sans-serif" }}
               >
                 {property?.city}
               </Typography>
               <CardActions sx={{ paddingTop: "20px" }}>
                 <button
-                  // size="small"
-                  // color="primary"
                   onClick={() => handleCancelTrip()}
                   className="see-property"
                 >

@@ -118,6 +118,7 @@ const DisplayPropertyDetails = () => {
     useState(false);
   const [isEndDateEqualCurrUser, setIsEndDateEqualCurrUser] = useState(false);
   const resetFilters = useFilterStore((state) => state.resetSearchDetails);
+  let showAvailabilityTrueUpdated = false;
 
   useEffect(() => {
     // getAllProperties();
@@ -183,12 +184,18 @@ const DisplayPropertyDetails = () => {
     console.log(data);
   };
 
-  const handleClickButton = () => {
+  const handleCheckAvailabilityButton = () => {
+    // console.log(
+    //   "before adding : " +
+    //     convertDate(dateRange[0]) +
+    //     " and " +
+    //     convertDate(dateRange[1])
+    // );
     if (dateRange[0] === null || dateRange[1] === null) {
       setShowErr(true);
       return;
     }
-
+    // console.log("before adding : " + dateRange[0] + " and " + dateRange[1]);
     if (!selectedProperty) {
       setErr(true);
       setErrorMessage("No exchange property has been selected!");
@@ -198,24 +205,45 @@ const DisplayPropertyDetails = () => {
     setIsLoading(true);
     setTimeout(() => {
       setIsLoading(false);
-      if (filterByDates()) {
-        setShowAvailabilityTrue(true);
-      } else {
+      filterByDates();
+      // console.log(showAvailabilityTrue);
+
+      if (showAvailabilityTrueUpdated === false) {
         setShowAvailabilityFalse(true);
+      } else {
+        setShowAvailabilityTrue(true);
       }
+      //   setShowAvailabilityTrue(true);
+      // } else {
+      //   setShowAvailabilityFalse(true);
+      // }
       // navigate("/properties/all");
-    }, 1000);
+    }, 500);
   };
 
+  // useEffect(() => {
+  //   if (showAvailabilityTrue === false) {
+  //     setShowAvailabilityFalse(true);
+  //   }
+  //   // Add any additional logic dependent on showAvailabilityTrue here
+  // }, [showAvailabilityTrue]);
+
   const filterByDates = () => {
-    console.log("Availabs:");
+    // console.log("Availabs:");
+    // availabilities.map((availability) => {
+    //   console.log(availability);
+    // });
 
     if (dateRange[0] === null || dateRange[1] === null) {
       setShowErr(true);
       return false;
     }
+    // console.log("start looping" + JSON.stringify(availabilities));
 
     for (const a of availabilities) {
+      // console.log("curr availability is: " + JSON.stringify(a));
+
+      // availabilities.map((a) => {
       const convertedStartDate = convertStringToDate(a.startDate);
       const convertedEndDate = convertStringToDate(a.endDate);
       const filteredCheckIn = convertStringToDate(
@@ -224,17 +252,46 @@ const DisplayPropertyDetails = () => {
       const filteredCheckOut = convertStringToDate(
         dateRange[1]?.toLocaleDateString("en-GB")
       );
+      console.log(selectedProperty);
+      console.log(a.propertyId);
 
+      // console.log(
+      //   "My availability Start Date is " +
+      //     convertedStartDate +
+      //     " and my availability end date is " +
+      //     convertedEndDate +
+      //     "my selection start date is " +
+      //     filteredCheckIn +
+      //     "my selection end date is " +
+      //     filteredCheckOut
+      // );
+      // console.log(convertedStartDate.toLocaleDateString());
+      // console.log(filteredCheckIn.toLocaleDateString());
+
+      // console.log(
+      //   new Date(filteredCheckIn).toDateString() ===
+      //     new Date(convertedStartDate).toDateString()
+      // );
       if (
         a.propertyId === selectedProperty?.id &&
         filteredCheckIn >= convertedStartDate &&
         filteredCheckOut <= convertedEndDate
       ) {
-        if (filteredCheckIn === convertedStartDate) {
+        if (
+          filteredCheckIn.toLocaleDateString() ===
+          convertedStartDate.toLocaleDateString()
+        ) {
+          console.log("theyre equal1");
+
           setIsStartDateEqualCurrUser(true);
         }
 
-        if (filteredCheckOut === convertedEndDate) {
+        if (
+          filteredCheckOut.toLocaleDateString() ===
+          convertedEndDate.toLocaleDateString()
+        ) {
+          console.log("theyre equal2");
+
           setIsEndDateEqualCurrUser(true);
         }
         setToBeRemovedAvailabilityCurrUser(a);
@@ -245,18 +302,32 @@ const DisplayPropertyDetails = () => {
         filteredCheckIn >= convertedStartDate &&
         filteredCheckOut <= convertedEndDate
       ) {
-        if (filteredCheckIn === convertedStartDate) {
+        if (
+          filteredCheckIn.toLocaleDateString() ===
+          convertedStartDate.toLocaleDateString()
+        ) {
+          console.log("theyre equal3");
+
           setIsStartDateEqual(true);
         }
 
-        if (filteredCheckOut === convertedEndDate) {
+        if (
+          filteredCheckOut.toLocaleDateString() ===
+          convertedEndDate.toLocaleDateString()
+        ) {
+          console.log("theyre equal4");
+
           setIsEndDateEqual(true);
         }
 
         setToBeRemovedAvailability(a);
-        return true;
+        showAvailabilityTrueUpdated = true;
+        console.log(showAvailabilityTrue);
+
+        // return true;
       }
     }
+    // setShowAvailabilityTrue(showAvailabilityTrueUpdated);
   };
 
   const handleClose = () => {
@@ -269,6 +340,12 @@ const DisplayPropertyDetails = () => {
     setShowAvailabilityFalse(false);
     setCreatedTrip(false);
   };
+
+  // const convertDate = (d: Date) => {
+  //   const localeDate = new Date(d).toLocaleDateString("en-GB");
+  //   const [day, month, year] = localeDate.split("/");
+  //   return new Date(Number(year), Number(month) - 1, Number(day), 0, 0, 0, 0);
+  // };
 
   const handleCloseBooking = async (confirm: boolean) => {
     setShowAvailabilityTrue(false);
@@ -311,8 +388,6 @@ const DisplayPropertyDetails = () => {
             const convertedEndDate = convertStringToDate(
               t2.toLocaleDateString("en-GB")
             );
-            // let filteredCheckIn;
-            // let filteredCheckOut;
 
             if (dateRange[0] !== null && dateRange[1] !== null) {
               const filteredCheckIn = convertStringToDate(
@@ -322,10 +397,8 @@ const DisplayPropertyDetails = () => {
                 dateRange[1].toLocaleDateString("en-GB")
               );
               if (
-                (convertedStartDate >= filteredCheckIn &&
-                  convertedStartDate <= filteredCheckOut) ||
-                (convertedEndDate >= filteredCheckIn &&
-                  convertedEndDate <= filteredCheckOut)
+                filteredCheckIn >= convertedStartDate &&
+                filteredCheckOut <= convertedEndDate
               ) {
                 setErr(true);
                 setErrorMessage(
@@ -337,58 +410,15 @@ const DisplayPropertyDetails = () => {
             }
           }
 
-          const values: PostTripType = {
-            numberOfPersons: 0,
-            destination: property?.city,
-            minRange: 0,
-            maxRange: 0,
-            checkInDate: dateRange[0],
-            checkOutDate: dateRange[1],
-            userId: user?.id,
-            propertyId: property?.id,
-          };
-          const res = await fetch(`http://localhost:8080/api/trip`, {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${token.replace(/"/g, "")}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(values),
-          });
-          if (!res.ok) {
-            return;
-          }
-          if (user?.role !== "GUEST") {
-            // console.log("selected property is:");
-            // console.log(selectedProperty.id);
-
-            const r = await fetch(
-              `http://localhost:8080/api/properties/${selectedProperty.id}`,
-              {
-                method: "GET",
-              }
-            );
-            if (!r.ok) {
-              return;
-            }
-
-            const data: PropertyInfosUserType = await r.json();
-            // setUserProperty({
-            //   id: data.id,
-            //   city: data.city,
-            // });
-
-            console.log("selected property is:");
-            console.log(userPropriety?.city);
-
+          if (dateRange[0] !== null && dateRange[1] !== null) {
             const values: PostTripType = {
               numberOfPersons: 0,
-              destination: data.city,
+              destination: property?.city,
               minRange: 0,
               maxRange: 0,
               checkInDate: dateRange[0],
               checkOutDate: dateRange[1],
-              userId: property?.userId,
+              userId: user?.id,
               propertyId: property?.id,
             };
             const res = await fetch(`http://localhost:8080/api/trip`, {
@@ -402,9 +432,54 @@ const DisplayPropertyDetails = () => {
             if (!res.ok) {
               return;
             }
+            if (user?.role !== "GUEST") {
+              // console.log("selected property is:");
+              // console.log(selectedProperty.id);
+
+              const r = await fetch(
+                `http://localhost:8080/api/properties/${selectedProperty.id}`,
+                {
+                  method: "GET",
+                }
+              );
+              if (!r.ok) {
+                return;
+              }
+
+              const data: PropertyInfosUserType = await r.json();
+
+              // console.log("selected property is:");
+              // console.log(userPropriety?.city);
+
+              const values: PostTripType = {
+                numberOfPersons: 0,
+                destination: data.city,
+                minRange: 0,
+                maxRange: 0,
+                checkInDate: dateRange[0],
+                checkOutDate: dateRange[1],
+                userId: property?.userId,
+                propertyId: selectedProperty?.id,
+              };
+              const res = await fetch(`http://localhost:8080/api/trip`, {
+                method: "POST",
+                headers: {
+                  Authorization: `Bearer ${token.replace(/"/g, "")}`,
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(values),
+              });
+              if (!res.ok) {
+                return;
+              }
+            }
           }
 
           if (toBeRemovedAvailability) {
+            console.log(
+              "i ll remove the " + toBeRemovedAvailability.id + " availability"
+            );
+
             const resp = await fetch(
               `http://localhost:8080/api/availabilities/${toBeRemovedAvailability.id}`,
               {
@@ -422,6 +497,13 @@ const DisplayPropertyDetails = () => {
             }
 
             if (!isStartDateEqual) {
+              console.log(
+                "i ll add the " +
+                  toBeRemovedAvailability?.startDate +
+                  " & " +
+                  dateRange[0]?.toLocaleDateString("en-GB") +
+                  " availability"
+              );
               const addAvailability: CreateAvailabilityType = {
                 userId: property?.userId,
                 propertyId: property?.id,
@@ -439,6 +521,13 @@ const DisplayPropertyDetails = () => {
             }
 
             if (!isEndDateEqual) {
+              console.log(
+                "i ll add the " +
+                  dateRange[1]?.toLocaleDateString("en-GB") +
+                  " & " +
+                  toBeRemovedAvailability?.endDate +
+                  " availability"
+              );
               const addAvailability: CreateAvailabilityType = {
                 userId: property?.userId,
                 propertyId: property?.id,
@@ -451,22 +540,16 @@ const DisplayPropertyDetails = () => {
               );
               if (response.error.length !== 0) {
                 console.log("eroare cand bagi a doua noua valabilitate");
-
-                // tokens.map((token) => {
-                //   revert(
-                //     token,
-                //     () => {},
-                //     () => {}
-                //   );
-                // });
-                // setErr(true);
-                // setErrorMessage(response.error);
-                // setOpenSnackbar(true);
               }
             }
           }
 
           if (toBeRemovedAvailabilityCurrUser) {
+            console.log(
+              "i ll remove the " +
+                toBeRemovedAvailabilityCurrUser.id +
+                " availability for current user"
+            );
             const resp = await fetch(
               `http://localhost:8080/api/availabilities/${toBeRemovedAvailabilityCurrUser.id}`,
               {
@@ -484,6 +567,13 @@ const DisplayPropertyDetails = () => {
             }
 
             if (!isStartDateEqualCurrUser) {
+              console.log(
+                "i ll add the " +
+                  toBeRemovedAvailabilityCurrUser.startDate +
+                  " & " +
+                  dateRange[0]?.toLocaleDateString("en-GB") +
+                  " availability for current user"
+              );
               const addAvailability: CreateAvailabilityType = {
                 userId: user.id,
                 propertyId: selectedProperty.id,
@@ -503,6 +593,13 @@ const DisplayPropertyDetails = () => {
             }
 
             if (!isEndDateEqualCurrUser) {
+              console.log(
+                "i ll add the " +
+                  dateRange[1]?.toLocaleDateString("en-GB") +
+                  " & " +
+                  toBeRemovedAvailabilityCurrUser.endDate +
+                  " availability for current user"
+              );
               const addAvailability: CreateAvailabilityType = {
                 userId: user.id,
                 propertyId: selectedProperty.id,
@@ -588,7 +685,7 @@ const DisplayPropertyDetails = () => {
       zipCode: data.zipCode,
       amenityInfo: data.amenityInfo,
     });
-    console.log(data);
+    // console.log(data);
   };
 
   // useEffect(() => {
@@ -608,9 +705,7 @@ const DisplayPropertyDetails = () => {
       />
       <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@900&family=Spicy+Rice&display=swap" />
 
-      {/* <h1 className="name-of-property-component">{property?.name}</h1> */}
-
-      <div className="box-container" style={{ height: "1320px" }}>
+      <div className="box-container" style={{ height: "auto" }}>
         <div className="name-description-images-component">
           <div className="title-description-component">
             <p className="name-text">{property?.name}</p>
@@ -834,7 +929,7 @@ const DisplayPropertyDetails = () => {
                 </Button>
                 <Button
                   variant="outlined"
-                  onClick={handleClickButton}
+                  onClick={handleCheckAvailabilityButton}
                   sx={styleRectangleBtn()}
                 >
                   Check Availability

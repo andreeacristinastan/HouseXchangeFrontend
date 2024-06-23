@@ -1,3 +1,14 @@
+.all-prop-component {
+  height: 200vh;
+}
+
+.bckg-img-container {
+  background-image: url("../utils/images/stacked-waves-haikei2.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 200vh;
+}
+
 .all-properties-box {
   transform: translateY(150px);
   display: grid;

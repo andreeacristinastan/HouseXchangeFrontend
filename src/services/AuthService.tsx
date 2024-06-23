@@ -146,6 +146,8 @@ const AuthService = () => {
   };
 
   const updateUser = async (updateUserVal: UpdateUserValuesType) => {
+    console.log("user details" + updateUserVal);
+
     const token = localStorage.getItem("user");
     let errorMessage = "";
     let user = null;
@@ -168,7 +170,7 @@ const AuthService = () => {
         })
           .then((res) => res.json())
           .then((data) => {
-            console.log(JSON.stringify(data));
+            // console.log(JSON.stringify(data));
 
             user = data;
           })
@@ -387,7 +389,7 @@ const AuthService = () => {
           body: JSON.stringify(availabilityCreate),
         })
           .then(async (res) => {
-            console.log(res);
+            // console.log(res);
 
             if (!res.ok) {
               const apiError = await res.json();

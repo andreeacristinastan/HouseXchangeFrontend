@@ -6,7 +6,7 @@
   background-image: url("../utils/images/test1.png");
   background-size: cover;
   background-repeat: no-repeat;
-  height: 200vh;
+  height: auto;
   margin-top: 70px;
   padding: 2rem;
   padding-right: 20%;

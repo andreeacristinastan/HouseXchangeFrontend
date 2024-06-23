@@ -39,7 +39,7 @@ export const makeUploadRequest = ({
       const { url } = JSON.parse(request.response);
       setTokens((prevTokenVector) => [...prevTokenVector, deleteToken]);
       addImages(url);
-      console.log(request.response);
+      // console.log(request.response);
 
       successCallback(deleteToken);
     } else {

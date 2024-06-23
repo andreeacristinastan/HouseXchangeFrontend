@@ -36,6 +36,7 @@ const DisplayAllProperties = () => {
   const setFilters = useFilterStore((state) => state.setSearchDetails);
   const [isFiltered, setIsFiltered] = useState(false);
   const { user } = useUserStore();
+  const [similarImages, setSimilarImages] = useState([]);
 
   const handleChangePriceRange = (selectedPriceRange: number[]) => {
     setNewPriceRange(selectedPriceRange);
@@ -44,7 +45,16 @@ const DisplayAllProperties = () => {
   // const handleChangeSearchDetails = ()
 
   const filterFunction = (property: Property) => {
-    // console.log(filters.typeOfProperty);
+    if (filters.similarProperties.length !== 0) {
+      const similarProperty = filters.similarProperties.find(
+        (similar) => similar.property_id === property.id
+      );
+
+      if (!similarProperty) {
+        return false;
+      }
+    }
+
     if (
       filters.typeOfProperty.length !== 0 &&
       property.propertyType !== filters.typeOfProperty.toLowerCase()
@@ -72,7 +82,7 @@ const DisplayAllProperties = () => {
   };
 
   const filterByDates = (property: Property) => {
-    console.log("Availabs:");
+    // console.log("Availabs:");
 
     if (filters.checkIn.length === 0 || filters.checkOut.length === 0) {
       return true;
@@ -138,7 +148,7 @@ const DisplayAllProperties = () => {
         propertyDescription: property.propertyDescription,
       }))
     );
-    console.log(data);
+    // console.log(data);
   };
 
   useEffect(() => {
@@ -173,7 +183,7 @@ const DisplayAllProperties = () => {
         endDate: availability.endDate,
       }))
     );
-    console.log(data);
+    // console.log(data);
   };
 
   const getAllProperties = async () => {
@@ -205,7 +215,7 @@ const DisplayAllProperties = () => {
         propertyDescription: property.propertyDescription,
       }))
     );
-    console.log(data);
+    // console.log(data);
   };
 
   useEffect(() => {
@@ -215,14 +225,7 @@ const DisplayAllProperties = () => {
   return (
     // <MainComponent>
 
-    <div
-      style={{
-        backgroundImage: `url(${backgroundImage})`,
-        backgroundSize: "cover",
-        backgroundRepeat: "no-repeat",
-        height: "200vh",
-      }}
-    >
+    <div className="all-prop-component">
       <link
         href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap"
         rel="stylesheet"
@@ -267,49 +270,51 @@ const DisplayAllProperties = () => {
           />
         </div>
       </div>
-      <div className="all-properties-box">
-        {propertiesAll
-          .filter(filterFunction)
-          .filter(filterByDates)
-          .filter(
-            (p) =>
-              !user?.properties.some(
-                (currUserProperty) => currUserProperty.id === p.id
-              )
-          )
-          .slice((page - 1) * 8, page * 8)
-          .map((property) => (
-            <div key={property.id}>
-              <PropertyCard
-                property={property}
-                imageUrl={property.images[0]?.url}
-              />
-            </div>
-          ))}
-      </div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          transform: "translateY(200px)",
-        }}
-      >
-        <Pagination
-          defaultPage={1}
-          count={totalPages}
-          page={page}
-          onChange={(event, value) => setPage(value)}
-          sx={{
-            "& .MuiPaginationItem-root": {
-              fontSize: "20px",
-
-              color: "#fff",
-            },
-            "& .MuiPaginationItem-page.Mui-selected": {
-              backgroundColor: "#87a9b0",
-            },
+      <div className="bckg-img-container">
+        <div className="all-properties-box">
+          {propertiesAll
+            .filter(filterFunction)
+            .filter(filterByDates)
+            .filter(
+              (p) =>
+                !user?.properties.some(
+                  (currUserProperty) => currUserProperty.id === p.id
+                )
+            )
+            .slice((page - 1) * 8, page * 8)
+            .map((property) => (
+              <div key={property.id}>
+                <PropertyCard
+                  property={property}
+                  imageUrl={property.images[0]?.url}
+                />
+              </div>
+            ))}
+        </div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            transform: "translateY(200px)",
           }}
-        />
+        >
+          <Pagination
+            defaultPage={1}
+            count={totalPages}
+            page={page}
+            onChange={(event, value) => setPage(value)}
+            sx={{
+              "& .MuiPaginationItem-root": {
+                fontSize: "20px",
+
+                color: "#fff",
+              },
+              "& .MuiPaginationItem-page.Mui-selected": {
+                backgroundColor: "#87a9b0",
+              },
+            }}
+          />
+        </div>
       </div>
     </div>
   );

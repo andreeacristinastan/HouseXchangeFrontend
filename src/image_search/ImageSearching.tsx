@@ -12,6 +12,9 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import "filepond-plugin-file-poster/dist/filepond-plugin-file-poster.css";
 import CheckIcon from "@mui/icons-material/Check";
 import CircularProgress from "@mui/material/CircularProgress";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
 
 registerPlugin(FilePondPluginFilePoster, FilePondPluginFileValidateType);
 import {
@@ -27,6 +30,10 @@ import {
   ResponseImageSearch,
 } from "../utils/types/ImageTypes";
 import { useNavigate } from "react-router-dom";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import Button from "@mui/material/Button";
+import { useFilterStore } from "../utils/useFilterStore";
 
 const ImageSearching = () => {
   const revert = (token, successCallback, errorCallback) => {
@@ -43,6 +50,9 @@ const ImageSearching = () => {
   const [properties, setProperties] = useState<PropertyImageSearch[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const [propertiesNotFoundErr, setPropertiesNotFoundErr] = useState(false);
+  const filters = useFilterStore((state) => state.searchDetails);
+  const setFilters = useFilterStore((state) => state.setSearchDetails);
 
   useEffect(() => {
     if (editorRef.current) {
@@ -116,6 +126,8 @@ const ImageSearching = () => {
   //   }, [properties]);
 
   const handleButtonClick = async () => {
+    // console.log(properties);
+
     const values: ImageSearchType = {
       properties: properties,
       to_be_compared_img: image,
@@ -130,6 +142,8 @@ const ImageSearching = () => {
       body: JSON.stringify(values),
     });
     if (!res.ok) {
+      setIsLoading(false);
+
       return;
     }
 
@@ -141,10 +155,32 @@ const ImageSearching = () => {
       () => {}
     );
     setFiles([]);
-    // console.log(data);
 
-    navigate("/properties");
+    // if (Array.isArray(data)) {
+    //   console.log("data is array");
+    console.log(data);
+    //   console.log(data.length);
+    // } else {
+    //   console.log("data is not an array");
+    // }
+
+    if (data.length === 0) {
+      setPropertiesNotFoundErr(true);
+    } else {
+      setFilters("similarProperties", data);
+      navigate("/properties/all");
+    }
   };
+
+  const handleClose = () => {
+    setPropertiesNotFoundErr(false);
+  };
+
+  const handleSeeProperties = () => {
+    setPropertiesNotFoundErr(false);
+    navigate("/properties/all");
+  };
+
   return (
     <div className="principal-container">
       <Typography
@@ -262,6 +298,24 @@ const ImageSearching = () => {
           </div>
         </div>
       )}
+
+      <Dialog open={propertiesNotFoundErr} onClose={() => handleClose()}>
+        <DialogTitle color={"#f58989"}>{"Bad news! 🥺"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            There is no property matching your desires at the moment!
+          </DialogContentText>
+          <DialogContentText>
+            You can try see other properties!
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => handleClose()}>Cancel</Button>
+          <Button onClick={() => handleSeeProperties()}>
+            See other properties
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

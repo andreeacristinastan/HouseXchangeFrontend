@@ -25,4 +25,4 @@ export type ResponseImageSearch = {
   property_id: number;
   url: string;
   similarity_score: number;
-};
+}[];
