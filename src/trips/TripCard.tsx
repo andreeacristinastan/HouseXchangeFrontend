@@ -25,6 +25,7 @@ import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import AuthService from "../services/AuthService";
 import { CreateAvailabilityType } from "../utils/types/AvailabilityTypes";
+import { convertStringToDate } from "../utils/convertStringToDate";
 
 const labels: { [index: string]: string } = {
   0.5: "",
@@ -59,9 +60,11 @@ const TripCard = ({
   const [removedTrip, setRemovedTrip] = useState(false);
   const [checkInString, setCheckInString] = useState("");
   const [checkOutString, setCheckOutString] = useState("");
+  // let deleteTripStatus = false;
 
   const handleCloseBtn = () => {
     setRemovedTrip(false);
+    setRemovedATrip(true);
   };
 
   const handlePropertyDetails = () => {
@@ -112,7 +115,11 @@ const TripCard = ({
         for (const tripPropertyUser of data) {
           console.log("curr trip is: " + tripPropertyUser);
 
-          if (tripPropertyUser.userId === property?.userId) {
+          if (
+            tripPropertyUser.userId === property?.userId &&
+            trip.checkInDate === tripPropertyUser.checkInDate &&
+            trip.checkOutDate === tripPropertyUser.checkOutDate
+          ) {
             const res = await fetch(
               `http://localhost:8080/api/users/${property?.userId}/trips/${tripPropertyUser.id}`,
               {
@@ -162,13 +169,21 @@ const TripCard = ({
 
               return;
             }
+            // deleteTripStatus = true;
+            setRemovedTrip(true);
           }
         }
       }
     }
-    setRemovedTrip(true);
-    setRemovedATrip(true);
   };
+
+  // useEffect(() => {
+  //   if (deleteTripStatus === true) {
+  //     setRemovedATrip(true);
+  //     setRemovedTrip(true);
+  //   }
+  //   // getPropertyById();
+  // }, [deleteTripStatus]);
 
   useEffect(() => {
     getPropertyById();

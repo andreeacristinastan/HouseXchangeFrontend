@@ -79,6 +79,7 @@ const TripsPage = () => {
 
   useEffect(() => {
     getTrips();
+    setRemovedATrip(false);
   }, [removedATrip]);
 
   return (

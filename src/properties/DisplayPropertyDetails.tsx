@@ -252,8 +252,8 @@ const DisplayPropertyDetails = () => {
       const filteredCheckOut = convertStringToDate(
         dateRange[1]?.toLocaleDateString("en-GB")
       );
-      console.log(selectedProperty);
-      console.log(a.propertyId);
+      // console.log(selectedProperty);
+      // console.log(a.propertyId);
 
       // console.log(
       //   "My availability Start Date is " +
@@ -1028,7 +1028,7 @@ const DisplayPropertyDetails = () => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => handleCloseAvailability()}>Cancel</Button>
+          <Button onClick={() => handleCloseAvailability()}>Ok</Button>
         </DialogActions>
       </Dialog>
 
