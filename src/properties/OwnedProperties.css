@@ -1,0 +1,54 @@
+.owned-properties-container {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+    url("../utils/images/trips2.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: auto;
+  margin-top: 70px;
+  /* width: auto; */
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  /* padding-right: 20%;
+  padding-left: 20%; */
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  width: 100%;
+  height: auto;
+}
+
+.center-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: transparent;
+  width: 70%;
+  height: auto;
+  backdrop-filter: blur(10px);
+  /* background-color: #588b97; */
+  /* box-shadow: 0 0 10px; */
+  border: 2px solid rgb(255, 255, 255);
+  border-radius: 8px;
+  gap: 1rem;
+  padding: 2%;
+}
+
+.scroll-container {
+  display: flex;
+  position: relative;
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+}
+
+.scroll-container img {
+  margin: 0 10px;
+  border-radius: 14px;
+}

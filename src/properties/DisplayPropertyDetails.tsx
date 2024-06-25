@@ -221,19 +221,7 @@ const DisplayPropertyDetails = () => {
     }, 500);
   };
 
-  // useEffect(() => {
-  //   if (showAvailabilityTrue === false) {
-  //     setShowAvailabilityFalse(true);
-  //   }
-  //   // Add any additional logic dependent on showAvailabilityTrue here
-  // }, [showAvailabilityTrue]);
-
   const filterByDates = () => {
-    // console.log("Availabs:");
-    // availabilities.map((availability) => {
-    //   console.log(availability);
-    // });
-
     if (dateRange[0] === null || dateRange[1] === null) {
       setShowErr(true);
       return false;
@@ -252,26 +240,7 @@ const DisplayPropertyDetails = () => {
       const filteredCheckOut = convertStringToDate(
         dateRange[1]?.toLocaleDateString("en-GB")
       );
-      // console.log(selectedProperty);
-      // console.log(a.propertyId);
 
-      // console.log(
-      //   "My availability Start Date is " +
-      //     convertedStartDate +
-      //     " and my availability end date is " +
-      //     convertedEndDate +
-      //     "my selection start date is " +
-      //     filteredCheckIn +
-      //     "my selection end date is " +
-      //     filteredCheckOut
-      // );
-      // console.log(convertedStartDate.toLocaleDateString());
-      // console.log(filteredCheckIn.toLocaleDateString());
-
-      // console.log(
-      //   new Date(filteredCheckIn).toDateString() ===
-      //     new Date(convertedStartDate).toDateString()
-      // );
       if (
         a.propertyId === selectedProperty?.id &&
         filteredCheckIn >= convertedStartDate &&
@@ -340,12 +309,6 @@ const DisplayPropertyDetails = () => {
     setShowAvailabilityFalse(false);
     setCreatedTrip(false);
   };
-
-  // const convertDate = (d: Date) => {
-  //   const localeDate = new Date(d).toLocaleDateString("en-GB");
-  //   const [day, month, year] = localeDate.split("/");
-  //   return new Date(Number(year), Number(month) - 1, Number(day), 0, 0, 0, 0);
-  // };
 
   const handleCloseBooking = async (confirm: boolean) => {
     setShowAvailabilityTrue(false);
@@ -476,10 +439,6 @@ const DisplayPropertyDetails = () => {
           }
 
           if (toBeRemovedAvailability) {
-            console.log(
-              "i ll remove the " + toBeRemovedAvailability.id + " availability"
-            );
-
             const resp = await fetch(
               `http://localhost:8080/api/availabilities/${toBeRemovedAvailability.id}`,
               {
@@ -497,13 +456,6 @@ const DisplayPropertyDetails = () => {
             }
 
             if (!isStartDateEqual) {
-              console.log(
-                "i ll add the " +
-                  toBeRemovedAvailability?.startDate +
-                  " & " +
-                  dateRange[0]?.toLocaleDateString("en-GB") +
-                  " availability"
-              );
               const addAvailability: CreateAvailabilityType = {
                 userId: property?.userId,
                 propertyId: property?.id,
@@ -517,7 +469,6 @@ const DisplayPropertyDetails = () => {
               if (response.error.length !== 0) {
                 console.log("eroare cand bagi prima noua valabilitate");
               }
-              // console.log(response);
             }
 
             if (!isEndDateEqual) {
@@ -589,7 +540,6 @@ const DisplayPropertyDetails = () => {
                   "eroare cand bagi prima noua valabilitate curr user"
                 );
               }
-              // console.log(response);
             }
 
             if (!isEndDateEqualCurrUser) {

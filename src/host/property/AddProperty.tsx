@@ -340,11 +340,6 @@ const AddProperty = () => {
         setOpenSnackbar(true);
       } else {
         const id = response.propertyDetails?.id;
-        // console.log(response.propertyDetails?.id);
-
-        // const response = await AuthService().createImage()
-
-        // // {
         if (id) {
           images.map(async (image) => {
             // console.log("first" + image);
@@ -383,17 +378,6 @@ const AddProperty = () => {
             );
             if (response.error.length !== 0) {
               console.log("eroare cand bagi chestii");
-
-              // tokens.map((token) => {
-              //   revert(
-              //     token,
-              //     () => {},
-              //     () => {}
-              //   );
-              // });
-              // setErr(true);
-              // setErrorMessage(response.error);
-              // setOpenSnackbar(true);
             }
             console.log(response);
           });
@@ -405,7 +389,6 @@ const AddProperty = () => {
         setImages([]);
         setFiles([]);
         setDates([]);
-        // console.log("my images are:" + images);
       }
 
       console.log(addProperty);
@@ -425,10 +408,6 @@ const AddProperty = () => {
         backgroundImage: `url(${backgroundImage})`,
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
-        // marginTop: "70px",
-        // padding: "2rem",
-        // paddingRight: "20%",
-        // paddingLeft: "20%",
       }}
     >
       <MainComponent>

@@ -44,7 +44,7 @@ export type ResponseGetAllPropertiesType = {
   numberOfRooms: number;
   price: number;
   userId: number;
-  trips: ResponseTripsType;
+  trips: ResponseTripsType[];
   images: ResponseImageInfoType[];
   mealInfo: ResponseMealType;
   amenityInfo: ResponseAmenityType;
@@ -83,6 +83,7 @@ export interface Property {
   address: string;
   price: number;
   images: ResponseImageInfoType[];
+  trips: ResponseTripsType[];
 }
 
 export interface PropertyImageSearch {

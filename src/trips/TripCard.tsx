@@ -256,12 +256,9 @@ const TripCard = ({
           sx={{
             flex: 1,
             maxWidth: "50%",
-            // maxHeight: "30%",
-            // backgroundSize: "cover",
-            // backgroundRepeat: "no-repeat",
+
             aspectRatio: "3/1",
           }}
-          // height="50%"
           image={property?.images[0].url}
           alt={property?.name}
         />
@@ -270,8 +267,7 @@ const TripCard = ({
             display: "flex",
             alignItems: "flex-start",
             flexDirection: "column",
-            // maxHeight: "2%",
-            // maxWidth: "1%",
+
             padding: "2%",
             flex: 1,
           }}
@@ -296,10 +292,8 @@ const TripCard = ({
           </Typography>
           <Box
             sx={{
-              // width: "200px",
               display: "flex",
               flexDirection: "column",
-              // alignItems: "center",
             }}
           >
             <Rating
@@ -376,7 +370,6 @@ const TripCard = ({
             </div>
           </div>
         </CardContent>
-        {/* </CardActionArea> */}
       </Card>
 
       <Dialog open={removedTrip} onClose={() => handleCloseBtn()}>

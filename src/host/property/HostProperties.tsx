@@ -270,14 +270,14 @@ const HostProperties = () => {
 
   return (
     <div style={{ marginTop: "80px" }}>
-      <TextField
+      {/* <TextField
         style={{ width: "100%" }}
         label="Search by name"
         variant="filled"
         value={search}
         onChange={handleSearch}
-      />
-      <TableContainer component={Paper}>
+      /> */}
+      {/* <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
@@ -356,7 +356,7 @@ const HostProperties = () => {
             <Button onClick={() => handleEditClose(true)}>Save</Button>
           </DialogActions>
         </Dialog>
-      </TableContainer>
+      </TableContainer> */}
     </div>
   );
 };
