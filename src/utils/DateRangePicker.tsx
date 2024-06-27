@@ -52,9 +52,9 @@ const DateRangePicker = (props) => {
           "en-GB"
         )}-${dateRange[1]?.toLocaleDateString("en-GB")}`,
       ]);
-      console.log("Cand adaug un nou range am valorile: ");
-      console.log(dateRange[0].toLocaleDateString());
-      console.log(dateRange[1].toLocaleDateString());
+      // console.log("Cand adaug un nou range am valorile: ");
+      // console.log(dateRange[0].toLocaleDateString());
+      // console.log(dateRange[1].toLocaleDateString());
 
       handleAvailabilities(
         dateRange[0]?.toLocaleDateString("en-GB"),

@@ -23,7 +23,6 @@ import { useState } from "react";
 import Snackbar from "@mui/material/Snackbar";
 import { Alert } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
-import { promiseHooks } from "v8";
 
 const RegisterPage = () => {
   // const onSubmit = (data: unknown) => console.log(data);

@@ -75,26 +75,6 @@ const UserProfile = ({ showTitle }: { showTitle: string }) => {
         imageCropAspectRatio: 1,
       });
     }
-
-    // const addImage: ProfileImageCreationType = {
-    //   url: image,
-    //   userId: user?.id,
-    // };
-
-    // async function createProfileImage() {
-    //   const response = await AuthService().createProfileImage(addImage);
-    //   if (response.error.length !== 0) {
-    //     tokens.map((token) => {
-    //       revert(token, "succes", "error");
-    //     });
-    //     setErr(true);
-    //     setErrorMessage(response.error);
-    //     setOpenSnackbar(true);
-    //   }
-    //   console.log(response);
-    // }
-
-    // createProfileImage();
   }, [image]);
 
   const handleAddImages = (image: string) => {

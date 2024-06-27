@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Property } from "../utils/types/PropertyTypes";
+import { Property, PropertyImageSearch } from "../utils/types/PropertyTypes";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
@@ -18,6 +18,8 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogActions from "@mui/material/DialogActions";
+import { ResponseImageInfoType } from "../utils/types/ImageTypes";
+
 const styleBtn = () => ({
   fontSize: "20px",
   color: "#fff",
@@ -40,9 +42,21 @@ const styleBtn = () => ({
 const OwnedPropertiesCard = ({
   property,
   setRemovedAProperty,
+  setEditMode,
+  setEditProperty,
+  setSelectedFacilities,
+  setSelectedAmenities,
+  setSelectedAvailabilities,
+  setImages,
 }: {
   property: Property;
   setRemovedAProperty: (val: boolean) => void;
+  setEditMode: (val: boolean) => void;
+  setEditProperty: (val: Property) => void;
+  setSelectedFacilities: (val: string[]) => void;
+  setSelectedAmenities: (val: string[]) => void;
+  setSelectedAvailabilities: (val: Availability[]) => void;
+  setImages: (val: string[]) => void;
 }) => {
   const imageUrl = property?.images?.[0]?.url;
   const { user } = useUserStore();
@@ -53,6 +67,43 @@ const OwnedPropertiesCard = ({
   const handleCloseBtn = () => {
     setRemovedProperty(false);
     // setRemovedAProperty(true);
+  };
+  const handleEditButtonClick = () => {
+    setEditMode(true);
+    setEditProperty(property);
+    setSelectedAvailabilities(availabilities);
+    const propertyImages = property.images;
+    const newImages = propertyImages.map(
+      (image: ResponseImageInfoType) => image.url
+    );
+
+    setImages(newImages);
+
+    let selectedKeys = Object.entries(property.facilities)
+      .filter(([key, value]) => value === true)
+      .map(([key, value]) => key);
+
+    let formattedKeys = selectedKeys.map(
+      (key) =>
+        key.charAt(0).toUpperCase() +
+        key.slice(1).replace(/(?<=.)(?=[A-Z])/g, " ")
+    );
+
+    setSelectedFacilities(formattedKeys);
+
+    selectedKeys = Object.entries(property.amenities)
+      .filter(([key, value]) => value === true)
+      .map(([key, value]) => key);
+
+    formattedKeys = selectedKeys.map(
+      (key) =>
+        key.charAt(0).toUpperCase() +
+        key.slice(1).replace(/(?<=.)(?=[A-Z])/g, " ")
+    );
+
+    setSelectedAmenities(formattedKeys);
+
+    console.log(property.amenities);
   };
 
   const handleOkBtn = () => {
@@ -69,6 +120,61 @@ const OwnedPropertiesCard = ({
 
       const currentTime = Date.now() / 1000;
       if (decodedToken.exp > currentTime && user) {
+        const r = await fetch(`http://localhost:8080/api/trips`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token.replace(/"/g, "")}`,
+            "Content-Type": "application/json",
+          },
+        });
+        if (!r.ok) {
+          console.log("Eroare cand iei calatorii");
+          return;
+        }
+
+        const data: ResponseGetAllTripsType = await r.json();
+        for (const tripPropertyUser of data) {
+          console.log("curr trip is: " + tripPropertyUser);
+
+          if (user.id === tripPropertyUser.userId) {
+            const res = await fetch(
+              `http://localhost:8080/api/users/${tripPropertyUser.userId}/trips/${tripPropertyUser.id}`,
+              {
+                method: "DELETE",
+                headers: {
+                  Authorization: `Bearer ${token.replace(/"/g, "")}`,
+                  "Content-Type": "application/json",
+                },
+              }
+            );
+            if (!res.ok) {
+              console.log("eroare cand stergi tripuri curent user logat");
+
+              return;
+            }
+          }
+        }
+
+        for (const availability of availabilities) {
+          if (availability.propertyId === property.id) {
+            const resp = await fetch(
+              `http://localhost:8080/api/availabilities/${availability.id}`,
+              {
+                method: "DELETE",
+                headers: {
+                  Authorization: `Bearer ${token.replace(/"/g, "")}`,
+                  "Content-Type": "application/json",
+                },
+              }
+            );
+            if (!resp.ok) {
+              console.log("eroare cand stergi disponibilitatea veche");
+
+              return;
+            }
+          }
+        }
+
         const res = await fetch(
           `http://localhost:8080/api/properties/${property.id}/trips`,
           {
@@ -80,51 +186,31 @@ const OwnedPropertiesCard = ({
           }
         );
         if (!res.ok) {
-          console.log("eroare cand stergi tripuri curent user logat");
+          console.log("eroare cand stergi proprietate user logat");
+
+          return;
+        }
+
+        const resp = await fetch(
+          `http://localhost:8080/api/users/${user?.id}/properties/${property.id}`,
+          {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${token.replace(/"/g, "")}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        if (!resp.ok) {
+          console.log("eroare cand stergi proprietate user logat");
 
           return;
         }
       }
-
-      for (const availability of availabilities) {
-        if (availability.propertyId === property.id) {
-          const resp = await fetch(
-            `http://localhost:8080/api/availabilities/${availability.id}`,
-            {
-              method: "DELETE",
-              headers: {
-                Authorization: `Bearer ${token.replace(/"/g, "")}`,
-                "Content-Type": "application/json",
-              },
-            }
-          );
-          if (!resp.ok) {
-            console.log("eroare cand stergi disponibilitatea veche");
-
-            return;
-          }
-        }
-      }
-
-      const resp = await fetch(
-        `http://localhost:8080/api/users/${user?.id}/properties/${property.id}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token.replace(/"/g, "")}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (!resp.ok) {
-        console.log("eroare cand stergi proprietate user logat");
-
-        return;
-      }
+      // setRemovedProperty(false);
+      // setRemovedAProperty(true);
+      setShowSuccess(true);
     }
-    // setRemovedProperty(false);
-    // setRemovedAProperty(true);
-    setShowSuccess(true);
   };
 
   useEffect(() => {
@@ -142,6 +228,7 @@ const OwnedPropertiesCard = ({
 
     const data: ResponseAllAvailabilitiesType = await res.json();
     // setTotalPages(data.totalPages);
+
     // const totalProperties: ResponseGetAllPropertiesType = data.content;
     setAvailabilities(
       data.map((availability) => ({
@@ -152,7 +239,7 @@ const OwnedPropertiesCard = ({
         endDate: availability.endDate,
       }))
     );
-    console.log(data);
+    // console.log(data);
   };
 
   const handleDeletePropertyClick = () => {
@@ -204,7 +291,7 @@ const OwnedPropertiesCard = ({
             </Button>
             <Button
               variant="outlined"
-              // onClick={() => handleAddButtonClick()}
+              onClick={() => handleEditButtonClick()}
               sx={styleBtn()}
             >
               Edit
@@ -212,6 +299,7 @@ const OwnedPropertiesCard = ({
           </div>
         </div>
       </Card>
+
       <Dialog open={removedProperty} onClose={() => handleCloseBtn()}>
         <DialogTitle color={"#f58989"}>{"Attention! 🥺"}</DialogTitle>
         <DialogContent>

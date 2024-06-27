@@ -682,60 +682,6 @@ const AddProperty = () => {
             </Stack>
           </div>
 
-          {/* <div className="price-component">
-          <div className="title">Price:</div>
-          <input className="input-price" />
-        </div> */}
-          {/* <div className="mb-4" style={{ marginTop: "20px" }}>
-          <div className="flex items-center space-x-20">
-            <Button
-              component="label"
-              role={undefined}
-              variant="outlined"
-              tabIndex={-1}
-              startIcon={<CloudUploadIcon />}
-              sx={{
-                color: "#fff",
-                boxShadow: "0 0 2px",
-                borderColor: "transparent",
-
-                "&:hover": {
-                  borderColor: "transparent",
-                  backgroundColor: "rgba(255, 255, 255, 0.1)",
-                },
-              }}
-            >
-              Upload file
-              <input
-                type="file"
-                id="upload"
-                name="upload"
-                accept="image/*"
-                onChange={handleUploadPhoto}
-                className="hidden"
-                style={{ display: "none" }}
-              />
-            </Button>
-            {photo && (
-              // <span className="text-gray-700">{photo.name}</span>
-              <div className="relative max-w-[200px] min-w-[200px] max-h-[200px] min-h-[200px] mt-4">
-                <img
-                  src={previewSrc}
-                  alt="Uploaded"
-                  style={{ width: "200px", height: "auto" }}
-                />
-              </div>
-            )}
-          </div>
-        </div> */}
-          {/* {error !== "" && <span className="text-red">{error}</span>} */}
-          {/* <div className="flex justify-end">
-          <Button variant="contained" onClick={handleSubmit}>
-            Save
-          </Button>
-        </div> */}
-          {/* <div style={{ width: "80%", margin: "auto", padding: "2%" }}> */}
-
           <div className="amenities-component">
             <div className="title">Amenities:</div>
             <Stack spacing={4} direction="row">

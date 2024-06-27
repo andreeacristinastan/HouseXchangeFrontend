@@ -84,6 +84,9 @@ export interface Property {
   price: number;
   images: ResponseImageInfoType[];
   trips: ResponseTripsType[];
+  meals: ResponseMealType;
+  facilities: ResponseFacilityType;
+  amenities: ResponseAmenityType;
 }
 
 export interface PropertyImageSearch {

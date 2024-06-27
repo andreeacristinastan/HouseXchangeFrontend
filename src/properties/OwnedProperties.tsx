@@ -1,12 +1,26 @@
 import Typography from "@mui/material/Typography";
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import "./OwnedProperties.css";
 import InfiniteLooper from "../utils/InfiniteLooper";
 import { useUserStore } from "../utils/useUserStore";
 import { UserInfosType } from "../utils/types/UserTypes";
 import { jwtDecode } from "jwt-decode";
+import { Formik, Field, Form } from "formik";
+import FormLabel from "@mui/material/FormLabel";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Radio from "@mui/material/Radio";
+import TextField from "@mui/material/TextField";
+import Box from "@mui/material/Box";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
+import { Link } from "react-router-dom";
 import {
   Property,
+  PropertyImageSearch,
   ResponseGetAllPropertiesType,
 } from "../utils/types/PropertyTypes";
 import OwnedPropertiesCard from "./OwnedPropertiesCard";
@@ -26,7 +40,23 @@ import {
   Trip,
   TripInfo,
 } from "../utils/types/TripTypes";
+import MenuItem from "@mui/material/MenuItem";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import Checkbox from "@mui/material/Checkbox";
+import ListItemText from "@mui/material/ListItemText";
+import { Availability } from "../utils/types/AvailabilityTypes";
+import DateRangePicker from "../utils/DateRangePicker";
+import { ResponseImageInfoType } from "../utils/types/ImageTypes";
+import { FilePond, registerPlugin } from "react-filepond";
+import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orientation";
+import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 
+import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
+import "filepond/dist/filepond.min.css";
+import {
+  makeDeleteRequest,
+  makeUploadRequest,
+} from "../utils/CloudinaryHelper";
 // Register the necessary components for Chart.js
 ChartJS.register(
   CategoryScale,
@@ -36,12 +66,202 @@ ChartJS.register(
   Tooltip,
   Legend
 );
+const numberOfRooms = [1, 2, 3, 4, 5, 6];
+const numberOfBathrooms = [1, 2, 3, 4, 5, 6];
+const facilities = ["Towel", "Balcony", "Air Conditioning", "Tv"];
+const amenities = [
+  "Pets Friendly",
+  "Disabilities Friendly",
+  "Swimming Pool",
+  "Garden",
+  "Parking",
+  "Gym",
+  "Wifi",
+  "Bikes",
+  "Kids Zone",
+];
+const meals = ["Breakfast", "Lunch", "Dinner"];
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
 
 const OwnedProperties = () => {
+  const [files, setFiles] = useState([]);
+
   const [properties, setProperties] = useState<Property[]>([]);
+  const [property, setProperty] = useState<Property>();
   const [trips, setTrips] = useState<Trip[]>([]);
   const [removedAProperty, setRemovedAProperty] = useState(false);
   const { user } = useUserStore();
+  const [editMode, setEditMode] = useState(false);
+  const [images, setImages] = useState<string[]>([]);
+  const [selectedImages, setSelectedImages] = useState([""]);
+  const [displayedImages, setDisplayedImages] = useState([""]);
+  const [tokens, setTokens] = useState<string[]>([]);
+
+  // const [facilityKeys, setFacilityKeys] = React.useState<string[]>([]);
+  const [selectedFacilities, setSelectedFacilities] = useState<string[]>([]);
+  const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
+  const [availabilities, setAvailabilities] = useState<Availability[]>([]);
+  const [selectedAvailabilities, setSelectedAvailabilities] = useState([""]);
+  const [displayedAvailabilities, setDisplayedAvailabilities] = useState([""]);
+  const [dates, setDates] = useState<{ startDate: string; endDate: string }[]>(
+    []
+  );
+
+  const handleAvailabilities = (start: string, end: string, action: string) => {
+    if (action === "add") {
+      const newDate = { startDate: start, endDate: end };
+      const newDisplayedAvailability = `${start}-${end}`;
+
+      setDates((prevDates) => [...prevDates, newDate]);
+      setDisplayedAvailabilities((prevDates) => [
+        ...prevDates,
+        newDisplayedAvailability,
+      ]);
+    } else if (action === "delete") {
+      setDates((prevDates) =>
+        prevDates.filter(
+          (date) => date.startDate !== start && date.endDate !== end
+        )
+      );
+    }
+
+    // dates.map((d) => {
+    //   // console.log("Cand sterg un  range am valorile: ");
+    //   // console.log(parts[0]);
+    //   // console.log(parts[1]);
+    //   console.log(d);
+    // });
+  };
+  const handleAddImages = (image: string) => {
+    setDisplayedImages((prevImageVector) => [...prevImageVector, image]);
+    setFiles([]);
+  };
+  const handleCancelBtnClick = () => {
+    setEditMode(false);
+    const newSelectedAvailabilities: string[] = availabilities.map(
+      (availability) => {
+        return `${availability.startDate}-${availability.endDate}`;
+      }
+    );
+    setDates([]);
+    setSelectedAvailabilities(newSelectedAvailabilities);
+    setDisplayedAvailabilities(newSelectedAvailabilities);
+    const newSelectedImages: string[] = images.map((image) => {
+      return `${image}`;
+    });
+    setSelectedImages(newSelectedImages);
+    setDisplayedImages(newSelectedImages);
+  };
+  const revert = (token, successCallback, errorCallback) => {
+    makeDeleteRequest({
+      token,
+      successCallback,
+      errorCallback,
+    });
+  };
+
+  const process = (
+    fieldName,
+    file,
+    metadata,
+    load,
+    error,
+    progress,
+    abort,
+    transfer,
+    options
+  ) => {
+    const abortRequest = makeUploadRequest({
+      file,
+      fieldName,
+      successCallback: load,
+      errorCallback: error,
+      progressCallback: progress,
+      addImages: handleAddImages,
+      setTokens,
+    });
+
+    return {
+      abort: () => {
+        abortRequest();
+        abort();
+      },
+    };
+  };
+
+  useEffect(() => {
+    const newSelectedAvailabilities: string[] = availabilities.map(
+      (availability) => {
+        return `${availability.startDate}-${availability.endDate}`;
+      }
+    );
+
+    setSelectedAvailabilities(newSelectedAvailabilities);
+    setDisplayedAvailabilities(newSelectedAvailabilities);
+  }, [availabilities]);
+
+  useEffect(() => {
+    const newSelectedImages: string[] = images.map((image) => {
+      return `${image}`;
+    });
+    setSelectedImages(newSelectedImages);
+    setDisplayedImages(newSelectedImages);
+    // console.log(images);
+  }, [images]);
+
+  const handleFacilitiesChange = (
+    event: SelectChangeEvent<typeof facilities>
+  ) => {
+    const {
+      target: { value },
+    } = event;
+
+    setSelectedFacilities(typeof value === "string" ? value.split(",") : value);
+    // console.log(selectedFacilities);
+  };
+
+  const handleAmenitiesChange = (
+    event: SelectChangeEvent<typeof amenities>
+  ) => {
+    const {
+      target: { value },
+    } = event;
+    console.log(value);
+
+    setSelectedAmenities(typeof value === "string" ? value.split(",") : value);
+  };
+
+  const handleAvailabilitiesChange = (event: SelectChangeEvent<string[]>) => {
+    const {
+      target: { value },
+    } = event;
+
+    setSelectedAvailabilities(
+      typeof value === "string" ? value.split(",") : value
+    );
+
+    // console.log(typeof value === "string" ? value.split(",") : value);
+  };
+
+  const handleImagesChange = (event: SelectChangeEvent<string[]>) => {
+    const {
+      target: { value },
+    } = event;
+
+    setSelectedImages(typeof value === "string" ? value.split(",") : value);
+
+    // console.log(typeof value === "string" ? value.split(",") : value);
+  };
 
   const bookingsByMonth = trips.reduce((acc, trip) => {
     const month = new Date(trip.checkInDate).getMonth();
@@ -186,7 +406,7 @@ const OwnedProperties = () => {
 
     if (token) {
       const decodedToken: UserInfosType = jwtDecode(token);
-      console.log(token);
+      // console.log(token);
 
       const currentTime = Date.now() / 1000;
       if (decodedToken.exp > currentTime && user) {
@@ -220,12 +440,15 @@ const OwnedProperties = () => {
             images: property.images,
             propertyDescription: property.propertyDescription,
             trips: property.trips,
+            amenities: property.amenityInfo,
+            facilities: property.facilityDto,
+            meals: property.mealInfo,
           }))
         );
 
-        console.log("Properties:");
+        // console.log("Properties:");
 
-        console.log(properties);
+        // console.log(properties);
       }
     }
   };
@@ -235,17 +458,20 @@ const OwnedProperties = () => {
 
     if (token) {
       const decodedToken: UserInfosType = jwtDecode(token);
-      console.log(token);
+      // console.log(token);
 
       const currentTime = Date.now() / 1000;
       if (decodedToken.exp > currentTime && user) {
-        const res = await fetch(`http://localhost:8080/api/trips`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token.replace(/"/g, "")}`,
-            "Content-Type": "application/json",
-          },
-        });
+        const res = await fetch(
+          `http://localhost:8080/api/users/${user?.id}/trips-all`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token.replace(/"/g, "")}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
         if (!res.ok) {
           console.log("Eroare cand iei proprietatile userului");
           return;
@@ -309,6 +535,12 @@ const OwnedProperties = () => {
                     <OwnedPropertiesCard
                       property={property}
                       setRemovedAProperty={setRemovedAProperty}
+                      setEditMode={setEditMode}
+                      setEditProperty={setProperty}
+                      setSelectedFacilities={setSelectedFacilities}
+                      setSelectedAmenities={setSelectedAmenities}
+                      setSelectedAvailabilities={setAvailabilities}
+                      setImages={setImages}
                     />
                   </div>
                 ))}
@@ -323,6 +555,12 @@ const OwnedProperties = () => {
                   <OwnedPropertiesCard
                     property={property}
                     setRemovedAProperty={setRemovedAProperty}
+                    setEditMode={setEditMode}
+                    setEditProperty={setProperty}
+                    setSelectedFacilities={setSelectedFacilities}
+                    setSelectedAmenities={setSelectedAmenities}
+                    setSelectedAvailabilities={setAvailabilities}
+                    setImages={setImages}
                   />
                 </div>
               ))}
@@ -362,6 +600,494 @@ const OwnedProperties = () => {
           </div>
         </div>
       </div>
+
+      {editMode && (
+        // <div className="bckg">
+        <div className="edit-mode-container">
+          <Formik
+            initialValues={{
+              name: property?.name,
+              description: property?.propertyDescription,
+              meals: property?.meals,
+              availabilities: [],
+              price: property?.price,
+              numberOfRooms: property?.rooms,
+              numberOfBathrooms: property?.bathrooms,
+              images: property?.images,
+            }}
+            onSubmit={() => {}}
+          >
+            <Form className="form-edit-property">
+              <h2 className="property-label">Edit your property</h2>
+
+              <div className="edit-property-fields">
+                <Field
+                  as={TextField}
+                  name="Name"
+                  defaultValue={property?.name}
+                  sx={{
+                    m: 1,
+                    width: "100%",
+                    height: "30px",
+                    color: "#588b97",
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "24px",
+                      color: "#588b97",
+                      "&:hover": {
+                        "& .MuiOutlinedInput-notchedOutline": {
+                          border: "1px solid #ccc",
+                        },
+                      },
+                      "&.Mui-focused": {
+                        "& .MuiOutlinedInput-notchedOutline": {
+                          border: "1px solid #ccc",
+                        },
+                      },
+                    },
+                    "& .MuiFormLabel-root.Mui-focused": {
+                      color: "#7c7878",
+                    },
+                  }}
+                  label="Name"
+                />
+                <Field
+                  as={TextField}
+                  name="Description"
+                  defaultValue={property?.propertyDescription}
+                  sx={{
+                    m: 1,
+                    width: "100%",
+                    height: "30px",
+                    marginTop: "30px",
+                    color: "#588b97",
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "24px",
+                      color: "#588b97",
+                      "&:hover": {
+                        "& .MuiOutlinedInput-notchedOutline": {
+                          border: "1px solid #ccc",
+                        },
+                      },
+                      "&.Mui-focused": {
+                        "& .MuiOutlinedInput-notchedOutline": {
+                          border: "1px solid #ccc",
+                          width: "auto",
+                          height: "auto",
+                        },
+                      },
+                    },
+                    "& .MuiFormLabel-root.Mui-focused": {
+                      color: "#7c7878",
+                    },
+                  }}
+                  label="Description"
+                />
+                <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                  <Field
+                    as={TextField}
+                    name="Number Of Rooms"
+                    defaultValue={property?.rooms}
+                    sx={{
+                      m: 1,
+                      width: "100%",
+                      height: "30px",
+                      marginTop: "30px",
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: "24px",
+                        color: "#588b97",
+                        "&:hover": {
+                          "& .MuiOutlinedInput-notchedOutline": {
+                            border: "1px solid #ccc",
+                          },
+                        },
+                        "&.Mui-focused": {
+                          "& .MuiOutlinedInput-notchedOutline": {
+                            border: "1px solid #ccc",
+                          },
+                        },
+                      },
+                      "& .MuiFormLabel-root.Mui-focused": {
+                        color: "#7c7878",
+                      },
+                    }}
+                    // id="outlined-select-prefix"
+                    select
+                    label="Number Of Rooms"
+                  >
+                    {numberOfRooms.map((option: number) => (
+                      <MenuItem
+                        key={option.toString()}
+                        value={option.toString()}
+                      >
+                        {option}
+                      </MenuItem>
+                    ))}
+                  </Field>
+                  <Field
+                    as={TextField}
+                    name="Number Of Bathrooms"
+                    defaultValue={property?.bathrooms}
+                    sx={{
+                      m: 1,
+                      width: "100%",
+                      height: "30px",
+                      marginTop: "30px",
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: "24px",
+                        color: "#588b97",
+                        "&:hover": {
+                          "& .MuiOutlinedInput-notchedOutline": {
+                            border: "1px solid #ccc",
+                          },
+                        },
+                        "&.Mui-focused": {
+                          "& .MuiOutlinedInput-notchedOutline": {
+                            border: "1px solid #ccc",
+                          },
+                        },
+                      },
+                      "& .MuiFormLabel-root.Mui-focused": {
+                        color: "#7c7878",
+                      },
+                    }}
+                    // id="outlined-select-prefix"
+                    select
+                    label="Number Of Bathrooms"
+                  >
+                    {numberOfBathrooms.map((option: number) => (
+                      <MenuItem
+                        key={option.toString()}
+                        value={option.toString()}
+                      >
+                        {option}
+                      </MenuItem>
+                    ))}
+                  </Field>
+                  <Field
+                    as={TextField}
+                    name="Price (RON)"
+                    className="textField"
+                    sx={{
+                      m: 1,
+                      width: "100%",
+                      height: "30px",
+                      marginTop: "30px",
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: "24px",
+                        color: "#588b97",
+                        "&:hover": {
+                          "& .MuiOutlinedInput-notchedOutline": {
+                            border: "1px solid #ccc",
+                          },
+                        },
+                        "&.Mui-focused": {
+                          "& .MuiOutlinedInput-notchedOutline": {
+                            border: "1px solid #ccc",
+                          },
+                        },
+                      },
+                      "& .MuiFormLabel-root.Mui-focused": {
+                        color: "#7c7878",
+                      },
+                    }}
+                    defaultValue={property?.price}
+                    label="Price (RON)"
+                    type="number"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+                </Box>
+
+                <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                  <FormControl sx={{ m: 1, mt: 5, width: "100%" }}>
+                    <InputLabel
+                      id="facilities-label"
+                      sx={{ color: "#588b97 !important" }}
+                    >
+                      Facilities
+                    </InputLabel>
+                    <Select
+                      sx={{
+                        borderRadius: "24px",
+
+                        color: "#588b97",
+
+                        "& .MuiOutlinedInput-notchedOutline": {
+                          border: "1px solid #ccc",
+                        },
+                        "&:hover .MuiOutlinedInput-notchedOutline": {
+                          border: "1px solid #ccc",
+                        },
+                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                          border: "1px solid #ccc",
+                        },
+                        "&.MuiInputLabel-shrink": { color: "red" },
+                      }}
+                      labelId="facilities-label"
+                      // id="demo-multiple-checkbox"
+                      input={<OutlinedInput label="Facilities" />}
+                      multiple
+                      value={selectedFacilities}
+                      onChange={handleFacilitiesChange}
+                      placeholder="Facilities"
+                      renderValue={(selected) => selected.join(", ")}
+                      MenuProps={MenuProps}
+                    >
+                      {facilities.map((option) => (
+                        <MenuItem key={option} value={option}>
+                          <Checkbox
+                            checked={selectedFacilities.indexOf(option) > -1}
+                            sx={{ color: "#588b97 !important" }}
+                          />
+                          <ListItemText
+                            primary={option}
+                            sx={{ color: "#588b97 !important" }}
+                          />
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <FormControl sx={{ mt: 5, width: "100%" }}>
+                    <InputLabel
+                      id="amenities-label"
+                      sx={{ color: "#588b97 !important" }}
+                    >
+                      Amenities
+                    </InputLabel>
+                    <Select
+                      name="Amenities"
+                      sx={{
+                        borderRadius: "24px",
+                        color: "#588b97",
+                        "& .MuiOutlinedInput-notchedOutline": {
+                          border: "1px solid #ccc",
+                        },
+                        "&:hover .MuiOutlinedInput-notchedOutline": {
+                          border: "1px solid #ccc",
+                        },
+                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                          border: "1px solid #ccc",
+                        },
+                        "& .MuiInputLabel-root.Mui-focused": {
+                          color: "#7c7878", // Label color when focused
+                        },
+                        "& .MuiInputLabel-root": {
+                          color: "#ccc", // Default label color
+                        },
+                      }}
+                      labelId="amenities-label"
+                      input={<OutlinedInput label="Amenities" />}
+                      multiple
+                      value={selectedAmenities}
+                      onChange={handleAmenitiesChange}
+                      placeholder="Amenities"
+                      renderValue={(selected) => selected.join(", ")}
+                      MenuProps={MenuProps}
+                    >
+                      {amenities.map((option) => (
+                        <MenuItem key={option} value={option}>
+                          <Checkbox
+                            checked={selectedAmenities.indexOf(option) > -1}
+                            sx={{ color: "#588b97 !important" }}
+                          />
+                          <ListItemText
+                            primary={option}
+                            sx={{ color: "#588b97 !important" }}
+                          />
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    m: 1,
+                  }}
+                >
+                  <FormControl sx={{ mr: 5, width: 300 }}>
+                    <InputLabel
+                      id="availabilities-label"
+                      sx={{ color: "#588b97 !important" }}
+                    >
+                      Availabilities
+                    </InputLabel>
+                    <Select
+                      sx={{
+                        borderRadius: "24px",
+
+                        color: "#588b97",
+
+                        "& .MuiOutlinedInput-notchedOutline": {
+                          border: "1px solid #ccc",
+                        },
+                        "&:hover .MuiOutlinedInput-notchedOutline": {
+                          border: "1px solid #ccc",
+                        },
+                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                          border: "1px solid #ccc",
+                        },
+                        "&.MuiInputLabel-shrink": { color: "red" },
+                      }}
+                      labelId="availabilities-label"
+                      // id="demo-multiple-checkbox"
+                      input={<OutlinedInput label="Availabilities" />}
+                      multiple
+                      value={selectedAvailabilities}
+                      onChange={handleAvailabilitiesChange}
+                      placeholder="Availabilities"
+                      renderValue={(selected) => selected.join(", ")}
+                      MenuProps={MenuProps}
+                    >
+                      {displayedAvailabilities.map((option) => (
+                        <MenuItem key={option} value={option}>
+                          <Checkbox
+                            checked={
+                              selectedAvailabilities.indexOf(option) > -1
+                            }
+                            sx={{ color: "#588b97 !important" }}
+                          />
+                          <ListItemText
+                            primary={option}
+                            // secondary={option.endDate}
+                            sx={{ color: "#588b97 !important" }}
+                          />
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <div className="calendar-container">
+                    <InputLabel
+                      id="availabilities-label"
+                      sx={{ color: "#fff !important" }}
+                    >
+                      Add new availability dates for your property
+                    </InputLabel>
+                    <DateRangePicker
+                      handleAvailabilities={handleAvailabilities}
+                    />
+                  </div>
+                </Box>
+
+                <FormControl sx={{ width: "100%" }}>
+                  <InputLabel
+                    id="photos-label"
+                    sx={{ color: "#588b97 !important" }}
+                  >
+                    Update property's photos
+                  </InputLabel>
+                  <Select
+                    name="Photos"
+                    sx={{
+                      borderRadius: "24px",
+                      color: "#588b97",
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        border: "1px solid #ccc",
+                      },
+                      "&:hover .MuiOutlinedInput-notchedOutline": {
+                        border: "1px solid #ccc",
+                      },
+                      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                        border: "1px solid #ccc",
+                      },
+                      "& .MuiInputLabel-root.Mui-focused": {
+                        color: "#7c7878", // Label color when focused
+                      },
+                      "& .MuiInputLabel-root": {
+                        color: "#ccc", // Default label color
+                      },
+                    }}
+                    labelId="Photos-label"
+                    input={<OutlinedInput label="Amenities" />}
+                    multiple
+                    value={selectedImages}
+                    onChange={handleImagesChange}
+                    placeholder="Photos"
+                    renderValue={(selected) =>
+                      selected.map((value) => (
+                        <img
+                          style={{
+                            marginRight: "3%",
+                            width: 100,
+                            height: 100,
+                            objectFit: "cover",
+                          }}
+                          src={value}
+                          alt={value}
+                        />
+                      ))
+                    }
+                    MenuProps={MenuProps}
+                  >
+                    {displayedImages.map((option) => (
+                      <MenuItem key={option} value={option}>
+                        <Checkbox
+                          checked={selectedImages.indexOf(option) > -1}
+                          sx={{ color: "#588b97 !important" }}
+                        />
+                        {/* <ListItemText
+                          primary={option}
+                          sx={{ color: "#588b97 !important" }}
+                        /> */}
+                        <img
+                          className="photo-check-box"
+                          src={option}
+                          alt={option}
+                        />
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                <div
+                  style={{
+                    width: "100%",
+                    height: "70px",
+                    // margin: 1,
+                    // padding: "10px",
+                    marginTop: "20px",
+                    // marginBottom: "30px",
+                  }}
+                >
+                  {/* <div className="title">Insert your property photos:</div> */}
+                  <FilePond
+                    files={files}
+                    acceptedFileTypes="image/*"
+                    onupdatefiles={setFiles}
+                    allowMultiple={true}
+                    server={{ process, revert }}
+                    name="file"
+                    labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
+                  />
+                </div>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <button
+                    // onClick={handleCreateBtnClick}
+                    // disabled={isFilled()}
+                    className="save-property-btn"
+                  >
+                    Save property
+                  </button>
+                  <button
+                    onClick={handleCancelBtnClick}
+                    // disabled={isFilled()}
+                    className="cancel-btn"
+                  >
+                    Cancel
+                  </button>
+                </Box>
+              </div>
+            </Form>
+          </Formik>
+        </div>
+        // </div>
+      )}
     </div>
   );
 };

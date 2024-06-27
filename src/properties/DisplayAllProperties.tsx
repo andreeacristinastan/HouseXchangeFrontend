@@ -146,6 +146,10 @@ const DisplayAllProperties = () => {
         price: property.price,
         images: property.images,
         propertyDescription: property.propertyDescription,
+        trips: property.trips,
+        amenities: property.amenityInfo,
+        facilities: property.facilityDto,
+        meals: property.mealInfo,
       }))
     );
     // console.log(data);
@@ -213,6 +217,10 @@ const DisplayAllProperties = () => {
         price: property.price,
         images: property.images,
         propertyDescription: property.propertyDescription,
+        amenities: property.amenityInfo,
+        facilities: property.facilityDto,
+        meals: property.mealInfo,
+        trips: property.trips,
       }))
     );
     // console.log(data);

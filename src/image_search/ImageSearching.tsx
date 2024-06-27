@@ -267,21 +267,7 @@ const ImageSearching = () => {
       </div>
 
       {isLoading && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "transparent",
-            backdropFilter: "blur(10px)",
-            zIndex: 9999,
-          }}
-        >
+        <div className="loading-background">
           <div>
             <CircularProgress style={{ color: "#fff" }} />{" "}
             {/* This is your loading icon */}
