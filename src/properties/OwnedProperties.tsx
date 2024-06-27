@@ -20,8 +20,11 @@ import IconButton from "@mui/material/IconButton";
 import { Link } from "react-router-dom";
 import {
   Property,
+  PropertyCreationType,
   PropertyImageSearch,
+  ResponseAddPropertyType,
   ResponseGetAllPropertiesType,
+  UpdateUserPropertyType,
 } from "../utils/types/PropertyTypes";
 import OwnedPropertiesCard from "./OwnedPropertiesCard";
 import { Bar } from "react-chartjs-2";
@@ -44,9 +47,15 @@ import MenuItem from "@mui/material/MenuItem";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Checkbox from "@mui/material/Checkbox";
 import ListItemText from "@mui/material/ListItemText";
-import { Availability } from "../utils/types/AvailabilityTypes";
+import {
+  Availability,
+  CreateAvailabilityType,
+} from "../utils/types/AvailabilityTypes";
 import DateRangePicker from "../utils/DateRangePicker";
-import { ResponseImageInfoType } from "../utils/types/ImageTypes";
+import {
+  ImageCreationType,
+  ResponseImageInfoType,
+} from "../utils/types/ImageTypes";
 import { FilePond, registerPlugin } from "react-filepond";
 import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orientation";
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
@@ -57,6 +66,9 @@ import {
   makeDeleteRequest,
   makeUploadRequest,
 } from "../utils/CloudinaryHelper";
+import { CreateFacilityType } from "../utils/types/FacilityTypes";
+import { CreateAmenityType } from "../utils/types/AmenityTypes";
+import AuthService from "../services/AuthService";
 // Register the necessary components for Chart.js
 ChartJS.register(
   CategoryScale,
@@ -95,7 +107,11 @@ const MenuProps = {
 
 const OwnedProperties = () => {
   const [files, setFiles] = useState([]);
-
+  const [err, setErr] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [success, setSuccess] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [openSnackbar, setOpenSnackbar] = useState(false);
   const [properties, setProperties] = useState<Property[]>([]);
   const [property, setProperty] = useState<Property>();
   const [trips, setTrips] = useState<Trip[]>([]);
@@ -106,6 +122,24 @@ const OwnedProperties = () => {
   const [selectedImages, setSelectedImages] = useState([""]);
   const [displayedImages, setDisplayedImages] = useState([""]);
   const [tokens, setTokens] = useState<string[]>([]);
+  const [newFacilities, setNewFacilities] = useState<CreateFacilityType>({
+    towel: false,
+    balcony: false,
+    airConditioning: false,
+    tv: false,
+  });
+
+  const [newAmenities, setNewAmenities] = useState<CreateAmenityType>({
+    petsFriendly: false,
+    disabilitiesFriendly: false,
+    swimmingPool: false,
+    garden: false,
+    parking: false,
+    gym: false,
+    wifi: false,
+    bikes: false,
+    kidsZone: false,
+  });
 
   // const [facilityKeys, setFacilityKeys] = React.useState<string[]>([]);
   const [selectedFacilities, setSelectedFacilities] = useState<string[]>([]);
@@ -116,6 +150,17 @@ const OwnedProperties = () => {
   const [dates, setDates] = useState<{ startDate: string; endDate: string }[]>(
     []
   );
+
+  const handleCloseSnackbar = (
+    event: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpenSnackbar(false);
+  };
 
   const handleAvailabilities = (start: string, end: string, action: string) => {
     if (action === "add") {
@@ -146,8 +191,8 @@ const OwnedProperties = () => {
     setDisplayedImages((prevImageVector) => [...prevImageVector, image]);
     setFiles([]);
   };
+
   const handleCancelBtnClick = () => {
-    setEditMode(false);
     const newSelectedAvailabilities: string[] = availabilities.map(
       (availability) => {
         return `${availability.startDate}-${availability.endDate}`;
@@ -161,7 +206,27 @@ const OwnedProperties = () => {
     });
     setSelectedImages(newSelectedImages);
     setDisplayedImages(newSelectedImages);
+    window.location.reload();
+    setEditMode(false);
   };
+
+  // const handleSaveBtnClick = () => {
+  //   setEditMode(false);
+  //   const newSelectedAvailabilities: string[] = availabilities.map(
+  //     (availability) => {
+  //       return `${availability.startDate}-${availability.endDate}`;
+  //     }
+  //   );
+  //   setDates([]);
+  //   setSelectedAvailabilities(newSelectedAvailabilities);
+  //   setDisplayedAvailabilities(newSelectedAvailabilities);
+  //   const newSelectedImages: string[] = images.map((image) => {
+  //     return `${image}`;
+  //   });
+  //   setSelectedImages(newSelectedImages);
+  //   setDisplayedImages(newSelectedImages);
+  // };
+
   const revert = (token, successCallback, errorCallback) => {
     makeDeleteRequest({
       token,
@@ -608,14 +673,173 @@ const OwnedProperties = () => {
             initialValues={{
               name: property?.name,
               description: property?.propertyDescription,
-              meals: property?.meals,
-              availabilities: [],
               price: property?.price,
               numberOfRooms: property?.rooms,
               numberOfBathrooms: property?.bathrooms,
-              images: property?.images,
             }}
-            onSubmit={() => {}}
+            onSubmit={async (values) => {
+              console.log(values.description);
+              console.log(selectedAmenities);
+              console.log(selectedAvailabilities);
+              console.log(selectedImages);
+
+              const updatedAmenities: CreateAmenityType = { ...newAmenities };
+              selectedAmenities.forEach((amenity) => {
+                updatedAmenities[
+                  amenity.toLowerCase() as keyof typeof newAmenities
+                ] = true;
+              });
+
+              // setNewAmenities(updatedAmenities);
+
+              const updatedFacilities: CreateFacilityType = {
+                ...newFacilities,
+              };
+              selectedFacilities.forEach((facility) => {
+                updatedFacilities[
+                  facility.toLowerCase() as keyof typeof newFacilities
+                ] = true;
+              });
+
+              // setNewFacilities(updatedFacilities);
+
+              const updateProperty: UpdateUserPropertyType = {
+                name: values.name,
+                propertyDescription: values.description,
+                numberOfBathrooms: Number(values.numberOfBathrooms),
+                numberOfRooms: Number(values.numberOfRooms),
+                price: values.price,
+                userId: user?.id,
+                propertyId: property?.id,
+                facilities: updatedFacilities,
+                amenities: updatedAmenities,
+              };
+
+              // console.log(updateProperty);
+              // return;
+
+              const response: ResponseAddPropertyType =
+                await AuthService().updateProperty(updateProperty);
+              // console.log("property is: " + addProperty);
+
+              if (response.error.length !== 0) {
+                tokens.map((token) => {
+                  revert(
+                    token,
+                    () => {},
+                    () => {}
+                  );
+                });
+                setImages([]);
+                setFiles([]);
+                setErr(true);
+                setErrorMessage(response.error);
+                setOpenSnackbar(true);
+              } else {
+                const token = localStorage.getItem("user");
+
+                if (token) {
+                  const decodedToken: UserInfosType = jwtDecode(token);
+                  const currentTime = Date.now() / 1000;
+                  if (decodedToken.exp > currentTime) {
+                    const resp = await fetch(
+                      `http://localhost:8080/api/properties/${property?.id}/images`,
+                      {
+                        method: "DELETE",
+                        headers: {
+                          Authorization: `Bearer ${token.replace(/"/g, "")}`,
+                          "Content-Type": "application/json",
+                        },
+                      }
+                    );
+                    if (!resp.ok) {
+                      setErr(true);
+                      setErrorMessage(
+                        "An error occured while trying to delete the old images"
+                      );
+                      setOpenSnackbar(true);
+
+                      return;
+                    }
+
+                    selectedImages.map(async (image) => {
+                      // console.log("first" + image);
+                      const addImage: ImageCreationType = {
+                        url: image,
+                        propertyId: property?.id,
+                      };
+
+                      const response = await AuthService().createImage(
+                        addImage
+                      );
+                      if (response.error.length !== 0) {
+                        tokens.map((token) => {
+                          revert(
+                            token,
+                            () => {},
+                            () => {}
+                          );
+                        });
+                        setErr(true);
+                        setErrorMessage(response.error);
+                        setOpenSnackbar(true);
+                      }
+                      // console.log(response);
+                    });
+                    availabilities.map(async (availability) => {
+                      const resp = await fetch(
+                        `http://localhost:8080/api/availabilities/${availability.id}`,
+                        {
+                          method: "DELETE",
+                          headers: {
+                            Authorization: `Bearer ${token.replace(/"/g, "")}`,
+                            "Content-Type": "application/json",
+                          },
+                        }
+                      );
+                      if (!resp.ok) {
+                        setErr(true);
+                        setErrorMessage(
+                          "An error occured while trying to delete the old availabilities"
+                        );
+                        setOpenSnackbar(true);
+
+                        return;
+                      }
+                    });
+
+                    selectedAvailabilities.map(async (date) => {
+                      // console.log(date);
+                      const [startDate, endDate] = date.split("-");
+                      const addAvailability: CreateAvailabilityType = {
+                        userId: user?.id,
+                        propertyId: property?.id,
+                        startDate: startDate,
+                        endDate: endDate,
+                      };
+
+                      const response = await AuthService().createAvailability(
+                        addAvailability
+                      );
+                      if (response.error.length !== 0) {
+                        setErr(true);
+                        setErrorMessage(
+                          "An error occured while trying to add new availabilities"
+                        );
+                        setOpenSnackbar(true);
+                      }
+                      // console.log(response);
+                    });
+                  }
+                }
+
+                setSuccess(true);
+                setSuccessMessage("Property edited successfully!");
+                setImages([]);
+                setFiles([]);
+                handleCancelBtnClick();
+              }
+            }}
           >
             <Form className="form-edit-property">
               <h2 className="property-label">Edit your property</h2>
@@ -623,7 +847,7 @@ const OwnedProperties = () => {
               <div className="edit-property-fields">
                 <Field
                   as={TextField}
-                  name="Name"
+                  name="name"
                   defaultValue={property?.name}
                   sx={{
                     m: 1,
@@ -652,7 +876,7 @@ const OwnedProperties = () => {
                 />
                 <Field
                   as={TextField}
-                  name="Description"
+                  name="description"
                   defaultValue={property?.propertyDescription}
                   sx={{
                     m: 1,
@@ -685,7 +909,7 @@ const OwnedProperties = () => {
                 <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                   <Field
                     as={TextField}
-                    name="Number Of Rooms"
+                    name="numberOfRooms"
                     defaultValue={property?.rooms}
                     sx={{
                       m: 1,
@@ -725,7 +949,7 @@ const OwnedProperties = () => {
                   </Field>
                   <Field
                     as={TextField}
-                    name="Number Of Bathrooms"
+                    name="numberOfBathrooms"
                     defaultValue={property?.bathrooms}
                     sx={{
                       m: 1,
@@ -765,7 +989,7 @@ const OwnedProperties = () => {
                   </Field>
                   <Field
                     as={TextField}
-                    name="Price (RON)"
+                    name="price"
                     className="textField"
                     sx={{
                       m: 1,
@@ -1058,7 +1282,7 @@ const OwnedProperties = () => {
                     allowMultiple={true}
                     server={{ process, revert }}
                     name="file"
-                    labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
+                    labelIdle='Drag & Drop your new property photos or <span class="filepond--label-action">Browse</span>'
                   />
                 </div>
                 <Box
@@ -1068,7 +1292,8 @@ const OwnedProperties = () => {
                   }}
                 >
                   <button
-                    // onClick={handleCreateBtnClick}
+                    // onClick={handleSaveBtnClick}
+                    type="submit"
                     // disabled={isFilled()}
                     className="save-property-btn"
                   >
@@ -1085,6 +1310,20 @@ const OwnedProperties = () => {
               </div>
             </Form>
           </Formik>
+          {err && (
+            <Snackbar
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "center",
+              }}
+              open={openSnackbar}
+              className="snackbarError"
+              autoHideDuration={3000}
+              onClose={handleCloseSnackbar}
+            >
+              <Alert severity="error">{errorMessage}</Alert>
+            </Snackbar>
+          )}
         </div>
         // </div>
       )}

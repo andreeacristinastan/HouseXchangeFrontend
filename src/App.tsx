@@ -4,7 +4,6 @@ import LoginPage from "./login/LoginPage.tsx";
 import HomePage from "./home/HomePage.tsx";
 import RegisterPage from "./register/RegisterPage.tsx";
 import AppBar from "./home/AppBar.tsx";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useEffect, useState } from "react";
 import AuthService from "./services/AuthService.tsx";
 import React from "react";
@@ -18,8 +17,6 @@ import LinearProgress from "@mui/material/LinearProgress";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useUserStore } from "./utils/useUserStore";
 import AddProperty from "./host/property/AddProperty.tsx";
-import HostProperties from "./host/property/HostProperties.tsx";
-import GuestTrips from "./guest/GuestTrips.tsx";
 import DisplayAllProperties from "./properties/DisplayAllProperties.tsx";
 import UserProfile from "./profile/UserProfile.tsx";
 import DisplayPropertyDetails from "./properties/DisplayPropertyDetails.tsx";
@@ -47,7 +44,7 @@ function App() {
   useEffect(() => {
     setTimeout(() => {
       setShowContent(true);
-    }, 1000);
+    }, 400);
   }, []);
 
   const AppBarComponent =

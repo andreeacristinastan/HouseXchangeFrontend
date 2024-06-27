@@ -9,6 +9,7 @@ import {
 import {
   ImageCreationType,
   PropertyCreationType,
+  UpdateUserPropertyType,
 } from "../utils/types/PropertyTypes";
 import { FeedbackCreationType } from "../utils/types/FeedbackTypes";
 import { ProfileImageCreationType } from "../utils/types/ProfileImageTypes";
@@ -224,6 +225,64 @@ const AuthService = () => {
           },
           body: JSON.stringify(propertyInfos),
         })
+          .then(async (res) => {
+            console.log(res);
+
+            if (!res.ok) {
+              const apiError = await res.json();
+              console.log(apiError);
+              throw new Error(JSON.stringify(apiError));
+            }
+            return res.json();
+          })
+          .then((data) => {
+            console.log(data);
+
+            property = data;
+          })
+          .catch((err) => {
+            console.log("err:");
+
+            console.log(JSON.parse(err.message).message);
+            errorMessage = JSON.parse(err.message).message;
+            // errorMessage = JSON.parse(err.message);
+          });
+      } else {
+        localStorage.removeItem("user");
+        errorMessage = "Session expired. Please log in again";
+        // setUser(null);
+      }
+    }
+
+    return { propertyDetails: property, error: errorMessage };
+  };
+
+  const updateProperty = async (propertyInfos: UpdateUserPropertyType) => {
+    console.log("my property details= " + JSON.stringify(propertyInfos));
+
+    const token = localStorage.getItem("user");
+    let errorMessage = "";
+    let property = null;
+
+    if (token) {
+      const decodedToken: UserInfosType = jwtDecode(token);
+      const currentTime = Date.now() / 1000;
+      if (decodedToken.exp > currentTime) {
+        const userId = decodedToken.id;
+        // console.log("infos = " + JSON.stringify(updateUserVal));
+        // console.log(user?.id);
+
+        await fetch(
+          `${API_URL}/users/${userId}/properties/${propertyInfos.propertyId}`,
+          {
+            method: "PATCH",
+            headers: {
+              Authorization: `Bearer ${token.replace(/"/g, "")}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(propertyInfos),
+          }
+        )
           .then(async (res) => {
             console.log(res);
 
@@ -544,6 +603,7 @@ const AuthService = () => {
     createProfileImage,
     updateProfileImage,
     createAvailability,
+    updateProperty,
   };
 };
 

@@ -71,6 +71,18 @@ export type ResponseGetPropertyByIdType = {
   facilityDto: ResponseFacilityType;
 };
 
+export type UpdateUserPropertyType = {
+  name: string | undefined;
+  propertyDescription: string | undefined;
+  numberOfBathrooms: number;
+  numberOfRooms: number;
+  price: number | undefined;
+  userId: number | undefined;
+  propertyId: number | undefined;
+  facilities: CreateFacilityType;
+  amenities: CreateAmenityType;
+};
+
 export interface Property {
   id: number;
   name: string;
