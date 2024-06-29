@@ -19,7 +19,7 @@ import "./HostAppBar.css";
 import { useNavigate } from "react-router-dom";
 import CardMedia from "@mui/material/CardMedia";
 
-const pages = ["Properties", "Add property", "Image Search", "Help"];
+const pages = ["Properties", "Add property", "Image Search"];
 const settings = ["My Properties", "My Account", "My Trips", "Logout"];
 
 const HostAppBar = ({ profilePhoto }: { profilePhoto: string | undefined }) => {

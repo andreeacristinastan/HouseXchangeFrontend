@@ -100,6 +100,14 @@ export interface Property {
   facilities: ResponseFacilityType;
   amenities: ResponseAmenityType;
 }
+export interface PropertyMaps {
+  id: number;
+  name: string;
+  address: string;
+  country: string;
+  city: string;
+  zipCode: number;
+}
 
 export interface PropertyImageSearch {
   id: number;
@@ -110,6 +118,15 @@ export type ResponsePropertyInfoType = {
   id: number;
   name: string;
 };
+
+export type PropertyInfoType = {
+  id: number;
+  name: string;
+  address: string;
+  country: string;
+  city: string;
+  zipCode: number;
+}[];
 
 export type PropertyInfosUserType = {
   id: number;

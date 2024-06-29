@@ -476,18 +476,6 @@ const AddProperty = () => {
               onChange={handleInfosChange}
             />
           </div>
-          <div className="adress-component">
-            <div className="title">Property Adress:</div>
-            <input
-              required
-              className="input-adress"
-              placeholder="Write your property adress"
-              name="address"
-              value={propertyInputInfos.address}
-              onChange={handleInfosChange}
-            />
-          </div>
-
           <div className="adress-details-component">
             <div className="country-component">
               <div className="title">Country:</div>
@@ -541,6 +529,35 @@ const AddProperty = () => {
                 }}
               />
             </div>
+          </div>
+          <div className="adress-component">
+            <div className="title">Property Address:</div>
+            <Autocomplete
+              apiKey={API_KEY}
+              className="input-city"
+              placeholder="Select address"
+              // onChange={handleInfosChange}
+              onPlaceSelected={(place) => {
+                const formatted_address = place.formatted_address || "";
+                // if (place.formatted_address) {
+                console.log(place.formatted_address);
+
+                setPropertyInputInfos((prevInfos) => ({
+                  ...prevInfos,
+                  city: formatted_address,
+                }));
+                // }
+                console.log(place);
+              }}
+              options={{
+                types: ["geocode"],
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                }
+              }}
+            />
           </div>
 
           <div

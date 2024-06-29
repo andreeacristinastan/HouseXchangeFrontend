@@ -12,6 +12,9 @@ import PriceRangeSlider from "../utils/PriceRangeSlider";
 import Typography from "../utils/Typography";
 import Pagination from "@mui/material/Pagination";
 import Box from "@mui/material/Box";
+import Autocomplete from "react-google-autocomplete";
+import SearchIcon from "@mui/icons-material/Search";
+
 import { ResponsePropertiesPagesType } from "../utils/types/PagesTypes";
 import { useActionData } from "react-router-dom";
 import { SearchValuesType } from "../utils/types/SearchTypes";
@@ -23,6 +26,8 @@ import {
 import { convertStringToDate } from "../utils/convertStringToDate";
 import { userInfo } from "os";
 import { useUserStore } from "../utils/useUserStore";
+import Paper from "@mui/material/Paper";
+import IconButton from "@mui/material/IconButton";
 
 const DisplayAllProperties = () => {
   const [properties, setProperties] = useState<Property[]>([]);
@@ -158,12 +163,6 @@ const DisplayAllProperties = () => {
   useEffect(() => {
     getAllProperties();
     getAllAvailabilities();
-    // console.log("========================filters are:");
-
-    // console.log(filters);
-    // console.log("========================prices are:");
-
-    // console.log(newPriceRange);
   }, []);
 
   const getAllAvailabilities = async () => {
@@ -229,6 +228,7 @@ const DisplayAllProperties = () => {
   useEffect(() => {
     getProperties();
   }, [page]);
+  const API_KEY = import.meta.env.VITE_MAPS_API_KEY;
 
   return (
     // <MainComponent>
@@ -271,6 +271,7 @@ const DisplayAllProperties = () => {
 
         <div className="search-box">
           <PriceRangeSlider handleChangePriceRange={handleChangePriceRange} />
+
           <SearchProperties
             textBtn={false}
             setNewPriceRange={setNewPriceRange}

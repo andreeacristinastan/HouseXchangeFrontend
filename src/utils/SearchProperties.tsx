@@ -23,6 +23,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
+import { useApiIsLoaded, useMapsLibrary } from "@vis.gl/react-google-maps";
 
 interface SearchPropertiesProps {
   textBtn?: boolean;
@@ -39,13 +40,15 @@ const SearchProperties = ({
   // props) {
   //   const { handleChangeLanguage } = props;
   //   const [language, setLanguage] = useState("");
+  const API_KEY = import.meta.env.VITE_MAPS_API_KEY;
+
+  const places = useMapsLibrary("places");
   const filters = useFilterStore((state) => state.searchDetails);
   const setFilters = useFilterStore((state) => state.setSearchDetails);
   const resetFilters = useFilterStore((state) => state.resetSearchDetails);
   const err = useFilterStore((state) => state.error);
   const setErr = useFilterStore((state) => state.setError);
   const navigate = useNavigate();
-  const API_KEY = import.meta.env.VITE_MAPS_API_KEY;
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -115,40 +118,41 @@ const SearchProperties = ({
           <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
             <SearchIcon />
           </IconButton>
-
-          <Autocomplete
-            key={filters.destination}
-            defaultValue={filters.destination}
-            apiKey={API_KEY}
-            className="location-search"
-            style={{
-              ml: 1,
-              flex: 1,
-              color: "#588b97",
-              height: "70px",
-              border: "none",
-              fontSize: "20px",
-              outline: "none",
-              fontFamily: '"Oswald", sans-serif',
-            }}
-            placeholder="Where do you wanna go?"
-            onPlaceSelected={(place) => {
-              if (place.formatted_address) {
-                setFilters("destination", place.formatted_address);
-                // setDestination(place.formatted_address);
-              }
-              console.log(place);
-            }}
-            options={{
-              types: ["(regions)"],
-            }}
-            inputProps={{ "aria-label": "where do you wanna go" }}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-              }
-            }}
-          />
+          {places && (
+            <Autocomplete
+              key={filters.destination}
+              defaultValue={filters.destination}
+              apiKey={API_KEY}
+              className="location-search"
+              style={{
+                ml: 1,
+                flex: 1,
+                color: "#588b97",
+                height: "70px",
+                border: "none",
+                fontSize: "20px",
+                outline: "none",
+                fontFamily: '"Oswald", sans-serif',
+              }}
+              placeholder="Where do you wanna go?"
+              onPlaceSelected={(place) => {
+                if (place.formatted_address) {
+                  setFilters("destination", place.formatted_address);
+                  // setDestination(place.formatted_address);
+                }
+                console.log(place);
+              }}
+              options={{
+                types: ["(regions)"],
+              }}
+              inputProps={{ "aria-label": "where do you wanna go" }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                }
+              }}
+            />
+          )}
         </Paper>
       </div>
       <div

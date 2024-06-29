@@ -1,15 +1,11 @@
-import React from "react";
 import { Property } from "../utils/types/PropertyTypes";
-import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import "./PropertyCard.css";
 import Card from "@mui/material/Card";
-import CardActionArea from "@mui/material/CardActionArea";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import CardActions from "@mui/material/CardActions";
-import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Rating from "@mui/material/Rating";
 import StarIcon from "@mui/icons-material/Star";
@@ -44,10 +40,6 @@ const PropertyCard = ({
   };
   const value = 3.5;
   return (
-    // <div
-    //   onClick={() => !isMyProperties && handlePropertyDetails()}
-    //   className="property-details-component"
-    // >
     <Card
       sx={{
         maxWidth: 345,
@@ -56,7 +48,6 @@ const PropertyCard = ({
         boxShadow: "20px 12px 15px 2px rgba(0, 0, 0, 0.4)",
       }}
     >
-      {/* <CardActionArea> */}
       <CardMedia
         component="img"
         height="200"
@@ -109,11 +100,8 @@ const PropertyCard = ({
           RON{property.price} /Night
         </Typography>
       </CardContent>
-      {/* </CardActionArea> */}
       <CardActions sx={{ padding: "0%", justifyContent: "center" }}>
         <button
-          // size="small"
-          // color="primary"
           onClick={() => !isMyProperties && handlePropertyDetails()}
           className="see-details"
         >
@@ -121,7 +109,6 @@ const PropertyCard = ({
         </button>
       </CardActions>
     </Card>
-    // </div>
   );
 };
 

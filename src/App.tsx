@@ -24,6 +24,8 @@ import TripsPage from "./trips/TripsPage.tsx";
 import ImageSearching from "./image_search/ImageSearching.tsx";
 import ShowFindProperties from "./image_search/ShowFindProperties.tsx";
 import OwnedProperties from "./properties/OwnedProperties.tsx";
+import { APIProvider } from "@vis.gl/react-google-maps";
+import { createRoot } from "react-dom/client";
 
 const theme = createTheme({
   palette: {
@@ -34,6 +36,8 @@ const theme = createTheme({
 });
 
 function App() {
+  const API_KEY = import.meta.env.VITE_MAPS_API_KEY;
+
   const { user, setUser } = useUserStore();
   const [err, setErr] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -114,7 +118,10 @@ function App() {
   return (
     <div>
       {showContent ? (
-        <>
+        <APIProvider
+          apiKey={API_KEY}
+          onLoad={() => console.log("Maps API has loaded.")}
+        >
           <Router>
             <AppBarComponent profilePhoto={user?.profileImage?.url} />
             <Routes>
@@ -154,7 +161,7 @@ function App() {
               message={errorMessage}
             />
           )}
-        </>
+        </APIProvider>
       ) : (
         <ThemeProvider theme={theme}>
           <Box sx={{ width: "100%" }}>

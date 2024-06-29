@@ -21,7 +21,7 @@ import CardMedia from "@mui/material/CardMedia";
 import { useUserStore } from "../utils/useUserStore";
 import { useFilterStore } from "../utils/useFilterStore";
 
-const pages = ["Properties", "Trips"];
+const pages = ["Properties", "Image Search"];
 const settings = ["My Trips", "My Account", "Logout"];
 
 const GuestAppBar = ({
@@ -46,6 +46,10 @@ const GuestAppBar = ({
     console.log(user?.id);
 
     navigate("/");
+  };
+
+  const handleImageSearch = () => {
+    navigate("/image-search");
   };
 
   const handleAccount = () => {
@@ -111,8 +115,8 @@ const GuestAppBar = ({
                       case "Properties":
                         handleProperties();
                         break;
-                      case "Trips":
-                        handleTrip();
+                      case "Image Search":
+                        handleImageSearch();
                         break;
                       default:
                         handleCloseNavMenu();

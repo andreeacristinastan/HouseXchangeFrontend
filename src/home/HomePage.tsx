@@ -3,6 +3,7 @@ import Categories from "./Categories";
 import GettingStarted from "./GettingStarted";
 import ReceiveOffers from "./ReceiveOffers";
 import "./HomePage.css";
+import GoogleMaps from "../utils/GoogleMaps";
 
 export default function HomePage() {
   // const navigate = useNavigate();
